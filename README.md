@@ -46,6 +46,11 @@ path for temporary data
     WMC_DATA
 path where data from WMC are located. These data are analysed further by preselection algorithm.
 
+    WASA_OUTPUT_DATA
+path to store raw analysis results
+
+    POST_ANALYSIS_DATA
+path to store the final results
 
 Directories
 ===========
@@ -55,7 +60,7 @@ Makefile project of software that provides data preselection. Is compiled and ru
     DataFiles
 additional information required for data preselection.
 
-    wasa_scripts
+    scripts
 directory with scripts and additional data for configuring used WASA software and running WASA Monte Carlo and data preselection.
 
 

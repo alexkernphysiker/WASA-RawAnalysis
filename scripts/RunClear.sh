@@ -1,5 +1,5 @@
 #!/bin/bash
 rm run*.sh
 rm *.o* *.e*
-rm ../Sorting/*.log ../Sorting/*.root
+rm *.log ${WASA_OUTPUT_DATA}/*.root
 
