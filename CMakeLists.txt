@@ -38,17 +38,24 @@ if(NOT $ENV{ROOTSORTERSYS} STREQUAL "")
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Analysis)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Reactions)
 
+    file(GLOB PRESELECTION_LIB WASA-RootSorterWrap/*.cpp)
     root_generate_dictionary(mainDict
 	WASA-RootSorterWrap/analysismodule.hh
 	LINKDEF WASA-RootSorterWrap/LinkDef.hh 
     )
-    file(GLOB PRESELECTION_LIB WASA-RootSorterWrap/*.cpp)
-    add_library(sorterwrap STATIC ${PRESELECTION_LIB} mainDict)
+    add_library(sorterwrap SHARED ${PRESELECTION_LIB} mainDict)
+    target_link_libraries(sorterwrap
+	${WASA_LIBRARIES} ${ROOT_LIBRARIES}
+	FitGen experiment kinematics reconstructionfit
+    )
     file(GLOB REACTIONS Reactions/*.cpp)
-    add_library(reactions STATIC ${REACTIONS})
+    add_library(reactions SHARED ${REACTIONS})
+    target_link_libraries(reactions 
+	sorterwrap ${WASA_LIBRARIES} ${ROOT_LIBRARIES}
+    )
     add_executable(rawanalysis rawanalysis.cpp)
     target_link_libraries(rawanalysis 
-	analysismodule reactions
+	sorterwrap reactions
 	${WASA_LIBRARIES} ${ROOT_LIBRARIES}
 	FitGen experiment kinematics reconstructionfit
     )

@@ -11,15 +11,12 @@
 #include <detectors.h>
 #include <reconstruction.h>
 #include <data.h>
+#include "forward.h"
 #include "central.h"
 using namespace std;
 using namespace MathTemplates;
 using namespace TrackAnalyse;
 
-const Reaction& He3eta(){
-    static Reaction res(Particle::p(),Particle::d(),{Particle::he3(),Particle::eta()});
-    return res;
-}
 Axis Q_axis_full(const Analysis&res){return Axis([&res]()->double{return 1000.0*He3eta().P2Q(res.PBeam());},-70.0,30.0,40);}
 
 
