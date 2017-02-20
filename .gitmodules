@@ -1,3 +1,6 @@
 [submodule "WASA-libs"]
 	path = WASA-libs
 	url = https://github.com/alexkernphysiker/WASA-libs.git
+[submodule "WASA-RootSorterWrap"]
+	path = WASA-RootSorterWrap
+	url = https://github.com/alexkernphysiker/WASA-RootSorterWrap.git

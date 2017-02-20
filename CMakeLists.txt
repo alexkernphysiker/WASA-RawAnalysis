@@ -10,7 +10,7 @@ include_directories(${WASA_LIBS_INC})
 link_directories(${ROOT_LIBRARY_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/DataFiles DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/WASA-RootSorterWrap/DataFiles DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/WASA-RootSorterWrap)
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/scripts/config DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/scripts/WMC DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/scripts/RunAnalysis-data.sh DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
@@ -39,11 +39,11 @@ if(NOT $ENV{ROOTSORTERSYS} STREQUAL "")
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Reactions)
 
     root_generate_dictionary(mainDict
-	Analysis/analysismodule.hh
-	LINKDEF Analysis/LinkDef.hh 
+	WASA-RootSorterWrap/analysismodule.hh
+	LINKDEF WASA-RootSorterWrap/LinkDef.hh 
     )
-    file(GLOB PRESELECTION_LIB Analysis/*.cpp)
-    add_library(analysismodule STATIC ${PRESELECTION_LIB} mainDict)
+    file(GLOB PRESELECTION_LIB WASA-RootSorterWrap/*.cpp)
+    add_library(sorterwrap STATIC ${PRESELECTION_LIB} mainDict)
     file(GLOB REACTIONS Reactions/*.cpp)
     add_library(reactions STATIC ${REACTIONS})
     add_executable(rawanalysis rawanalysis.cpp)
