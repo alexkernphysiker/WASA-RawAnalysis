@@ -23,7 +23,7 @@ const double e_corr=0.009;
 	    static Reaction res(Particle::p(),Particle::d(),{Particle::he3(),Particle::eta()});
 	    return res;
 	}
-	Axis Q_axis(const Analysis&res){return Axis([&res]()->double{return 1000.0*He3eta().P2Q(res.PBeam());},0.0,30.0,12);}
+	Axis Q_axis_over(const Analysis&res){return Axis([&res]()->double{return 1000.0*He3eta().P2Q(res.PBeam());},0.0,30.0,12);}
 
 	inline bool IsIn(double value,const pair<double,double>&&border){
 		return (value>=border.first)&&(value<=border.second);
@@ -58,12 +58,12 @@ const double e_corr=0.009;
 	shared_ptr<AbstractChain> ForwardReconstructionProcess(const Analysis&data){
 		return make_shared<ChainCheck>()
 		<<Forward::Get().CreateMarker(dir_r_name(),"1-AllTracks")
-		<<make_shared<Hist1D>(dir_r_name(),"1-AllTracks",Q_axis(data))
+		<<make_shared<Hist1D>(dir_r_name(),"1-AllTracks",Q_axis_over(data))
 		<<[](WTrack&T)->bool{return (T.Theta()!=0.125);}
 		<<make_shared<Parameter>([](WTrack&T)->double{return T.Theta()*180.0/PI();})
 		<<make_shared<Parameter>([](WTrack&T)->double{return NormPhi(T.Phi())*180.0/PI();})
-		<<make_shared<SetOfHists1D>(dir_dbg_name(),"2-PhiDistribution",Q_axis(data),Phi_deg)
-		<<Forward::Get().CreateMarker(dir_r_name(),"2-FPC")<<make_shared<Hist1D>(dir_r_name(),"2-FPC",Q_axis(data))
+		<<make_shared<SetOfHists1D>(dir_dbg_name(),"2-PhiDistribution",Q_axis_over(data),Phi_deg)
+		<<Forward::Get().CreateMarker(dir_r_name(),"2-FPC")<<make_shared<Hist1D>(dir_r_name(),"2-FPC",Q_axis_over(data))
 		<<(make_shared<ChainOr>()
 			<<(make_shared<ChainCheck>()
 				<<[](WTrack&T)->bool{return Forward::Get().StoppingLayer(T)==kFRH1;}
@@ -129,32 +129,32 @@ const double e_corr=0.009;
 				})	
 			)
 		)
-		<<make_shared<SetOfHists1D>(dir_dbg_name(),"3-PhiDistribution",Q_axis(data),Phi_deg)
-		<<Forward::Get().CreateMarker(dir_r_name(),"3-AllCuts")<<make_shared<Hist1D>(dir_r_name(),"3-AllCuts",Q_axis(data))
+		<<make_shared<SetOfHists1D>(dir_dbg_name(),"3-PhiDistribution",Q_axis_over(data),Phi_deg)
+		<<Forward::Get().CreateMarker(dir_r_name(),"3-AllCuts")<<make_shared<Hist1D>(dir_r_name(),"3-AllCuts",Q_axis_over(data))
 		<<[](const vector<double>&P)->bool{return isfinite(P[0])&&isfinite(P[1])&&isfinite(P[2]);}
-		<<make_shared<SetOfHists1D>(dir_dbg_name(),"4-PhiDistribution",Q_axis(data),Phi_deg)
+		<<make_shared<SetOfHists1D>(dir_dbg_name(),"4-PhiDistribution",Q_axis_over(data),Phi_deg)
 		<<Forward::Get().CreateMarker(dir_r_name(),"4-Reconstructed")
-		<<make_shared<Hist1D>(dir_r_name(),"4-Reconstructed",Q_axis(data));
+		<<make_shared<Hist1D>(dir_r_name(),"4-Reconstructed",Q_axis_over(data));
 	}
 	shared_ptr<AbstractChain> He3MissingMass(const Analysis&data){
 		return make_shared<Chain>()
 		<<make_shared<Parameter>([&data](WTrack&T,const vector<double>&P)->double{
 			return He3eta().MissingMass({{.index=0,.E=Ek_GeV(T,P),.theta=T.Theta(),.phi=T.Phi()}},data.PBeam());
 		})
-		<<make_shared<SetOfHists1D>(dir_r_name(),"MissingMass",Q_axis(data),MM_GeV);
+		<<make_shared<SetOfHists1D>(dir_r_name(),"MissingMass",Q_axis_over(data),MM_GeV);
 	}
 	shared_ptr<AbstractChain> He3KinematicHe3Test(const Analysis&data){
 		return make_shared<Chain>()
-			<<make_shared<SetOfHists2D>(dir_r_name(),"Kinematic-reconstructed",Q_axis(data),Ek_GeV,Th_deg);
+			<<make_shared<SetOfHists2D>(dir_r_name(),"Kinematic-reconstructed",Q_axis_over(data),Ek_GeV,Th_deg);
 	}
 	
 	
 	void He3_X_analyse(Analysis&res){
-		res.Trigger(0).pre()<<make_shared<SetOfHists1D>(dir_v_name(),"MissingMass-vertex",Q_axis(res),MM_vertex(res));
-		res.Trigger(0).pre()<<make_shared<SetOfHists2D>(dir_v_name(),"Kinematic-vertex",Q_axis(res),Ev(res),Tv(res));
+		res.Trigger(0).pre()<<make_shared<SetOfHists1D>(dir_v_name(),"MissingMass-vertex",Q_axis_over(res),MM_vertex(res));
+		res.Trigger(0).pre()<<make_shared<SetOfHists2D>(dir_v_name(),"Kinematic-vertex",Q_axis_over(res),Ev(res),Tv(res));
 		
 		auto trackcount=make_shared<long>(0);
-		res.Trigger(trigger_he3_forward.number).pre()<<make_shared<Hist1D>(dir_r_name(),"0-Reference",Q_axis(res))
+		res.Trigger(trigger_he3_forward.number).pre()<<make_shared<Hist1D>(dir_r_name(),"0-Reference",Q_axis_over(res))
 			<<[trackcount](){(*trackcount)=0;return true;};
 		res.Trigger(trigger_he3_forward.number).per_track()<<(make_shared<ChainCheck>()
 			<<[](WTrack&T)->bool{return T.Type()==kFDC;}
@@ -174,7 +174,7 @@ const double e_corr=0.009;
 			);
 	}
 	void He3_X_reconstruction(Analysis&res){
-		res.Trigger(trigger_he3_forward.number).pre()<<make_shared<Hist1D>(dir_r_name(),"0-Reference",Q_axis(res));
+		res.Trigger(trigger_he3_forward.number).pre()<<make_shared<Hist1D>(dir_r_name(),"0-Reference",Q_axis_over(res));
 		res.Trigger(trigger_he3_forward.number).per_track()<<(make_shared<ChainCheck>()
 			<<[](WTrack&T)->bool{return T.Type()==kFDC;}
 			<<ForwardReconstructionProcess(res)
