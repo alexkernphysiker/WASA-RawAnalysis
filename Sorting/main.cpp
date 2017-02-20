@@ -8,7 +8,6 @@
 #include "montecarlo.h"
 #include "reactions_rundel.h"
 #include "reactions_khreptak.h"
-#include "example.h"
 using namespace std;
 using namespace MathTemplates;
 int main(int argc, char** argv) {
@@ -41,12 +40,6 @@ int main(int argc, char** argv) {
 	){
 	    Rundel::He3_X_analyse(*res);
 	    Rundel::SearchGammaTracks(*res);
-	}
-	if(
-	    ("MC_EXAMPLE"==type)||
-	    ("Data_EXAMPLE"==type)
-	){
-	    prepare_example_analyse(*res);
 	}
 	if(
 	    ("MC_ppn"==type)||

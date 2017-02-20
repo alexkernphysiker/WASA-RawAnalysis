@@ -32,7 +32,7 @@ if(NOT $ENV{ROOTSORTERSYS} STREQUAL "")
 	Core Cint RIO Net Hist Graf Graf3d Gpad Tree Rint Postscript Matrix Physics MathCore Thread 
 	m dl Thread XMLParser RSCore RSXml RSCommon RSParameter RSEms RSREvent z
 	WasaRecAll MLP TreePlayer 
-	kfit105 packlib
+	kfit105 packlib gfortran
     )
 
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Analysis)
