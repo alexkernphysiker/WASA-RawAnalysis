@@ -37,9 +37,6 @@ path where pluto files are stored
     RUNS_DATA
 path where data from experiment are located
 
-    RUNS_TMP
-path for temporary data
-
     WMC_DATA
 path where data from WMC are located. These data are analysed further by preselection algorithm.
 
