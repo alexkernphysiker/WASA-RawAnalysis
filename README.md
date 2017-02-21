@@ -69,17 +69,21 @@ Configure WMC and rootsorter for current experimental setup
     cd ..
 
 Run pluto (for all reactions that are implemented)
+
     cd WASA-libs
     ./RunPluto.sh
     cd ..
 
 Run WMC
+
     ./RunWMC.sh <reaction>
 
 Analyse Monte Carlo
+
     ./RunAnalysis-mc.sh <reaction>
 
 Analyse raw data
+
     ./RunAnalysis-data.sh
 
 
