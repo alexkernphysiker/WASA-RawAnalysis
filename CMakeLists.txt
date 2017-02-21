@@ -36,7 +36,7 @@ if(NOT $ENV{ROOTSORTERSYS} STREQUAL "")
 	kfit105 packlib gfortran
     )
 
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Analysis)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/WASA-RootSorterWrap)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Reactions)
 
     file(GLOB PRESELECTION_LIB WASA-RootSorterWrap/*.cpp)
