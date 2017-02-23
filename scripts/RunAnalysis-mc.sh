@@ -4,7 +4,7 @@ for X in `seq 1 1 100`; do
 	if [ -e ${WASA_OUTPUT_DATA}/MC$1-$X.root ];then
 	    echo "was already done"
 	else
-            scriptname="run_mc-$X.sh"
+            scriptname="run_mc-$1-$X.sh"
             if [ -e ${scriptname} ]; then
         	echo "already in process"
     	    else
