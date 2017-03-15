@@ -14,7 +14,7 @@
 
 #include "forward.h"
 
-const double e_corr=1.008;
+const double e_corr=0.003;
 
 	using namespace std;
 	using namespace MathTemplates;
@@ -104,7 +104,7 @@ const double e_corr=1.008;
 							return INFINITY;
 						}
 					);
-					return energy(track)*(dynamic_cast<const RealData*>(&data)?e_corr:1.0);
+					return energy(track)+(dynamic_cast<const RealData*>(&data)?e_corr:0.0);
 				})
 			)
 			<<(make_shared<ChainCheck>()
@@ -125,7 +125,7 @@ const double e_corr=1.008;
 							return INFINITY;
 						}
 					);
-					return energy(track)*(dynamic_cast<const RealData*>(&data)?e_corr:1.0);
+					return energy(track)+(dynamic_cast<const RealData*>(&data)?e_corr:0.0);
 				})	
 			)
 		)
