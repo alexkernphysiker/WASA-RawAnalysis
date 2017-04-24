@@ -14,7 +14,7 @@
 
 #include "forward.h"
 
-const double e_corr=0.003;
+const double e_corr=0.007;
 
 	using namespace std;
 	using namespace MathTemplates;
