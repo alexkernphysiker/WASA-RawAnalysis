@@ -22,11 +22,11 @@ Axis Q_axis_full(const Analysis&res){return Axis([&res]()->double{return 1000.0*
 
 void SearchGammaTracks(Analysis&res){
 	auto data=make_shared<vector<particle_kinematics>>();
-	//ToDo: move this trigger number to experiment_conv.h
-	res.Trigger(0).pre()
+	const auto&tn=trigger_gammas_central.number;
+	res.Trigger(tn).pre()
 	    << make_shared<Hist1D>("CentralGammas","0-Reference",Q_axis_full(res))
 	    << [data](){data->clear(); return true;};
-	res.Trigger(0).per_track()<<(make_shared<ChainCheck>()
+	res.Trigger(tn).per_track()<<(make_shared<ChainCheck>()
 	    << [](WTrack&T)->bool{
 		return T.Type()==kCDN;
 	    }
@@ -36,7 +36,7 @@ void SearchGammaTracks(Analysis&res){
 	    }
 	);
 	auto im_val=make_shared<double>(INFINITY);
-	res.Trigger(0).post() << (make_shared<ChainCheck>()
+	res.Trigger(tn).post() << (make_shared<ChainCheck>()
 	    << [data,im_val](){
 		(*im_val)=INFINITY;
 		SortedPoints<double> table;
@@ -56,4 +56,4 @@ void SearchGammaTracks(Analysis&res){
 	    << make_shared<SetOfHists1D>("CentralGammas","InvMass2Gamma",Q_axis_full(res),Axis([im_val]()->double{return *im_val;},0.0,0.8,800))
 	)
 	<< make_shared<Hist1D>("CentralGammas","neutral_tracks_count",Axis([data]()->double{return data->size();},-0.5,9.5,10));
-    }
+}
