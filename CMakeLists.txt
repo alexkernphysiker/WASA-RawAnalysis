@@ -11,7 +11,6 @@ link_directories(${ROOT_LIBRARY_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/WASA-RootSorterWrap/DataFiles DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/WASA-RootSorterWrap)
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/WASA-libs/RunPluto.sh DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/WASA-libs)
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/scripts/config DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/scripts/WMC DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/scripts/RunAnalysis-data.sh DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
@@ -21,6 +20,27 @@ file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/scripts/RunClear.sh DESTINATION ${CMAKE_CU
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/scripts/RunWMC.sh DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/rootlogon.C DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/.sorterrc DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+if(NOT $ENV{PLUTOSYS} STREQUAL "")
+    link_directories($ENV{PLUTOSYS})
+    include_directories(
+        $ENV{PLUTOSYS}/src
+        $ENV{PLUTOSYS}/plugins/brems
+        $ENV{PLUTOSYS}/plugins/dalitz_mod
+        $ENV{PLUTOSYS}/plugins/elementary
+        $ENV{PLUTOSYS}/plugins/eta_decays
+        $ENV{PLUTOSYS}/plugins/fairroot
+        $ENV{PLUTOSYS}/plugins/hades
+        $ENV{PLUTOSYS}/plugins/nucleus_fermi
+        $ENV{PLUTOSYS}/plugins/pdg_unigen
+        $ENV{PLUTOSYS}/plugins/pion_beam
+        $ENV{PLUTOSYS}/plugins/scatter_mod
+        $ENV{PLUTOSYS}/plugins/strangeness
+        $ENV{PLUTOSYS}/plugins/w_decays
+    )
+    add_executable(RunPlutoSimulations Simulation/runpluto.cpp)
+    target_link_libraries(RunPlutoSimulations Pluto ${ROOT_LIBRARIES} ${libs} experiment kinematics)
+endif()
 
 if(NOT $ENV{ROOTSORTERSYS} STREQUAL "")
     include_directories($ENV{ROOTSORTERSYS}/core/include)
