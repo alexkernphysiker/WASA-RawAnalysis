@@ -27,7 +27,8 @@ int main(int argc, char** argv) {
 	    ("RE_He3eta"==type)||
 	    ("RE_He3pi0"==type)||
 	    ("RE_He3pi0pi0"==type)||
-	    ("RE_He3pi0pi0pi0"==type)
+	    ("RE_He3pi0pi0pi0"==type)||
+	    ("RE_He3pi0pi0pi0pi0"==type)
 	){
 	    He3_X_reconstruction(*res);;
 	}
@@ -36,10 +37,12 @@ int main(int argc, char** argv) {
 	    ("MC_He3eta"==type)||
 	    ("MC_He3pi0"==type)||
 	    ("MC_He3pi0pi0"==type)||
-	    ("MC_He3pi0pi0pi0"==type)
+	    ("MC_He3pi0pi0pi0"==type)||
+	    ("MC_He3pi0pi0pi0pi0"==type)
 	){
 	    He3_X_analyse(*res);
-	    SearchGammaTracks(*res);
+	    Search2Gamma(*res);
+	    Search6Gamma(*res);
 	}
 	return res;
     });
