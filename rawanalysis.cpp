@@ -8,6 +8,7 @@
 #include <montecarlo.h>
 #include <forward.h>
 #include <central.h>
+#include <elastic.h>
 using namespace std;
 using namespace MathTemplates;
 int main(int argc, char** argv) {
@@ -27,10 +28,16 @@ int main(int argc, char** argv) {
 	    ("RE_He3eta"==type)||
 	    ("RE_He3pi0"==type)||
 	    ("RE_He3pi0pi0"==type)||
-	    ("RE_He3pi0pi0pi0"==type)||
-	    ("RE_He3pi0pi0pi0pi0"==type)
+	    ("RE_He3pi0pi0pi0"==type)
 	){
 	    He3_X_reconstruction(*res);;
+	}
+	if("RE_pd_pd"==type){
+		ReconstructD(*res);
+		ReconstructP(*res);
+	}
+	if("RE_pp_pp"==type){
+		ReconstructP(*res);
 	}
 	if(
 	    ("Data"==type)||
@@ -38,7 +45,8 @@ int main(int argc, char** argv) {
 	    ("MC_He3pi0"==type)||
 	    ("MC_He3pi0pi0"==type)||
 	    ("MC_He3pi0pi0pi0"==type)||
-	    ("MC_He3pi0pi0pi0pi0"==type)
+	    ("MC_He3eta6g"==type)||
+	    ("MC_He3pi06g"==type)
 	){
 	    He3_X_analyse(*res);
 	    Search2Gamma(*res);
