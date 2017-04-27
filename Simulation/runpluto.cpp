@@ -8,10 +8,11 @@
 #include <PReaction.h>
 #include <Experiment/str_get.h>
 #include <Experiment/experiment_conv.h>
-#include <Kinematics/reactions.h>
 #include "config.h"
 using namespace std;
 void SimulatePluto(const string&reaction,const string&filename,const double&from,const double&to){
+    PUSHD();
+    CD(PLUTO);
     std::mt19937 gen;
     std::uniform_int_distribution<int> d(1,254);
     for(ALLMC){
@@ -27,16 +28,5 @@ void SimulatePluto(const string&reaction,const string&filename,const double&from
 	my_reaction.Print();
 	my_reaction.Loop(1000000);
     }
-}
-int main(){
-    PUSHD();
-    CD(PLUTO);
-    SimulatePluto("He3 eta [pi0 [g g] pi0 [g g] pi0 [g g]]","He3eta6g",1.573,p_beam_hi);
-    SimulatePluto("He3 pi0 [g g]  pi0 [g g] pi0 [g g]","He3pi06g",p_beam_low,p_beam_hi);
-    SimulatePluto("He3 eta","He3eta",1.573,p_beam_hi);
-    SimulatePluto("He3 pi0","He3pi0",p_beam_low,p_beam_hi);
-    SimulatePluto("He3 pi0 pi0","He3pi0pi0",p_beam_low,p_beam_hi);
-    SimulatePluto("He3 pi0 pi0 pi0","He3pi0pi0pi0",p_beam_low,p_beam_hi);
     POPD();
-    return 0;
 }

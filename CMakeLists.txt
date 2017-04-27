@@ -21,6 +21,9 @@ file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/scripts/RunWMC.sh DESTINATION ${CMAKE_CURR
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/rootlogon.C DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/.sorterrc DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/WASA-RootSorterWrap)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Reactions)
+
 if(NOT $ENV{PLUTOSYS} STREQUAL "")
     link_directories($ENV{PLUTOSYS})
     include_directories(
@@ -38,8 +41,14 @@ if(NOT $ENV{PLUTOSYS} STREQUAL "")
         $ENV{PLUTOSYS}/plugins/strangeness
         $ENV{PLUTOSYS}/plugins/w_decays
     )
-    add_executable(RunPlutoSimulations Simulation/runpluto.cpp)
-    target_link_libraries(RunPlutoSimulations Pluto ${ROOT_LIBRARIES} ${libs} experiment kinematics)
+    file(GLOB SIMULATIONS Simulation/sim-*.cpp)
+    foreach(example ${SIMULATIONS})
+        get_filename_component(ex_app ${example} NAME_WE)
+        add_executable(${ex_app} ${example} Simulation/runpluto.cpp)
+        target_link_libraries(${ex_app} 
+            Pluto ${ROOT_LIBRARIES} ${libs} experiment kinematics
+        )
+    endforeach()
 endif()
 
 if(NOT $ENV{ROOTSORTERSYS} STREQUAL "")
@@ -56,8 +65,6 @@ if(NOT $ENV{ROOTSORTERSYS} STREQUAL "")
 	kfit105 packlib gfortran
     )
 
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/WASA-RootSorterWrap)
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Reactions)
 
     file(GLOB PRESELECTION_LIB WASA-RootSorterWrap/*.cpp)
     root_generate_dictionary(mainDict
