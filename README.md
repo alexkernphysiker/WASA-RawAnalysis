@@ -67,9 +67,7 @@ Configure WMC and rootsorter for current experimental setup
 
 Run pluto (for all reactions that are implemented)
 
-    cd WASA-libs
-    ./RunPluto.sh
-    cd ..
+    ./sim-*
 
 Run WMC
 
@@ -91,3 +89,6 @@ List of implemented reactions
     He3pi0
     He3pi0pi0
     He3pi0pi0pi0
+    He3eta6g (eta decays into 6 gammas)
+    He3pi06g (3pi0 each decays into 2 gammas)
+    pd (elastic scattering for forward tracks reconstruction)
