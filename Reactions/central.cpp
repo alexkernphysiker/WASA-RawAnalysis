@@ -17,8 +17,8 @@
 using namespace std;
 using namespace MathTemplates;
 using namespace TrackAnalyse;
-
-Axis Q_axis_full(const Analysis&res){return Axis([&res]()->double{return 1000.0*He3eta().P2Q(res.PBeam());},-70.0,30.0,40);}
+const Reaction He3eta(Particle::p(),Particle::d(),{Particle::he3(),Particle::eta()});
+Axis Q_axis_full(const Analysis&res){return Axis([&res]()->double{return 1000.0*He3eta.P2Q(res.PBeam());},-70.0,30.0,40);}
 
 void Search6Gamma(Analysis&res){
         static vector<particle_kinematics> data;

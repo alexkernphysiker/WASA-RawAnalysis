@@ -76,14 +76,19 @@ if(NOT $ENV{ROOTSORTERSYS} STREQUAL "")
 	${WASA_LIBRARIES} ${ROOT_LIBRARIES}
 	FitGen experiment kinematics reconstructionfit
     )
+    file(GLOB RECONSTRUCTION Reconstruction/*.cpp)
+    add_library(reconstruction SHARED ${RECONSTRUCTION})
+    target_link_libraries(reconstruction 
+	sorterwrap ${WASA_LIBRARIES} ${ROOT_LIBRARIES}
+    )
     file(GLOB REACTIONS Reactions/*.cpp)
     add_library(reactions SHARED ${REACTIONS})
-    target_link_libraries(reactions 
+    target_link_libraries(reactions reconstruction
 	sorterwrap ${WASA_LIBRARIES} ${ROOT_LIBRARIES}
     )
     add_executable(rawanalysis rawanalysis.cpp)
     target_link_libraries(rawanalysis 
-	sorterwrap reactions
+	sorterwrap reactions reconstruction
 	${WASA_LIBRARIES} ${ROOT_LIBRARIES}
 	FitGen experiment kinematics reconstructionfit
     )
