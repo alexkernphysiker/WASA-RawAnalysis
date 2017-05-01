@@ -17,7 +17,7 @@ using namespace std;
 using namespace MathTemplates;
 using namespace TrackAnalyse;
 
-void ReconstructD(Analysis&res){
+void ReconstructPD(Analysis&res){
 	res.Trigger(trigger_he3_forward.number).pre()
 	;
 	static const string recdmsg="ForwardD_Reconstruction";
@@ -28,6 +28,4 @@ void ReconstructD(Analysis&res){
                 	<<Forward::Get().CreateMarker(recdmsg,"1-ChargedTracks")
         	)
 	;
-}
-void ReconstructP(Analysis&res){
 }

@@ -6,9 +6,9 @@
 #include <analysis-setup.h>
 #include <data.h>
 #include <montecarlo.h>
-#include <forward.h>
-#include <central.h>
-#include <elastic.h>
+#include <Reactions/forward.h>
+#include <Reactions/central.h>
+#include <Reactions/elastic.h>
 using namespace std;
 using namespace MathTemplates;
 int main(int argc, char** argv) {
@@ -30,14 +30,10 @@ int main(int argc, char** argv) {
 	    ("RE_He3pi0pi0"==type)||
 	    ("RE_He3pi0pi0pi0"==type)
 	){
-	    He3_X_reconstruction(*res);;
+	    He3_X_reconstruction(*res);
 	}
 	if("RE_pd_pd"==type){
-		ReconstructD(*res);
-		ReconstructP(*res);
-	}
-	if("RE_pp_pp"==type){
-		ReconstructP(*res);
+		ReconstructPD(*res);
 	}
 	if(
 	    ("Data"==type)||

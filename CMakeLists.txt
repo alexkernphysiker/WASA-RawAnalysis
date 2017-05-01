@@ -22,7 +22,6 @@ file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/rootlogon.C DESTINATION ${CMAKE_CURRENT_BI
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/.sorterrc DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/WASA-RootSorterWrap)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Reactions)
 
 if(NOT $ENV{PLUTOSYS} STREQUAL "")
     link_directories($ENV{PLUTOSYS})
