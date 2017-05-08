@@ -6,4 +6,6 @@
 #include <analysis.h>
 #include <trackprocessing.h>
 shared_ptr<TrackAnalyse::AbstractChain> ForwardHe3Reconstruction(const Analysis&data,particle_kinematics&kin_rec);
+shared_ptr<TrackAnalyse::AbstractChain> ForwardPReconstruction(const Analysis&data,particle_kinematics&kin_rec);
+shared_ptr<TrackAnalyse::AbstractChain> ForwardDReconstruction(const Analysis&data,particle_kinematics&kin_rec);
 #endif 

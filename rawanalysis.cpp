@@ -22,8 +22,14 @@ int main(int argc, char** argv) {
 	Analysis* res=nullptr;
 	if("Data"==type)
 	    res=new RealData();
-	else
-	    res=new MonteCarlo(true);
+	else{
+	    if(
+		("RE_ppn_qf"==type)
+	    )
+		res=new MonteCarlo(false);
+	    else 
+		res=new MonteCarlo(true);
+	}
 	if(
 	    ("RE_He3eta"==type)||
 	    ("RE_He3pi0"==type)||
@@ -32,8 +38,12 @@ int main(int argc, char** argv) {
 	){
 	    He3_X_reconstruction(*res);
 	}
-	if("RE_pd_pd"==type){
-		ReconstructPD(*res);
+	if(
+	    ("Data"==type)||
+	    ("RE_pd"==type)||
+	    ("RE_ppn_qf"==type)
+	){
+	    ReconstructP(*res);
 	}
 	if(
 	    ("Data"==type)||

@@ -67,7 +67,6 @@ void Search6Gamma(Analysis&res){
 				im_val=look_for(0);
 				return true;
 			}
-			//ToDo: add cut for "rest" magnitude
 			<< make_shared<SetOfHists1D>("CentralGammas","InvMass6Gamma",Q_axis_full(res),Axis([]()->double{return im_val.Y();},0.0,1.0,1000))
 			<< make_shared<SetOfHists1D>("CentralGammas","RestAfter6Gamma",Q_axis_full(res),Axis([]()->double{return im_val.X();},0.0,1.0,1000))
 		)
@@ -108,7 +107,6 @@ void Search2Gamma(Analysis&res){
 			}
 			return false;
 		    }
-		    //ToDo: add cut for "rest" magnitude
                     << make_shared<SetOfHists1D>("CentralGammas","InvMass2Gamma",Q_axis_full(res),Axis([]()->double{return im_val.Y();},0.0,1.0,1000))
                     << make_shared<SetOfHists1D>("CentralGammas","RestAfter2Gamma",Q_axis_full(res),Axis([]()->double{return im_val.X();},0.0,1.0,1000))
 		)

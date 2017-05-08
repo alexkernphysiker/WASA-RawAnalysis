@@ -17,12 +17,12 @@ using namespace MathTemplates;
 using namespace TrackAnalyse;
 
 shared_ptr<AbstractChain> ForwardHe3Reconstruction(const Analysis&data,particle_kinematics&kin_rec){
-    static const Reaction He3eta(Particle::p(),Particle::d(),{Particle::he3(),Particle::eta()});
     static const string dir_v_name="He3Forward_Vertices";
     static const string dir_r_name="He3Forward_Reconstruction";
     static const string dir_dbg_name="He3Forward_Debug";
+    static const Reaction He3eta(Particle::p(),Particle::d(),{Particle::he3(),Particle::eta()});
     const Axis Q_axis_over([&data](){return 1000.0*He3eta.P2Q(data.PBeam());},0.0,30.0,12);
-    const Axis Phi_deg([&kin_rec](){return kin_rec.phi;},0.0,360.0,360);
+    const Axis Phi_deg([&kin_rec](){return kin_rec.phi*180./PI();},-180.0,180.0,360);
     return make_shared<ChainCheck>()
 
 	<<[](WTrack&T){return T.Type()==kFDC;}
@@ -103,5 +103,40 @@ shared_ptr<AbstractChain> ForwardHe3Reconstruction(const Analysis&data,particle_
         <<make_shared<SetOfHists1D>(dir_dbg_name,"5-PhiDistribution",Q_axis_over,Phi_deg)
         <<Forward::Get().CreateMarker(dir_r_name,"5-Reconstructed")
         <<make_shared<Hist1D>(dir_r_name,"5-Reconstructed",Q_axis_over)
+    ;
+}
+
+shared_ptr<AbstractChain> ForwardDReconstruction(const Analysis&data,particle_kinematics&kin_rec){
+    const Axis Phi_deg([&kin_rec](){return kin_rec.phi*180./PI();},-180.0,180.0,360);
+    const Axis Theta_deg([&kin_rec](){return kin_rec.theta*180./PI();},0.0,20.0,200);
+    const Axis Edep([](WTrack&track){return Forward::Get()[kFRH1].Edep(track);},0.0,0.2,200);
+    return make_shared<ChainCheck>()
+        <<[](WTrack&T)->bool{return T.Type()==kFDC;}
+        <<[&kin_rec](WTrack&T){
+	    kin_rec.phi=T.Phi();
+	    kin_rec.theta=T.Theta();
+	    return true;
+	}
+	<<[](WTrack&T){return (T.Theta()!=0.125);}
+        <<Forward::Get().CreateMarker("D","1-ChargedTracks")
+	<<make_shared<Hist1D>("D","1-Phi",Phi_deg)
+	<<make_shared<Hist2D>("D","1-Edep-vs-Theta",Edep,Theta_deg)
+    ;
+}
+shared_ptr<AbstractChain> ForwardPReconstruction(const Analysis&data,particle_kinematics&kin_rec){
+    const Axis Phi_deg([&kin_rec](){return kin_rec.phi*180./PI();},-180.0,180.0,360);
+    const Axis Theta_deg([&kin_rec](){return kin_rec.theta*180./PI();},0.0,20.0,200);
+    const Axis Edep([](WTrack&track){return Forward::Get()[kFRH1].Edep(track);},0.0,0.2,200);
+    return make_shared<ChainCheck>()
+        <<[](WTrack&T)->bool{return T.Type()==kFDC;}
+        <<[&kin_rec](WTrack&T){
+	    kin_rec.phi=T.Phi();
+	    kin_rec.theta=T.Theta();
+	    return true;
+	}
+	<<[](WTrack&T){return (T.Theta()!=0.125);}
+        <<Forward::Get().CreateMarker("P","1-ChargedTracks")
+	<<make_shared<Hist1D>("P","1-Phi",Phi_deg)
+	<<make_shared<Hist2D>("P","1-Edep-vs-Theta",Edep,Theta_deg)
     ;
 }
