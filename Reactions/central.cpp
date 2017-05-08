@@ -20,60 +20,7 @@ using namespace TrackAnalyse;
 const Reaction He3eta(Particle::p(),Particle::d(),{Particle::he3(),Particle::eta()});
 Axis Q_axis_full(const Analysis&res){return Axis([&res]()->double{return 1000.0*He3eta.P2Q(res.PBeam());},-70.0,30.0,40);}
 
-void Search6Gamma(Analysis&res){
-        static vector<particle_kinematics> data;
-        const auto&tn=trigger_gammas_central.number;
-	static point<double> im_val(INFINITY,INFINITY);
-	res.Trigger(tn).pre()
-		<< make_shared<Hist1D>("CentralGammas","0-Reference",Q_axis_full(res))
-		<<[](){data.clear();return true;}
-	;
-	res.Trigger(tn).per_track()
-		<<(make_shared<ChainCheck>()
-			<< [](WTrack&T)->bool{return T.Type()==kCDN;}
-		        << [](WTrack&T)->bool{
-                		data.push_back({.particle=Particle::gamma(),.E=T.Edep(),.theta=T.Theta(),.phi=T.Phi()});
-				return true;
-			}
-		)
-	;
-	res.Trigger(tn).post()
-		<< make_shared<Hist1D>("CentralGammas","neutral_tracks_count",Axis([]()->double{return data.size();},-0.5,9.5,10))
-		<<(make_shared<ChainCheck>()
-			<< [](){return data.size()>=6;}
-			<< []()->bool{
-				vector<size_t> inc_track;
-				for(size_t i=0;i<data.size();i++)inc_track.push_back(false);
-				function<point<double>(const size_t)> look_for=[&inc_track,&look_for](const size_t i)->point<double>{
-					if(i>data.size())throw Exception<vector<particle_kinematics>>("error in 6-gamma search");
-					if(i<data.size()){
-						SortedPoints<double> res;
-						inc_track[i]=true;
-						res<<look_for(i+1);
-						inc_track[i]=false;
-						res<<look_for(i+1);
-						return res[0];
-					}else{
-						vector<particle_kinematics> used,notused;
-						for(size_t i=0;i<data.size();i++){
-							if(inc_track[i])used.push_back(data[i]);
-							else notused.push_back(data[i]);
-						}
-						double rest=0;
-						for(const auto&p:notused)rest+=p.E;
-						return point<double>(rest,InvariantMass(used));
-					}
-				};
-				im_val=look_for(0);
-				return true;
-			}
-			<< make_shared<SetOfHists1D>("CentralGammas","InvMass6Gamma",Q_axis_full(res),Axis([]()->double{return im_val.Y();},0.0,1.0,1000))
-			<< make_shared<SetOfHists1D>("CentralGammas","RestAfter6Gamma",Q_axis_full(res),Axis([]()->double{return im_val.X();},0.0,1.0,1000))
-		)
-	;
-}
-
-void Search2Gamma(Analysis&res){
+void SearchGamma(Analysis&res){
 	static vector<particle_kinematics> data;
 	static point<double> im_val(INFINITY,INFINITY);
 	const auto&tn=trigger_gammas_central.number;

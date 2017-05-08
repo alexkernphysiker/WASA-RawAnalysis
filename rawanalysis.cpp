@@ -39,7 +39,6 @@ int main(int argc, char** argv) {
 	    He3_X_reconstruction(*res);
 	}
 	if(
-	    ("Data"==type)||
 	    ("RE_pd"==type)||
 	    ("RE_ppn_qf"==type)
 	){
@@ -55,8 +54,7 @@ int main(int argc, char** argv) {
 	    ("MC_He3pi06g"==type)
 	){
 	    He3_X_analyse(*res);
-	    Search2Gamma(*res);
-	    Search6Gamma(*res);
+	    SearchGamma(*res);
 	}
 	return res;
     });
