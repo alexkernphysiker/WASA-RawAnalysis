@@ -76,7 +76,7 @@ void SearchGamma(Analysis&res){
 			Axis([]()->double{return gamma_pair.X();},0.0,0.2,200)
 		    )
                     <<[]()->bool{return gamma_pair.X()<0.040;}
-		    <<[]()->bool{return TotalE<0.025;}
+		    <<[]()->bool{return TotalE<0.250;}
                     << make_shared<Hist1D>("CentralGammas","GammaEnergy2After",Axis([](){return TotalE;},0.0,0.8,800))
                     << make_shared<SetOfHists1D>("CentralGammas","InvMass2GammaAfter",
                         Q_axis_full(res),
