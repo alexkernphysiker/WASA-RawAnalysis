@@ -47,10 +47,11 @@ void SearchGamma(Analysis&res){
 	static point<double> gamma_pair(INFINITY,INFINITY);
 	static point<double> pi0_pair(INFINITY,INFINITY);
 	static point<double> pi0_triple(INFINITY,INFINITY);
-	res.Trigger(tn).post()
-		<< make_shared<Hist1D>("CentralGammas","GammaCount",Axis([]()->double{return registered.size();},-0.5,9.5,10))
-		<< []()->bool{return registered.size()>0;}
-		<< make_shared<Hist1D>("CentralGammas","GammaTotalEnergy",Axis([](){return TotalE;},0.0,0.8,800))
+	res.Trigger(tn).post()<< ( make_shared<ChainCheck>()
+	    << make_shared<Hist1D>("CentralGammas","GammaCount",Axis([]()->double{return registered.size();},-0.5,9.5,10))
+	    << []()->bool{return registered.size()>0;}
+	    << make_shared<Hist1D>("CentralGammas","GammaTotalEnergy",Axis([](){return TotalE;},0.0,0.8,800))
+	    <<(make_shared<ChainOr>()	
 		<< (make_shared<ChainCheck>()
 		    << []()->bool{return registered.size()>=2;}
 		    << []()->bool{
@@ -76,7 +77,7 @@ void SearchGamma(Analysis&res){
 			Axis([]()->double{return gamma_pair.X();},0.0,0.2,200)
 		    )
                     <<[]()->bool{return gamma_pair.X()<0.040;}
-		    <<[]()->bool{return TotalE<0.250;}
+		    <<[]()->bool{return TotalE<0.25;}
                     << make_shared<Hist1D>("CentralGammas","GammaEnergy2After",Axis([](){return TotalE;},0.0,0.8,800))
                     << make_shared<SetOfHists1D>("CentralGammas","InvMass2GammaAfter",
                         Q_axis_full(res),
@@ -176,5 +177,8 @@ void SearchGamma(Analysis&res){
                                 Axis([]()->double{return pi0_triple.X();},0.0,0.3,300)
                         )
 		)
-	;
+	    )
+	    << make_shared<Hist1D>("CentralGammas","GammaCount___Final",Axis([]()->double{return registered.size();},-0.5,9.5,10))
+	    << make_shared<Hist1D>("CentralGammas","GammaTotalEnergy___Final",Axis([](){return TotalE;},0.0,0.8,800))
+	);
 }
