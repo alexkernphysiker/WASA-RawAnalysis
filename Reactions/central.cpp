@@ -71,7 +71,7 @@ void SearchGamma(Analysis&res){
 			AcceptedE=e_table[0].Y();
 			return true;
 		    }
-		    <<[]()->bool{return gamma_pair.X()<0.020;}
+		    <<[]()->bool{return gamma_pair.X()<0.1;}
 		    << make_shared<Hist1D>("CentralGammas","GammaEnergy2Before",Axis([](){return AcceptedE;},0.0,0.8,800))
                     << make_shared<SetOfHists1D>("CentralGammas","InvMass2GammaBefore",
 			Q_axis_full(res),
