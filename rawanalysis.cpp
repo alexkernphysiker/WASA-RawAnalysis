@@ -6,9 +6,8 @@
 #include <analysis-setup.h>
 #include <data.h>
 #include <montecarlo.h>
-#include <Reactions/forward.h>
-#include <Reactions/central.h>
-#include <Reactions/elastic.h>
+#include <Reactions/analyses.h>
+#include <Reconstruction/forward.h>
 using namespace std;
 using namespace MathTemplates;
 int main(int argc, char** argv) {
@@ -19,6 +18,7 @@ int main(int argc, char** argv) {
     args[0]=argv[0];
     string type(argv[1]);
     SetAnalysisType([type](){
+	static particle_kinematics p,d,he3;
 	Analysis* res=nullptr;
 	if("Data"==type)
 	    res=new RealData();
@@ -36,13 +36,14 @@ int main(int argc, char** argv) {
 	    ("RE_He3pi0pi0"==type)||
 	    ("RE_He3pi0pi0pi0"==type)
 	){
-	    He3_X_reconstruction(*res);
+	    res->Trigger(0).per_track()<<ForwardHe3Reconstruction(*res,he3);
 	}
-	if(
-	    ("RE_pd"==type)||
-	    ("RE_ppn_qf"==type)
-	){
-	    ReconstructP(*res);
+	if("RE_pd"==type){
+	    res->Trigger(0).per_track()<<ForwardPReconstruction(*res,p);
+	    res->Trigger(0).per_track()<<ForwardDReconstruction(*res,d);
+	}
+	if("RE_ppn_qf"==type){
+	    res->Trigger(0).per_track()<<ForwardPReconstruction(*res,d);
 	}
 	if(
 	    ("Data"==type)||

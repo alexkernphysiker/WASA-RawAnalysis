@@ -12,7 +12,7 @@
 #include <reconstruction.h>
 #include <data.h>
 #include <Reconstruction/forward.h>
-#include "forward.h"
+#include "analyses.h"
 using namespace std;
 using namespace MathTemplates;
 using namespace TrackAnalyse;
@@ -78,9 +78,4 @@ void He3_X_analyse(Analysis&res){
 	<<make_shared<Hist1D>(dir_r_name,"Forward_charged_tracks",Axis([]()->double{return trackcount;},-0.5,9.5,10))
 	<<make_shared<Hist1D>(dir_r_name,"Forward_he3_tracks",Axis([]()->double{return he3count;},-0.5,9.5,10))
     ;
-}
-void He3_X_reconstruction(Analysis&res){
-    static particle_kinematics he3;
-    res.Trigger(trigger_he3_forward.number).pre()<<make_shared<Hist1D>(dir_r_name,"0-Reference",Q_axis_over(res));
-    res.Trigger(trigger_he3_forward.number).per_track()<<ForwardHe3Reconstruction(res,he3);
 }
