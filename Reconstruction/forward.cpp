@@ -15,7 +15,8 @@
 using namespace std;
 using namespace MathTemplates;
 using namespace TrackAnalyse;
-
+particle_kinematics testmode;
+particle_kinematics&___test_mode___(){return testmode;}
 shared_ptr<AbstractChain> ForwardHe3Reconstruction(const Analysis&data,particle_kinematics&kin_rec){
     static const string dir_v_name="He3Forward_Vertices";
     static const string dir_r_name="He3Forward_Reconstruction";
@@ -23,6 +24,23 @@ shared_ptr<AbstractChain> ForwardHe3Reconstruction(const Analysis&data,particle_
     static const Reaction He3eta(Particle::p(),Particle::d(),{Particle::he3(),Particle::eta()});
     const Axis Q_axis_over([&data](){return 1000.0*He3eta.P2Q(data.PBeam());},0.0,30.0,12);
     const Axis Phi_deg([&kin_rec](){return kin_rec.phi*180./PI();},-180.0,180.0,360);
+    const function<double(WTrack&)> vertex_energy=[&data](WTrack&)->double{
+        for(const auto&P:data.Vertex(0)){
+            if(P.particle==Particle::he3())return P.E;
+        }
+        return INFINITY;
+    };
+    auto corr_hists=make_shared<ChainOr>();
+    if(&kin_rec==&testmode){
+	const Axis Theta_lr([&kin_rec](){return kin_rec.theta*180./PI();},0.0,20.0,20);
+	const Axis Edep([](WTrack&track){return Forward::Get()[kFRH1].Edep(track);},0.0,0.4,200);
+	const Axis Erec([&kin_rec](){return kin_rec.E;},0.0,0.6,400);
+	const Axis Ever(vertex_energy,0.0,0.6,400);
+	corr_hists 
+	    <<make_shared<SetOfHists2D>("dir_dbg_name","2-Edep-vs-Vertex",Theta_lr,Edep,Ever)
+	    <<make_shared<SetOfHists2D>("dir_dbg_name","2-Erec-vs-Vertex",Theta_lr,Erec,Ever)
+	;
+    }
     return make_shared<ChainCheck>()
 
 	<<[](WTrack&T){return T.Type()==kFDC;}
@@ -83,19 +101,14 @@ shared_ptr<AbstractChain> ForwardHe3Reconstruction(const Analysis&data,particle_
         <<Forward::Get().CreateMarker(dir_r_name,"4-GeomCut")
 	<<make_shared<Hist1D>(dir_r_name,"4-GeomCut",Q_axis_over)
 
-        <<[&data,&kin_rec](WTrack&track){
+        <<[&data,&kin_rec,vertex_energy](WTrack&track){
             static FitBasedReconstruction<Reconstruction::He3EnergyFRH1,WTrack&> energy(
                 "He3.E.FRH1",
 		{
 		    [](WTrack&track){return Forward::Get()[kFRH1].Edep(track);},
 		    [](WTrack&track){return track.Theta();}
 		},
-                [&data](WTrack&)->double{
-                    for(const auto&P:data.Vertex(0)){
-                	if(P.particle==Particle::he3())return P.E;
-                    }
-                    return INFINITY;
-                }
+		vertex_energy
             );
             kin_rec.E=energy(track)+(dynamic_cast<const RealData*>(&data)?0.007:0.0);
 	    return true;
@@ -103,6 +116,7 @@ shared_ptr<AbstractChain> ForwardHe3Reconstruction(const Analysis&data,particle_
         <<make_shared<SetOfHists1D>(dir_dbg_name,"5-PhiDistribution",Q_axis_over,Phi_deg)
         <<Forward::Get().CreateMarker(dir_r_name,"5-Reconstructed")
         <<make_shared<Hist1D>(dir_r_name,"5-Reconstructed",Q_axis_over)
+        <<corr_hists
     ;
 }
 
@@ -132,6 +146,7 @@ shared_ptr<AbstractChain> ForwardDReconstruction(const Analysis&data,particle_ki
                                                                                                                                                 
     const Axis Phi_deg([&kin_rec](){return kin_rec.phi*180./PI();},-180.0,180.0,360);
     const Axis Theta_deg([&kin_rec](){return kin_rec.theta*180./PI();},0.0,20.0,200);
+    const Axis Theta_lr([&kin_rec](){return kin_rec.theta*180./PI();},0.0,20.0,20);
     const Axis Edep([](WTrack&track){return Forward::Get()[kFRH1].Edep(track);},0.01,0.06,500);
     return make_shared<ChainCheck>()
         <<[](WTrack&T)->bool{return T.Type()==kFDC;}
@@ -174,10 +189,12 @@ shared_ptr<AbstractChain> ForwardDReconstruction(const Analysis&data,particle_ki
             return cut->IsInside(x,y);
         }
         <<Forward::Get().CreateMarker("D","2-GeomCut")
-        <<make_shared<Hist1D>("D","2-Phi",Edep)
+        <<make_shared<Hist1D>("D","2-Phi",Phi_deg)
         <<make_shared<Hist2D>("D","2-Edep-vs-Theta",Edep,Theta_deg)
 	<<make_shared<Hist2D>("D","2-Edep-vs-Theta-true",Ed,Td)
-
+	
+        <<make_shared<Hist2D>("D","2-ThetaRec-vs-Vertex",Theta_deg,Td)
+        <<make_shared<SetOfHists2D>("D","2-Edep-vs-Vertex",Theta_lr,Edep,Ed)
     ;
 }
 shared_ptr<AbstractChain> ForwardPReconstruction(const Analysis&data,particle_kinematics&kin_rec){
@@ -206,6 +223,7 @@ shared_ptr<AbstractChain> ForwardPReconstruction(const Analysis&data,particle_ki
                                                                         
     const Axis Phi_deg([&kin_rec](){return kin_rec.phi*180./PI();},-180.0,180.0,360);
     const Axis Theta_deg([&kin_rec](){return kin_rec.theta*180./PI();},0.0,20.0,200);
+    const Axis Theta_lr([&kin_rec](){return kin_rec.theta*180./PI();},0.0,20.0,20);
     const Axis Edep([](WTrack&track){return Forward::Get()[kFRH1].Edep(track);},0.01,0.06,500);
     return make_shared<ChainCheck>()
         <<[](WTrack&T)->bool{return T.Type()==kFDC;}
@@ -252,8 +270,11 @@ shared_ptr<AbstractChain> ForwardPReconstruction(const Analysis&data,particle_ki
             return cut->IsInside(x,y);
         }
         <<Forward::Get().CreateMarker("P","2-GeomCut")
-        <<make_shared<Hist1D>("P","2-Phi",Edep)
+        <<make_shared<Hist1D>("P","2-Phi",Phi_deg)
         <<make_shared<Hist2D>("P","2-Edep-vs-Theta",Edep,Theta_deg)
         <<make_shared<Hist2D>("P","2-Edep-vs-Theta-true",Ep,Tp)
+
+        <<make_shared<Hist2D>("P","2-ThetaRec-vs-Vertex",Theta_deg,Tp)
+        <<make_shared<SetOfHists2D>("P","2-Edep-vs-Vertex",Theta_lr,Edep,Ep)
     ;
 }

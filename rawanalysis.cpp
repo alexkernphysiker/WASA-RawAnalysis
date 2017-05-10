@@ -18,7 +18,6 @@ int main(int argc, char** argv) {
     args[0]=argv[0];
     string type(argv[1]);
     SetAnalysisType([type](){
-	static particle_kinematics p,d,he3;
 	Analysis* res=nullptr;
 	if("Data"==type)
 	    res=new RealData();
@@ -36,14 +35,14 @@ int main(int argc, char** argv) {
 	    ("RE_He3pi0pi0"==type)||
 	    ("RE_He3pi0pi0pi0"==type)
 	){
-	    res->Trigger(0).per_track()<<ForwardHe3Reconstruction(*res,he3);
+	    res->Trigger(0).per_track()<<ForwardHe3Reconstruction(*res);
 	}
 	if("RE_pd"==type){
-	    res->Trigger(0).per_track()<<ForwardPReconstruction(*res,p);
-	    res->Trigger(0).per_track()<<ForwardDReconstruction(*res,d);
+	    res->Trigger(0).per_track()<<ForwardPReconstruction(*res);
+	    res->Trigger(0).per_track()<<ForwardDReconstruction(*res);
 	}
 	if("RE_ppn_qf"==type){
-	    res->Trigger(0).per_track()<<ForwardPReconstruction(*res,d);
+	    res->Trigger(0).per_track()<<ForwardPReconstruction(*res);
 	}
 	if(
 	    ("Data"==type)||
