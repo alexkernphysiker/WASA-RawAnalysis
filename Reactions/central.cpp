@@ -42,7 +42,7 @@ void SearchGamma(Analysis&res){
 			TotalE+=T.Edep();
 			return true;
 		    }
-		    << make_shared<Hist1D>("CentralGammas","GammaEnergy",Axis([](WTrack&T)->double{return T.Edep();},0.0,0.8,800))
+		    << make_shared<Hist1D>("CentralGammas","GammaEnergy",Axis([](WTrack&T)->double{return T.Edep();},0.0,1.6,800))
 		)
 	;
 	
@@ -53,7 +53,7 @@ void SearchGamma(Analysis&res){
 	    << make_shared<Hist1D>("CentralGammas","GammaCount",Axis([]()->double{return registered.size();},-0.5,9.5,10))
 	    << []()->bool{return registered.size()>0;}
 	    << []()->bool{AcceptedE=0;return true;}
-	    << make_shared<Hist1D>("CentralGammas","GammaTotalEnergy",Axis([](){return TotalE;},0.0,0.8,800))
+	    << make_shared<Hist1D>("CentralGammas","GammaTotalEnergy",Axis([](){return TotalE;},0.0,1.6,800))
 	    <<(make_shared<ChainOr>()	
 		<< (make_shared<ChainCheck>()
 		    << []()->bool{return registered.size()>=2;}
@@ -62,7 +62,7 @@ void SearchGamma(Analysis&res){
 			SortedPoints<double> table,e_table;
 			for(size_t i=0;i<(registered.size()-1);i++)for(size_t j=i+1;j<registered.size();j++){
 			    const double im=(registered[i]+registered[j]).length4();
-			    const double e=registered[i].space_component().mag()+registered[j].space_component().mag();
+			    const double e=registered[i].time_component()+registered[j].time_component();
 			    const double diff=pow(im-M,2);
 			    table<<point<double>(sqrt(diff),im);
 			    e_table<<point<double>(diff,e);
@@ -71,8 +71,7 @@ void SearchGamma(Analysis&res){
 			AcceptedE=e_table[0].Y();
 			return true;
 		    }
-		    <<[]()->bool{return gamma_pair.X()<0.1;}
-		    << make_shared<Hist1D>("CentralGammas","GammaEnergy2Before",Axis([](){return AcceptedE;},0.0,0.8,800))
+		    << make_shared<Hist1D>("CentralGammas","GammaEnergy2Before",Axis([](){return AcceptedE;},0.0,1.6,800))
                     << make_shared<SetOfHists1D>("CentralGammas","InvMass2GammaBefore",
 			Q_axis_full(res),
 			Axis([]()->double{return gamma_pair.Y();},0.0,1.0,1000)
@@ -81,8 +80,8 @@ void SearchGamma(Analysis&res){
 			Q_axis_full(res),
 			Axis([]()->double{return gamma_pair.X();},0.0,0.2,200)
 		    )
-                    <<[]()->bool{return gamma_pair.X()<0.100;}
-                    << make_shared<Hist1D>("CentralGammas","GammaEnergy2After",Axis([](){return AcceptedE;},0.0,0.8,800))
+                    <<[]()->bool{return gamma_pair.X()<0.150;}
+                    << make_shared<Hist1D>("CentralGammas","GammaEnergy2After",Axis([](){return AcceptedE;},0.0,1.6,800))
                     << make_shared<SetOfHists1D>("CentralGammas","InvMass2GammaAfter",
                         Q_axis_full(res),
                         Axis([]()->double{return gamma_pair.Y();},0.0,1.0,1000)
@@ -100,12 +99,12 @@ void SearchGamma(Analysis&res){
 				for(size_t i=0;i<(registered.size()-3);++i)
 				for(size_t j=i+1;j<registered.size();++j){
 					const auto pair1=registered[i]+registered[j];
-					const auto e1=registered[i].space_component().mag()+registered[j].space_component().mag();
+					const auto e1=registered[i].time_component()+registered[j].time_component();
 					const double diff1=pow(pair1.length4()-M,2);
 					for(size_t k=i+1;k<(registered.size()-1);(++k)+=((k==j)?1:0))
 					for(size_t l=k+1;l<registered.size();(++l)+=((l==j)?1:0)){
 						const auto pair2=registered[k]+registered[l];
-						const auto e2=registered[k].space_component().mag()+registered[l].space_component().mag();
+						const auto e2=registered[k].time_component()+registered[l].time_component();
 						const double diff2=pow(pair2.length4()-M,2);
 						selector<<point<double>(sqrt(diff1+diff2),(pair1+pair2).length4());
 						e_table<<point<double>(diff1+diff2,e1+e2);
@@ -115,7 +114,7 @@ void SearchGamma(Analysis&res){
 				AcceptedE=e_table[0].Y();
 				return true;
 			}
-			<< make_shared<Hist1D>("CentralGammas","GammaEnergy4Before",Axis([](){return AcceptedE;},0.0,0.8,800))
+			<< make_shared<Hist1D>("CentralGammas","GammaEnergy4Before",Axis([](){return AcceptedE;},0.0,1.6,800))
 			<< make_shared<SetOfHists1D>("CentralGammas","InvMass2PairsBefore",
 				Q_axis_full(res),
 				Axis([]()->double{return pi0_pair.Y();},0.0,1.0,1000)
@@ -125,7 +124,7 @@ void SearchGamma(Analysis&res){
 				Axis([]()->double{return pi0_pair.X();},0.0,0.2,200)
 			)
                         <<[]()->bool{return pi0_pair.X()<0.020;}
-			<< make_shared<Hist1D>("CentralGammas","GammaEnergy4After",Axis([](){return AcceptedE;},0.0,0.8,800))
+			<< make_shared<Hist1D>("CentralGammas","GammaEnergy4After",Axis([](){return AcceptedE;},0.0,1.6,800))
                         << make_shared<SetOfHists1D>("CentralGammas","InvMass2PairsAfter",
                                 Q_axis_full(res),
                                 Axis([]()->double{return pi0_pair.Y();},0.0,1.0,1000)
@@ -143,17 +142,17 @@ void SearchGamma(Analysis&res){
 				for(size_t i=0;i<(registered.size()-5);++i)
 				for(size_t j=i+1;j<registered.size();++j){
 					const auto pair1=registered[i]+registered[j];
-					const auto e1=registered[i].space_component().mag()+registered[j].space_component().mag();
+					const auto e1=registered[i].time_component()+registered[j].time_component();
 					const double diff1=pow(pair1.length4()-M,2);
 					for(size_t k=i+1;k<(registered.size()-3);(++k)+=((k==j)?1:0))
 					for(size_t l=k+1;l<registered.size();(++l)+=((l==j)?1:0)){
 						const auto pair2=registered[k]+registered[l];
-						const auto e2=registered[k].space_component().mag()+registered[l].space_component().mag();
+						const auto e2=registered[k].time_component()+registered[l].time_component();
 						const double diff2=pow(pair2.length4()-M,2);
 						for(size_t o=k+1;o<(registered.size()-1);(++o)+=(((o==j)||(o==l))?1:0))
 						for(size_t p=o+1;p<registered.size();(++p)+=(((p==j)||(p==l))?1:0)){
 						    const auto pair3=registered[o]+registered[p];
-						    const auto e3=registered[o].space_component().mag()+registered[p].space_component().mag();
+						    const auto e3=registered[o].time_component()+registered[p].time_component();
 						    const double diff3=pow(pair3.length4()-M,2);
 						    selector<<point<double>(sqrt(diff1+diff2+diff3),(pair1+pair2+pair3).length4());
 						    e_table<<point<double>(diff1+diff2+diff3,e1+e2+e3);
@@ -164,7 +163,7 @@ void SearchGamma(Analysis&res){
 				AcceptedE=e_table[0].Y();
 				return true;
 			}
-			<< make_shared<Hist1D>("CentralGammas","GammaEnergy6Before",Axis([](){return AcceptedE;},0.0,0.8,800))
+			<< make_shared<Hist1D>("CentralGammas","GammaEnergy6Before",Axis([](){return AcceptedE;},0.0,1.6,800))
 			<< make_shared<SetOfHists1D>("CentralGammas","InvMass3PairsBefore",
 				Q_axis_full(res),
 				Axis([]()->double{return pi0_triple.Y();},0.0,1.0,1000)
@@ -174,7 +173,7 @@ void SearchGamma(Analysis&res){
 				Axis([]()->double{return pi0_triple.X();},0.0,0.3,300)
 			)
                         <<[]()->bool{return pi0_triple.X()<0.030;}
-			<< make_shared<Hist1D>("CentralGammas","GammaEnergy6After",Axis([](){return AcceptedE;},0.0,0.8,800))
+			<< make_shared<Hist1D>("CentralGammas","GammaEnergy6After",Axis([](){return AcceptedE;},0.0,1.6,800))
                         << make_shared<SetOfHists1D>("CentralGammas","InvMass3PairsAfter",
                                 Q_axis_full(res),
                                 Axis([]()->double{return pi0_triple.Y();},0.0,1.0,1000)
@@ -186,6 +185,6 @@ void SearchGamma(Analysis&res){
 		)
 	    )
 	    << make_shared<Hist1D>("CentralGammas","GammaCount___Final",Axis([]()->double{return registered.size();},-0.5,9.5,10))
-	    << make_shared<Hist1D>("CentralGammas","GammaTotalEnergy___Final",Axis([](){return TotalE;},0.0,0.8,800))
+	    << make_shared<Hist1D>("CentralGammas","GammaTotalEnergy___Final",Axis([](){return TotalE;},0.0,1.6,800))
 	);
 }
