@@ -30,7 +30,7 @@ shared_ptr<AbstractChain> ForwardHe3Reconstruction(const Analysis&data,particle_
         }
         return INFINITY;
     };
-    auto corr_hists=make_shared<ChainOr>();
+    auto corr_hists=make_shared<ChainOr>()<<[](){return true;};
     if(&kin_rec==&testmode){
 	const Axis Theta_lr([&kin_rec](){return kin_rec.theta*180./PI();},0.0,20.0,20);
 	const Axis Edep([](WTrack&track){return Forward::Get()[kFRH1].Edep(track);},0.0,0.4,200);
