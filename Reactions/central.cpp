@@ -94,7 +94,7 @@ void SearchGamma(Analysis&res){
 			Axis([]()->double{return gamma_pair.X();},0.0,0.2,200)
 		    )
                     <<[]()->bool{return gamma_pair.X()<0.2;}
-		    <<[]()->bool{return (gamma_pair_mm.Y()>2.4)&&(gamma_pair_mm.Y()<2.6);}
+		    <<[]()->bool{return (gamma_pair_mm.Y()>2.4)&&(gamma_pair_mm.Y()<2.6);}//empiric: he3
                     << make_shared<Hist1D>("CentralGammas","GammaEnergy2After",Axis([](){return AcceptedE;},0.0,1.6,800))
                     << make_shared<SetOfHists1D>("CentralGammas","InvMass2GammaAfter",
                         Q_axis_full(res),
@@ -148,7 +148,7 @@ void SearchGamma(Analysis&res){
 				Axis([]()->double{return pi0_pair.X();},0.0,0.2,200)
 			)
                         <<[]()->bool{return pi0_pair.X()<0.020;}
-			<<[]()->bool{return (pi0_pair_mm.Y()>2.4)&&(pi0_pair_mm.Y()<2.6);}
+			<<[]()->bool{return (pi0_pair_mm.Y()>2.6)&&(pi0_pair_mm.Y()<2.8);}//empiric:he3+pi0
 			<< make_shared<Hist1D>("CentralGammas","GammaEnergy4After",Axis([](){return AcceptedE;},0.0,1.6,800))
                         << make_shared<SetOfHists1D>("CentralGammas","InvMass2PairsAfter",
                                 Q_axis_full(res),
@@ -208,7 +208,7 @@ void SearchGamma(Analysis&res){
 				Axis([]()->double{return pi0_triple.X();},0.0,0.3,300)
 			)
                         <<[]()->bool{return pi0_triple.X()<0.030;}
-			<<[]()->bool{return (pi0_triple_mm.Y()>2.4)&&(pi0_triple_mm.Y()<2.6);}
+			<<[]()->bool{return (pi0_triple_mm.Y()>2.4)&&(pi0_triple_mm.Y()<2.6);}//empiric: he
 			<< make_shared<Hist1D>("CentralGammas","GammaEnergy6After",Axis([](){return AcceptedE;},0.0,1.6,800))
                         << make_shared<SetOfHists1D>("CentralGammas","InvMass3PairsAfter",
                                 Q_axis_full(res),
