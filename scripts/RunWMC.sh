@@ -1,5 +1,3 @@
-mkdir $PWD/wmc_tmp_$1
-cp $PWD/WMC/* $PWD/wmc_tmp_$1
 for X in `seq 1 1 100`; do
     if [ -e $PLUTO_OUTPUT/$1-$X.root ]; then
 	echo "number $X"
@@ -11,9 +9,13 @@ for X in `seq 1 1 100`; do
 		echo "already in process"
 	    else
 		echo "#!/bin/bash" >> ${scriptname}
-		echo "cd $PWD/wmc_tmp_$1" >> ${scriptname}
+		echo "mkdir $PWD/wmc_tmp_$1-$X" >> ${scriptname}
+		echo "cp $PWD/WMC/* $PWD/wmc_tmp_$1-$X" >> ${scriptname}
+		echo "cd $PWD/wmc_tmp_$1-$X" >> ${scriptname}
 		echo "./wmc.sh $PLUTO_OUTPUT/$1-$X.root $WMC_DATA/$1-$X.wmc.data" >> ${scriptname}
+		echo "cd $PWD" >> ${scriptname}
 		echo >> ${scriptname}
+		echo "rm -f $PWD/wmc_tmp_$1-$X" >> ${scriptname}
 		echo "rm -f $PWD/${scriptname}" >> ${scriptname}
 		chmod u+x ${scriptname}
 		./${scriptname}
@@ -21,4 +23,3 @@ for X in `seq 1 1 100`; do
 	fi
     fi
 done
-rm -rf $PWD/wmc_tmp_$1
