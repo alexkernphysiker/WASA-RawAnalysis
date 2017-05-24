@@ -59,6 +59,12 @@ void He3_X_analyse(Analysis&res){
 	<<(make_shared<ChainCheck>()
 	    <<ForwardHe3Reconstruction(res,he3)
 	    <<[](){he3count++;return true;}
+	    <<[]()->bool{
+		if(he3.E<0.2)return false;
+		if(he3.E>0.4)return false;
+		if((he3.theta*180.0)/PI()>9.0)return false;
+		return true;
+	    }
 	    <<make_shared<SetOfHists1D>(dir_r_name,"MissingMass",
 		Q_axis_over(res),
 		Axis([&res](){
