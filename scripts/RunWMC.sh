@@ -15,7 +15,7 @@ for X in `seq 1 1 100`; do
 		echo "./wmc.sh $PLUTO_OUTPUT/$1-$X.root $WMC_DATA/$1-$X.wmc.data" >> ${scriptname}
 		echo "cd $PWD" >> ${scriptname}
 		echo >> ${scriptname}
-		echo "rm -f $PWD/wmc_tmp_$1-$X" >> ${scriptname}
+		echo "rm -r $PWD/wmc_tmp_$1-$X" >> ${scriptname}
 		echo "rm -f $PWD/${scriptname}" >> ${scriptname}
 		chmod u+x ${scriptname}
 		./${scriptname}
