@@ -16,14 +16,15 @@ int main(int argc, char** argv) {
     int new_c=argc-1;
     char *args[new_c+1];
     args[0]=argv[0];
-    string type(argv[1]);
+    const string type(argv[1]);
     SetAnalysisType([type](){
 	Analysis* res=nullptr;
 	if("Data"==type)
 	    res=new RealData();
 	else{
 	    if(
-		("RE_ppn_qf"==type)
+		("RE_ppn_qf"==type)||
+		("MC_ppn_qf"==type)
 	    )
 		res=new MonteCarlo(false);
 	    else 
@@ -55,6 +56,13 @@ int main(int argc, char** argv) {
 	){
 	    He3_X_analyse(*res);
 	    SearchGamma(*res);
+	}
+	if(
+		("Data"==type)||
+		("MC_pd"==type)||
+		("MC_ppn_qf"==type)
+	){
+		p_or_d_analyse(*res);
 	}
 	return res;
     });
