@@ -1,6 +1,7 @@
 for X in `seq 45934 1 46884`; do
 	echo "run #${X}..."
-	if [ -e ${WASA_OUTPUT_DATA}/Data_run_${X}.root ]; then
+	output="${WASA_OUTPUT_DATA}/Data$1${X}"
+	if [ -e ${output}.root ]; then
 		echo "...has been analyzed"
 	else
 		RUNCAT=""
@@ -15,16 +16,16 @@ for X in `seq 45934 1 46884`; do
 		fi
 		echo "${RUNCAT}"
 		if [ "${RUNCAT}" == "" ]; then
-			echo "none."
+			echo "absent."
 		else
 			echo "exists."
-			scriptname="run_${X}$1.sh"
+			scriptname="data$1_${X}.sh"
 			if [ -e ${scriptname} ]; then
 				echo "...already in process"
 			else
 				echo "...starting..."
 				echo "#!/bin/bash" >> ${scriptname}
-				echo "${RUNCAT}|./rawanalysis Data -local -fin cluster: -r ${X} -n ${WASA_OUTPUT_DATA}/Data_run_${X}$1 -lf run_${X}$1.log -abort" >> ${scriptname}
+				echo "${RUNCAT}|./rawanalysis Data$1 -local -fin cluster: -r ${X} -n ${output} -abort" >> ${scriptname}
 				echo "rm -f $PWD/${scriptname}" >> ${scriptname}
 				chmod u+x ${scriptname}
 				./${scriptname}
