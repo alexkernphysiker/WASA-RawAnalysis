@@ -1,12 +1,12 @@
 for X in `seq 1 1 100`; do
-    $input="$WMC_DATA/$1-$X.wmc.data"
-    output="${WASA_OUTPUT_DATA}/MC$1-$X"
+    input="${WMC_DATA}/$1-$X.wmc.data"
+    output="${WASA_OUTPUT_DATA}/MC$1$X"
     if [ -e ${input} ]; then
 	echo "number $X"
 	if [ -e ${output}.root ];then
 	    echo "was already done"
 	else
-            scriptname="mc$1-$X.sh"
+            scriptname="mc$1$X.sh"
             if [ -e ${scriptname} ]; then
         	echo "already in process"
     	    else
@@ -16,7 +16,8 @@ for X in `seq 1 1 100`; do
                 echo >> ${scriptname}
                 echo "rm -f $PWD/${scriptname}" >> ${scriptname}
                 chmod u+x ${scriptname}
-                ./${scriptname}
+                #./${scriptname}
+		echo ${input}
             fi
         fi
     fi

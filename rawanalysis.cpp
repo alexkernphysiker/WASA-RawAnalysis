@@ -19,51 +19,62 @@ int main(int argc, char** argv) {
     const string type(argv[1]);
     SetAnalysisType([type](){
 	Analysis* res=nullptr;
-	if("Data"==type)
-	    res=new RealData();
+	if(
+		("DataL"==type)||
+		("DataR"==type)
+	)
+		res=new RealData();
 	else{
-	    if(
-		("RE_ppn_qf"==type)||
-		("MC_ppn_qf"==type)
-	    )
-		res=new MonteCarlo(false);
-	    else 
-		res=new MonteCarlo(true);
+		if(
+			("REppn_qf"==type)||
+			("MCppn_qf"==type)
+		)
+			res=new MonteCarlo(false);
+		else 
+			res=new MonteCarlo(true);
 	}
 	if(
-	    ("RE_He3eta"==type)||
-	    ("RE_He3pi0"==type)||
-	    ("RE_He3pi0pi0"==type)||
-	    ("RE_He3pi0pi0pi0"==type)
-	){
-	    res->Trigger(0).per_track()<<ForwardHe3Reconstruction(*res);
+		("REHe3eta"==type)||
+		("REHe3pi0"==type)||
+		("REHe3pi0pi0"==type)||
+		("REHe3pi0pi0pi0"==type)
+	)
+		res->Trigger(0).per_track()<<ForwardHe3Reconstruction(*res);
+
+	if("REpd"==type){
+		res->Trigger(0).per_track()<<ForwardPReconstruction(*res);
+		res->Trigger(0).per_track()<<ForwardDReconstruction(*res);
 	}
-	if("RE_pd"==type){
-	    res->Trigger(0).per_track()<<ForwardPReconstruction(*res);
-	    res->Trigger(0).per_track()<<ForwardDReconstruction(*res);
-	}
-	if("RE_ppn_qf"==type){
-	    res->Trigger(0).per_track()<<ForwardPReconstruction(*res);
-	}
+	if("REppn_qf"==type)
+		res->Trigger(0).per_track()<<ForwardPReconstruction(*res);
+
 	if(
-	    ("Data"==type)||
-	    ("MC_He3eta"==type)||
-	    ("MC_He3pi0"==type)||
-	    ("MC_He3pi0pi0"==type)||
-	    ("MC_He3pi0pi0pi0"==type)||
-	    ("MC_He3eta6g"==type)||
-	    ("MC_He3pi06g"==type)
-	){
-	    He3_X_analyse(*res);
-	    SearchGamma(*res);
-	}
+		("MCHe3eta"==type)||
+		("MCHe3pi0"==type)||
+		("MCHe3pi0pi0"==type)||
+		("MCHe3pi0pi0pi0"==type)||
+		("DataL"==type)
+	)
+		He3_X_analyse(*res);
+
 	if(
-		("Data"==type)||
-		("MC_pd"==type)||
-		("MC_ppn_qf"==type)
-	){
+		("MCHe3eta"==type)||
+		("MCHe3pi0"==type)||
+		("MCHe3pi0pi0"==type)||
+		("MCHe3pi0pi0pi0"==type)||
+		("MCHe3eta6g"==type)||
+		("MCHe3pi06g"==type)||
+		("DataR"==type)
+	)
+		SearchGamma(*res);
+
+	if(
+		("MCpd"==type)||
+		("MCppn_qf"==type)||
+		("DataL"==type)
+	)
 		p_or_d_analyse(*res);
-	}
+
 	return res;
     });
     for(int i=1;i<=new_c;i++)
