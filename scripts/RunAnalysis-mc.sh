@@ -16,8 +16,7 @@ for X in `seq 1 1 100`; do
                 echo >> ${scriptname}
                 echo "rm -f $PWD/${scriptname}" >> ${scriptname}
                 chmod u+x ${scriptname}
-                #./${scriptname}
-		echo ${input}
+                ./${scriptname}
             fi
         fi
     fi
