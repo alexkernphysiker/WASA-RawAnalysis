@@ -110,7 +110,7 @@ shared_ptr<AbstractChain> ForwardHe3Reconstruction(const Analysis&data,particle_
 		},
 		vertex_energy
             );
-            kin_rec.E=energy(track)+(dynamic_cast<const RealData*>(&data)?0.007:0.0);
+            kin_rec.E=energy(track)+(dynamic_cast<const RealData*>(&data)?0.002:0.0);
 	    return true;
         }
         <<make_shared<SetOfHists1D>(dir_dbg_name,"5-PhiDistribution",Q_axis_over,Phi_deg)
