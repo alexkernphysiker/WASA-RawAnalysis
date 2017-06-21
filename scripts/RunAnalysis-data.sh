@@ -2,36 +2,36 @@ for X in `seq 45934 1 46884`; do
 	echo "run #${X}..."
 	output="${WASA_OUTPUT_DATA}/Data$1${X}"
 	if [ -e ${output}.root ]; then
-		echo "...has been analyzed"
+		echo "... is already done."
 	else
 		RUNCAT=""
-		if [ -e ${RUNS_DATA}/run_${X} ]; then
-			RUNCAT="cat ${RUNS_DATA}/run_${X}"
-		fi
-		if [ -e ${RUNS_DATA}/run_${X}.xz ]; then
-			RUNCAT="xzcat ${RUNS_DATA}/run_${X}.xz"
-		fi
-		if [ -e ${RUNS_DATA}/run_${X}.bz2 ]; then
-			RUNCAT="bzcat ${RUNS_DATA}/run_${X}.bz2"
-		fi
-		echo "${RUNCAT}"
-		if [ "${RUNCAT}" == "" ]; then
-			echo "absent."
+		zezeze=`find ${RUNS_DATA}|grep ${X}.xz`
+		if [ "${zezeze}" != "" ]; then
+			if [ -e ${zezeze} ]; then
+				RUNCAT="xzcat ${zezeze}"
+			fi
 		else
-			echo "exists."
+			zezeze=`find ${RUNS_DATA}|grep ${X}.bz2`
+			if [ "${zezeze}" != "" ]; then
+				if [ -e ${RUNS_DATA}/run_${X}.bz2 ]; then
+					RUNCAT="bzcat ${RUNS_DATA}/run_${X}.bz2"
+				fi
+			fi
+		fi
+		if [ "${RUNCAT}" != "" ]; then
+			echo "Analysis of run ${X}"
 			scriptname="data$1_${X}.sh"
 			if [ -e ${scriptname} ]; then
 				echo "...already in process"
 			else
-				echo "...starting..."
+				echo "...PROCESSING DATA $1..."
 				echo "#!/bin/bash" >> ${scriptname}
 				echo "${RUNCAT}|./rawanalysis Data$1 -local -fin cluster: -r ${X} -n ${output} -abort" >> ${scriptname}
 				echo "rm -f $PWD/${scriptname}" >> ${scriptname}
 				chmod u+x ${scriptname}
-				./${scriptname}
+				./${scriptname} &> /dev/null
+				echo "...done."
 			fi
 		fi
 	fi
 done
-echo "FINISHED"
-
