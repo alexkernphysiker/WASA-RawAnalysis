@@ -65,7 +65,9 @@ void p_or_d_analyse(Analysis&res){
 		Axis([](){return trackpairs[0].Y().first.theta*180./PI();},0,90,90),
 		Axis([](){return trackpairs[0].Y().second.theta*180./PI();},0,180,180)
 	);
-	static auto ct_sum=Axis([](){return (trackpairs[0].Y().first.theta+trackpairs[0].Y().second.theta*0.5)*180./PI();},0,180,180);
+	static auto ct_sum=Axis([](){
+		return (trackpairs[0].Y().first.theta+trackpairs[0].Y().second.theta)*180./PI();
+	},0,180,180);
 	static const auto ed_axis=make_pair(
 		Axis([](){return trackpairs[0].Y().first.E;} ,0.0,0.5,50),
 		Axis([](){return trackpairs[0].Y().second.E;},0.0,0.5,50)
