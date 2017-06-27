@@ -14,7 +14,7 @@ for X in `seq 1 1 1`; do
 	    echo >> ${scriptname}
 	    echo "rm -f $PWD/${scriptname}" >> ${scriptname}
 	    chmod u+x ${scriptname}
-	    ./${scriptname} &> /dev/null
+	    ./${scriptname} &> ${output}.log
 	    echo "...done."
 	fi
     fi

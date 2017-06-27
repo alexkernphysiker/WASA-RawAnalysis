@@ -29,7 +29,7 @@ for X in `seq 45934 1 46884`; do
 				echo "${RUNCAT}|./rawanalysis Data$1 -local -fin cluster: -r ${X} -n ${output} -abort" >> ${scriptname}
 				echo "rm -f $PWD/${scriptname}" >> ${scriptname}
 				chmod u+x ${scriptname}
-				./${scriptname} &> /dev/null
+				./${scriptname} &> ${output}.log
 				echo "...done."
 			fi
 		fi
