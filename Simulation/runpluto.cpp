@@ -8,7 +8,8 @@
 #include <PReaction.h>
 #include <Experiment/str_get.h>
 #include <Experiment/experiment_conv.h>
-#include "config.h"
+#include <config.h>
+#include "runpluto.h"
 using namespace std;
 void SimulatePluto(const string&reaction,const string&filename,const double&from,const double&to){
     PUSHD();
