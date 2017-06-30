@@ -44,11 +44,16 @@ if(NOT $ENV{PLUTOSYS} STREQUAL "")
     foreach(example ${SIMULATIONS})
         get_filename_component(ex_app ${example} NAME_WE)
         add_executable(${ex_app} ${example} Simulation/runpluto.cpp)
-        target_link_libraries(${ex_app} 
-            Pluto ${ROOT_LIBRARIES} ${libs} experiment kinematics
-        )
+        target_link_libraries(${ex_app} Pluto ${ROOT_LIBRARIES} ${libs} experiment kinematics)
     endforeach()
 endif()
+
+file(GLOB SIMULATIONS Simulation-advanced/sim-*.cpp)
+foreach(example ${SIMULATIONS})
+    get_filename_component(ex_app ${example} NAME_WE)
+    add_executable(${ex_app} ${example} Simulation-advanced/runsim.cpp)
+    target_link_libraries(${ex_app} ${ROOT_LIBRARIES} ${libs} experiment kinematics)
+endforeach()
 
 if(NOT $ENV{ROOTSORTERSYS} STREQUAL "")
     include_directories($ENV{ROOTSORTERSYS}/core/include)
