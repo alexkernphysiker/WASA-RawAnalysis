@@ -22,7 +22,7 @@ Axis Q_axis(const Analysis&res){
 	return Axis([&res](){return 1000.0*He3eta.P2Q(res.PBeam());},-70.0,30.0,40);
 }
 void p_or_d_analyse(Analysis&res){
-	static SortedPoints<double,particle_kinematics> tracks;
+	static SortedPoints<double,particle_kine> tracks;
 	static size_t FC,CC;
 	res.Trigger(21).pre()
 		<<[](){FC=0;CC=0;return true;}
@@ -40,7 +40,7 @@ void p_or_d_analyse(Analysis&res){
 			<<[](WTrack&T){return T.Theta()<0.30;}
 			<<[](){FC++;return true;}
 			<<[](WTrack&T){
-				tracks<<point<double,particle_kinematics>(
+				tracks<<point<double,particle_kine>(
 					T.Theta(),
 					{.particle=Particle::p(),.E=Forward::Get()[kFRH1].Edep(T)+Forward::Get()[kFRH2].Edep(T),.theta=T.Theta(),.phi=T.Phi()}
 				);
@@ -53,7 +53,7 @@ void p_or_d_analyse(Analysis&res){
 			<<[](WTrack&T){return T.Edep()>0.05;}
 			<<[](){CC++;return true;}
 			<<[](WTrack&T){
-				tracks<<point<double,particle_kinematics>(
+				tracks<<point<double,particle_kine>(
 					T.Theta(),
 					{.particle=Particle::p(),.E=T.Edep(),.theta=T.Theta(),.phi=T.Phi()}
 				);
@@ -61,7 +61,7 @@ void p_or_d_analyse(Analysis&res){
 			}
 		)
 	);
-	static SortedPoints<double,pair<particle_kinematics,particle_kinematics>> trackpairs;
+	static SortedPoints<double,pair<particle_kine,particle_kine>> trackpairs;
 	static auto ct_axis=make_pair(
 		Axis([](){return trackpairs[0].Y().first.theta*180./PI();},0,90,90),
 		Axis([](){return trackpairs[0].Y().second.theta*180./PI();},0,180,180)
@@ -80,7 +80,7 @@ void p_or_d_analyse(Analysis&res){
 		<<[](){
 			trackpairs.clear();
 			for(size_t i=0;i<tracks.size();i++)for(size_t j=(i+1);j<tracks.size();j++){
-				trackpairs<<point<double,pair<particle_kinematics,particle_kinematics>>(
+				trackpairs<<point<double,pair<particle_kine,particle_kine>>(
 					sqrt(pow(tracks[i].Y().phi-tracks[j].Y().phi-PI(),2))*180/PI(),
 					make_pair(tracks[i].Y(),tracks[j].Y())
 				);

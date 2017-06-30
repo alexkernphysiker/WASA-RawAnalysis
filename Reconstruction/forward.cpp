@@ -15,9 +15,9 @@
 using namespace std;
 using namespace MathTemplates;
 using namespace TrackAnalyse;
-particle_kinematics testmode;
-particle_kinematics&___test_mode___(){return testmode;}
-shared_ptr<AbstractChain> ForwardHe3Reconstruction(const Analysis&data,particle_kinematics&kin_rec){
+particle_kine testmode;
+particle_kine&___test_mode___(){return testmode;}
+shared_ptr<AbstractChain> ForwardHe3Reconstruction(const Analysis&data,particle_kine&kin_rec){
     static const string dir_v_name="He3Forward_Vertices";
     static const string dir_r_name="He3Forward_Reconstruction";
     static const string dir_dbg_name="He3Forward_Debug";
@@ -120,7 +120,7 @@ shared_ptr<AbstractChain> ForwardHe3Reconstruction(const Analysis&data,particle_
     ;
 }
 
-shared_ptr<AbstractChain> ForwardDReconstruction(const Analysis&data,particle_kinematics&kin_rec){
+shared_ptr<AbstractChain> ForwardDReconstruction(const Analysis&data,particle_kine&kin_rec){
     const Axis Ed([&data,&kin_rec]()->double{
         for(const auto&P:data.Vertex(0)){
 	    if(P.particle==Particle::d()){
@@ -197,7 +197,7 @@ shared_ptr<AbstractChain> ForwardDReconstruction(const Analysis&data,particle_ki
         <<make_shared<SetOfHists2D>("D","2-Edep-vs-Vertex",Theta_lr,Edep,Ed)
     ;
 }
-shared_ptr<AbstractChain> ForwardPReconstruction(const Analysis&data,particle_kinematics&kin_rec){
+shared_ptr<AbstractChain> ForwardPReconstruction(const Analysis&data,particle_kine&kin_rec){
     const Axis Ep([&data,&kin_rec]()->double{
         for(const auto&P:data.Vertex(0)){
             if(P.particle==Particle::p()){

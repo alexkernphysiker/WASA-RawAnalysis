@@ -50,7 +50,7 @@ void He3_X_analyse(Analysis&res){
 	<<make_shared<Hist1D>(dir_r_name,"0-Reference",Q_axis_over(res))
 	<<[](){trackcount=0;he3count=0;return true;}
     ;
-    static particle_kinematics he3;
+    static particle_kine he3;
     res.Trigger(trigger_he3_forward.number).per_track()
 	<<(make_shared<ChainCheck>()
 	    <<[](WTrack&T){return T.Type()==kFDC;}

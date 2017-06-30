@@ -8,25 +8,36 @@
 using namespace std;
 using namespace MathTemplates;
 const EventGenerator BoundSimulation2Gamma(mt19937&RG,const pair<double,double>&Bs){
+	const double mp=Particle::p().mass(),md=Particle::d().mass(),
+		mhe=Particle::he3().mass(),meta=Particle::eta().mass();
 	const RandomValueTableDistr<double> BW_distr(
-		[Bs](const double&x){return BreitWigner(x,Bs.first,Bs.second);},
-		ChainWithCount(1000,0.0,(Particle::he3().mass()+Particle::eta().mass())*2.0)
+		[Bs,meta,mhe](const double&x){return BreitWigner(x,mhe+meta-Bs.first,Bs.second);},
+		ChainWithCount(1000,0.0,(mhe+meta)*2.0)
 	);
-	const double mp=Particle::p().mass(),md=Particle::d().mass();
-	return [&RG,BW_distr,mp,md](){
+	return [&RG,BW_distr,mp,md,mhe](){
 		const double InvMass=BW_distr(RG);
 		const double Pb=sqrt(((pow(InvMass,2)-pow(mp,2)-pow(md,2))/(2.0*md))-pow(mp,2));
 		const auto TotalP=Vector4<double>::SpaceLength4(Vector3<double>::basis_z()*Pb,mp)+
 			Vector4<double>::SpaceLength4(Vector3<double>::zero(),md);
 		//ToDo: implement Fermi momentum distribution
-		const auto etaPcm=Vector4<double>::SpaceLength4(Vector3<double>::RandomIsotropicDirection(RG)*0.1,Particle::eta().mass());
-		
+		const double pfe=0.1;
+		const auto he3Pcm=Vector4<double>::SpaceLength4(Vector3<double>::RandomIsotropicDirection(RG)*pfe,mhe);
+		const double meta_=sqrt(pow(InvMass,2)+pow(mhe,2)-2.0*InvMass*sqrt(pow(mhe,2)+pow(pfe,2)));
+		const auto etaPcm=Vector4<double>::SpaceLength4(-he3Pcm.space_component(),meta_);
+		const auto g1Pcm2=Vector4<double>::SpaceLength4(Vector3<double>::RandomIsotropicDirection(RG)*meta_/2.0,0.0);
+		const auto g2Pcm2=Vector4<double>::SpaceLength4(-g1Pcm2.space_component(),0.0);
+		const auto he3Plab=he3Pcm.Lorentz(TotalP.Beta());
+		const auto g1Plab=g1Pcm2.Lorentz(etaPcm.Beta()).Lorentz(TotalP.Beta());
+		const auto g2Plab=g2Pcm2.Lorentz(etaPcm.Beta()).Lorentz(TotalP.Beta());
 		list<particle_sim> res;
+		res.push_back({.type=Particle::he3(),.P=he3Plab.space_component()});
+		res.push_back({.type=Particle::gamma(),.P=g1Plab.space_component()});
+		res.push_back({.type=Particle::gamma(),.P=g2Plab.space_component()});
 		return res;
 	};
 }
 int main(){
 	mt19937 RG;
-	Simulate("bound-2g-04",BoundSimulation2Gamma(RG,make_pair(0.00402,0.0156/2.0)));
+	Simulate("bound2g-04",BoundSimulation2Gamma(RG,make_pair(0.00402,0.0156/2.0)));
 	return 0;
 }

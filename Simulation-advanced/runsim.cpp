@@ -1,6 +1,7 @@
 // this file is distributed under 
 // GPL license
 #include <list>
+#include <iostream>
 #include <string>
 #include <sstream>
 #include <random>
@@ -32,33 +33,31 @@ void Simulate(const std::string&filename,const EventGenerator Generator){
     PUSHD();
     CD(PLUTO);
     for(ALLMC){
-	TFile*f=new TFile(CSTR(filename+"-"+to_string(runindex)),"RECREATE");
-	Int_t Npart;
-	Float_t Impact;
-	Float_t Phi;
-	TClonesArray*Particles;
+	cerr<<"Running simulation number "<<runindex<<endl;
+	TFile*f=new TFile(CSTR(filename+"-"+to_string(runindex)+".root"),"RECREATE");
+	Int_t Npart=Generator().size();
+	Float_t Impact=0;
+	Float_t Phi=0;
+	TClonesArray*Particles=new TClonesArray("PParticle",Generator().size());
 	TTree*T=new TTree("data","");
 	T->Branch("Npart",&Npart,"Npart/I");
 	T->Branch("Impact",&Impact,"Impact/F");
 	T->Branch("Phi",&Phi,"Phi/F");
 	T->Branch("Particles",&Particles);
 	for(size_t event=0;event<1000000;event++){
+	    if((event%50000)==0)cerr<<event<<" events"<<endl;
 	    const auto Result=Generator();
-	    Particles=new TClonesArray("PParticle",Result.size());
-	    Npart=Result.size();Impact=0;Phi=0;
+	    Particles->Clear();
 	    size_t index=0;
 	    for(const auto&p:Result){
 		new ((*Particles)[0]) PParticle(ParticleName(p.type).c_str(),p.P.x(),p.P.y(),p.P.z(),p.type.mass());
 		index++;
 	    }
 	    T->Fill();
-	    Particles->Clear();
-	    delete Particles;
 	}
 	T->Write();
 	f->Close();
-	delete T;
-	delete f;
+	cerr<<"done."<<endl;
     }
     POPD();
 }
