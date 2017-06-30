@@ -11,7 +11,7 @@
 #include <TFile.h>
 #include <TTree.h>
 #include <TClonesArray.h>
-#include <PPatricte.h>
+#include <PParticle.h>
 #include "runsim.h"
 using namespace std;
 using namespace MathTemplates;
@@ -31,8 +31,6 @@ const string ParticleName(const Particle&p){
 void Simulate(const std::string&filename,const EventGenerator Generator){
     PUSHD();
     CD(PLUTO);
-    std::mt19937 gen;
-    std::uniform_int_distribution<int> d(1,254);
     for(ALLMC){
 	TFile*f=new TFile(CSTR(filename+"-"+to_string(runindex)),"RECREATE");
 	Int_t Npart;
@@ -45,12 +43,12 @@ void Simulate(const std::string&filename,const EventGenerator Generator){
 	T->Branch("Phi",&Phi,"Phi/F");
 	T->Branch("Particles",&Particles);
 	for(size_t event=0;event<1000000;event++){
-	    const auto Result=Generator(gen);
+	    const auto Result=Generator();
 	    Particles=new TClonesArray("PParticle",Result.size());
 	    Npart=Result.size();Impact=0;Phi=0;
 	    size_t index=0;
 	    for(const auto&p:Result){
-		new ((*Particles)[0]) PParticle(ParticleName(p.type),p.P.x(),p.P.y(),p.P.z(),p.type.mass());
+		new ((*Particles)[0]) PParticle(ParticleName(p.type).c_str(),p.P.x(),p.P.y(),p.P.z(),p.type.mass());
 		index++;
 	    }
 	    T->Fill();
