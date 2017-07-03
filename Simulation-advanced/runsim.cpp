@@ -27,30 +27,34 @@ const string ParticleName(const Particle&p){
     if(p==Particle::pi0())return "pi0";
     if(p==Particle::pi_plus())return "pi+";
     if(p==Particle::pi_minus())return "pi-";
-    throw Exception<Particle>("");
+    throw Exception<Particle>("Unknown particle type: cannot find it's name");
 }
 void Simulate(const std::string&filename,const EventGenerator Generator){
     PUSHD();
     CD(PLUTO);
     for(ALLMC){
-	cerr<<"Running simulation number "<<runindex<<endl;
+	cerr<<"Running simulation number "<<runindex<<" started"<<endl;
 	TFile*f=new TFile(CSTR(filename+"-"+to_string(runindex)+".root"),"RECREATE");
-	Int_t Npart=Generator().size();
+	auto Result=Generator();
+	Int_t Npart=Result.size();
 	Float_t Impact=0;
 	Float_t Phi=0;
-	TClonesArray*Particles=new TClonesArray("PParticle",Generator().size());
+	TClonesArray*Particles=new TClonesArray("PParticle",Result.size());
 	TTree*T=new TTree("data","");
 	T->Branch("Npart",&Npart,"Npart/I");
 	T->Branch("Impact",&Impact,"Impact/F");
 	T->Branch("Phi",&Phi,"Phi/F");
 	T->Branch("Particles",&Particles);
 	for(size_t event=0;event<1000000;event++){
-	    if((event%50000)==0)cerr<<event<<" events"<<endl;
-	    const auto Result=Generator();
+	    if(((event%50000)==0)&&(event>0))cerr<<event<<" events"<<endl;
+	    Result=Generator();
+	    Npart=Result.size();
+	    Impact=0;
+	    Phi=0;
 	    Particles->Clear();
 	    size_t index=0;
 	    for(const auto&p:Result){
-		new ((*Particles)[0]) PParticle(ParticleName(p.type).c_str(),p.P.x(),p.P.y(),p.P.z(),p.type.mass());
+		new ((*Particles)[index]) PParticle(ParticleName(p.type).c_str(),p.P.x(),p.P.y(),p.P.z(),p.type.mass());
 		index++;
 	    }
 	    T->Fill();
@@ -61,4 +65,3 @@ void Simulate(const std::string&filename,const EventGenerator Generator){
     }
     POPD();
 }
-
