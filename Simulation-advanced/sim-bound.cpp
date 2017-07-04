@@ -9,29 +9,32 @@ using namespace std;
 using namespace MathTemplates;
 
 const EventGenerator BoundSimulation2Gamma(mt19937&RG,const pair<double,double>&Bs){
-	const double mp=Particle::p().mass(),md=Particle::d().mass(),
-		mhe=Particle::he3().mass(),meta=Particle::eta().mass();
+	const double mthr=Particle::he3().mass()+Particle::eta().mass();
 	const RandomValueTableDistr<double> BW_distr(
-		[Bs,meta,mhe](const double&x){return BreitWigner(x,mhe+meta-Bs.first,Bs.second);},
-		ChainWithCount(1000,0.0,(mhe+meta)*2.0)
+		[Bs,mthr](const double&x){return BreitWigner(x,mthr-Bs.first,Bs.second);},
+		ChainWithCount(1000,mthr-Bs.second*4.0,mthr)
 	);
-	return [&RG,BW_distr,mp,md,mhe]()->list<particle_sim>{
-		const double InvMass=BW_distr(RG);
-		const double Pb=sqrt(((pow(InvMass,2)-pow(mp,2)-pow(md,2))/(2.0*md))-pow(mp,2));
-		const auto TotalP=Vector4<double>::SpaceLength4(Vector3<double>::basis_z()*Pb,mp)+
-			Vector4<double>::SpaceLength4(Vector3<double>::zero(),md);
-		//ToDo: implement Fermi momentum distribution
-		const double pfe=0.1;
-		const auto he3Pcm=Vector4<double>::SpaceLength4(Vector3<double>::RandomIsotropicDirection(RG)*pfe,mhe);
-		const double meta_=sqrt(pow(InvMass,2)+pow(mhe,2)-2.0*InvMass*sqrt(pow(mhe,2)+pow(pfe,2)));
-		const auto etaPcm=Vector4<double>::SpaceLength4(-he3Pcm.space_component(),meta_);
-		const auto g1Pcm2=Vector4<double>::SpaceLength4(Vector3<double>::RandomIsotropicDirection(RG)*meta_/2.0,0.0);
-		const auto g2Pcm2=Vector4<double>::SpaceLength4(-g1Pcm2.space_component(),0.0);
+	return [&RG,BW_distr]()->list<particle_sim>{
+		const double spd=pow(BW_distr(RG),2);
+		//ToDo: implement P distribution
+		const double Pb=1.573;
+		const auto TotalP=Vector4<>::bySpaceC_and_Length4(Vector3<>::basis_z()*Pb,Particle::p().mass())+Particle::d().mass();
+		//ToDo: Implement fermi P distribution
+		const double pfe=0;
+		//ToDo: take eta mass defect info account
+		const auto etaPcm=Vector4<>::bySpaceC_and_Length4(Vector3<>::RandomIsotropicDirection(RG)*pfe,Particle::eta().mass());
+		const auto he3Pcm=Vector4<>::bySpaceC_and_Length4(-etaPcm.space_component(),Particle::he3().mass());
+
 		const auto he3Plab=he3Pcm.Lorentz(-TotalP.Beta());
-		const auto g1Plab=g1Pcm2.Lorentz(-etaPcm.Beta()).Lorentz(-TotalP.Beta());
-		const auto g2Plab=g2Pcm2.Lorentz(-etaPcm.Beta()).Lorentz(-TotalP.Beta());
+		const auto etaPlab=etaPcm.Lorentz(-TotalP.Beta());
+
+		const auto g1Pcme=Vector4<>::bySpaceC_and_Length4(Vector3<double>::RandomIsotropicDirection(RG)*(etaPlab.length4()/2.0),0.0);
+		const auto g2Pcme=Vector4<>::bySpaceC_and_Length4(-g1Pcme.space_component(),0.0);
+
+		const auto g1Plab=g1Pcme.Lorentz(-etaPlab.Beta());
+		const auto g2Plab=g2Pcme.Lorentz(-etaPlab.Beta());
 		return {
-			{.type=Particle::he3(),.P=he3Plab.space_component()},
+			{.type=Particle::he3() ,.P=he3Plab.space_component()},
 			{.type=Particle::gamma(),.P=g1Plab.space_component()},
 			{.type=Particle::gamma(),.P=g2Plab.space_component()}
 		};
