@@ -26,8 +26,8 @@ int main(int argc, char** argv) {
 		res=new RealData();
 	else{
 		if(
-			("REppn_qf"==type)||
-			("MCppn_qf"==type)
+			(type.substr(2,6)=="ppn_qf")||
+			(type.substr(2,5)=="bound")
 		)
 			res=new MonteCarlo(false);
 		else 
@@ -49,21 +49,15 @@ int main(int argc, char** argv) {
 		res->Trigger(0).per_track()<<ForwardPReconstruction(*res);
 
 	if(
-		("MCHe3eta"==type)||
-		("MCHe3pi0"==type)||
-		("MCHe3pi0pi0"==type)||
-		("MCHe3pi0pi0pi0"==type)||
+		(type.substr(0,5)=="MCHe3")||
+		(type.substr(0,7)=="MCbound")||
 		("DataL"==type)
 	)
 		He3_X_analyse(*res);
 
 	if(
-		("MCHe3eta"==type)||
-		("MCHe3pi0"==type)||
-		("MCHe3pi0pi0"==type)||
-		("MCHe3pi0pi0pi0"==type)||
-		("MCHe3eta6g"==type)||
-		("MCHe3pi06g"==type)||
+		(type.substr(0,5)=="MCHe3")||
+		(type.substr(0,7)=="MCbound")||
 		("DataR"==type)
 	)
 		SearchGamma(*res);

@@ -15,14 +15,25 @@ const EventGenerator BoundSimulation2Gamma(mt19937&RG,const pair<double,double>&
 		ChainWithCount(1000,mthr-Bs.second*4.0,mthr)
 	);
 	return [&RG,BW_distr]()->list<particle_sim>{
-		const double spd=pow(BW_distr(RG),2);
-		//ToDo: implement P distribution
-		const double Pb=1.573;
+		const double mB=BW_distr(RG);
+		const double Pb=sqrt(
+			pow(
+				(
+					pow(mB,2)-pow(Particle::p().mass(),2)
+					-pow(Particle::d().mass(),2) 
+				)
+				/(2.0*Particle::d().mass())
+			,2)
+			-pow(Particle::p().mass(),2)
+		);
 		const auto TotalP=Vector4<>::bySpaceC_and_Length4(Vector3<>::basis_z()*Pb,Particle::p().mass())+Particle::d().mass();
 		//ToDo: Implement fermi P distribution
 		const double pfe=0;
-		//ToDo: take eta mass defect info account
-		const auto etaPcm=Vector4<>::bySpaceC_and_Length4(Vector3<>::RandomIsotropicDirection(RG)*pfe,Particle::eta().mass());
+		const double m_eta_=sqrt(
+			pow(mB,2)+pow(Particle::he3().mass(),2)
+			-2.0*mB*sqrt(pow(Particle::he3().mass(),2)+pow(pfe,2))
+		);
+		const auto etaPcm=Vector4<>::bySpaceC_and_Length4(Vector3<>::RandomIsotropicDirection(RG)*pfe,m_eta_);
 		const auto he3Pcm=Vector4<>::bySpaceC_and_Length4(-etaPcm.space_component(),Particle::he3().mass());
 
 		const auto he3Plab=he3Pcm.Lorentz(-TotalP.Beta());
