@@ -20,6 +20,7 @@ file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/scripts/RunClear.sh DESTINATION ${CMAKE_CU
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/scripts/RunWMC.sh DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/scripts/runs_count.sh DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/.sorterrc DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/distributions DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/WASA-RootSorterWrap)
 
@@ -50,7 +51,7 @@ if(NOT $ENV{PLUTOSYS} STREQUAL "")
     foreach(example ${SIMULATIONS_ADV})
 	get_filename_component(ex_app ${example} NAME_WE)
 	add_executable(${ex_app} ${example} Simulation-advanced/runsim.cpp)
-	target_link_libraries(${ex_app} Pluto ${ROOT_LIBRARIES} ${libs} experiment kinematics)
+	target_link_libraries(${ex_app} Pluto ${ROOT_LIBRARIES} ${libs} experiment kinematics gpwrap)
     endforeach()
 endif()
 

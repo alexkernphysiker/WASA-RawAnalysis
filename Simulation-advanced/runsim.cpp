@@ -45,8 +45,8 @@ void Simulate(const std::string&filename,const EventGenerator Generator){
 	T->Branch("Impact",&Impact,"Impact/F");
 	T->Branch("Phi",&Phi,"Phi/F");
 	T->Branch("Particles",&Particles);
-	for(size_t event=0;event<1000000;event++){
-	    if(((event%50000)==0)&&(event>0))cerr<<event<<" events"<<endl;
+	for(size_t event=0;event<100000;event++){
+	    if(((event%10000)==0)&&(event>0))cerr<<event<<" events"<<endl;
 	    Result=Generator();
 	    Npart=Result.size();
 	    Impact=0;
