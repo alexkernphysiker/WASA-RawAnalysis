@@ -18,7 +18,8 @@ const SortedPoints<> ReadPfFromFile(const string&name){
 	return data;
 }
 const pair<Vector4<>,Vector4<>> Compound(
-	RANDOM&RG,const IFunction<double,RANDOM&>&Pb_distr,const IFunction<double,RANDOM&>&Pf_distr
+	RANDOM&RG,const IFunction<double,RANDOM&>&Pb_distr,const IFunction<double,RANDOM&>&Pf_distr,
+	const double&s_thr=0
 ){
 	const auto TotalP=
 		Vector4<>::bySpaceC_and_Length4(Vector3<>::basis_z()*Pb_distr(RG),Particle::p().mass())
@@ -29,22 +30,27 @@ const pair<Vector4<>,Vector4<>> Compound(
 			Particle::he3().mass()
 		);
 		const auto etaPcm=Vector4<>(TotalP.length4())-he3Pcm;
-		if(etaPcm.length4()>0){
+		if(etaPcm.Sqr4()>s_thr){
 			return make_pair(etaPcm.Lorentz(-TotalP.Beta()),he3Pcm.Lorentz(-TotalP.Beta()));
 		}
 	}
 }
-const EventGenerator BoundSimulation2Gamma(const string&name,RANDOM&RG,const IFunction<double,RANDOM&>&Pb_distr,const IFunction<double,RANDOM&>&Pf_distr){
-	return [name,&RG,&Pb_distr,&Pf_distr]()->list<particle_sim>{
+const EventGenerator BoundSimulation2Gamma(
+	RANDOM&RG,const IFunction<double,RANDOM&>&Pb_distr,
+	const IFunction<double,RANDOM&>&Pf_distr
+){
+	return [&RG,&Pb_distr,&Pf_distr]()->list<particle_sim>{
 		const auto C=Compound(RG,Pb_distr,Pf_distr);
 		const auto&etaPlab=C.first;
 		const auto&he3Plab=C.second;
-		static PlotDistr1D<> pbplot(name,"P_{beam,lab}, GeV/c",BinsByCount(160,p_beam_low,p_beam_hi));
-		static PlotDistr1D<> pfplot(name,"P_{eta',lab}, GeV/c",BinsByCount(1000,0.0,1.0));
-		static PlotDistr1D<> mplot(name,"m_{eta'}, GeV",BinsByCount(1000,0.0,1.0));
+		
+		static PlotDistr1D<> pbplot("","P_{beam,lab}, GeV/c",BinsByCount(160,p_beam_low,p_beam_hi));
+		static PlotDistr1D<> pfplot("","P_{eta,lab}, GeV/c",BinsByCount(1000,0.0,1.0));
+		static PlotDistr1D<> mplot("","m_{eta}, GeV",BinsByCount(1000,0.0,1.0));
 		pbplot.Fill((etaPlab+he3Plab).space_component().mag());
 		pfplot.Fill(etaPlab.space_component().mag());
 		mplot.Fill(etaPlab.length4());
+		
 		const auto g1Pcme=Vector4<>::bySpaceC_and_Length4(Vector3<double>::RandomIsotropicDirection(RG)*(etaPlab.length4()/2.0),0.0);
 		const auto g2Pcme=Vector4<>::bySpaceC_and_Length4(-g1Pcme.space_component(),0.0);
 		const auto g1Plab=g1Pcme.Lorentz(-etaPlab.Beta());
@@ -56,7 +62,22 @@ const EventGenerator BoundSimulation2Gamma(const string&name,RANDOM&RG,const IFu
 		};
 	};
 }
-
+const EventGenerator BoundSimulation6Gamma(
+	RANDOM&RG,const IFunction<double,RANDOM&>&Pb_distr,
+	const IFunction<double,RANDOM&>&Pf_distr
+){
+	return [&RG,&Pb_distr,&Pf_distr]()->list<particle_sim>{
+		const auto C=Compound(RG,Pb_distr,Pf_distr,pow(3.0*Particle::pi0().mass(),2));
+		const auto&etaPlab=C.first;
+		const auto&he3Plab=C.second;
+		static PlotDistr1D<> mplot("6g","m_{eta'}, GeV",BinsByCount(1000,0.0,1.0));
+		mplot.Fill(etaPlab.length4());
+		
+		return{
+			{.type=Particle::he3() ,.P=he3Plab.space_component()}
+		};
+	};
+}
 int main(){
 	RANDOM RG;
 	Plotter::Instance().SetOutput(".","sim-bound");
@@ -68,8 +89,8 @@ int main(){
 	pf3=ReadPfFromFile("distributions/he3eta-pf-90-20.txt");
 	Plot<>().Line(pf1,"1").Line(pf2,"2").Line(pf3,"3")<<"set title 'read from file'";
 	
-	Simulate("bound1-2g",BoundSimulation2Gamma("1",RG,P,RandomValueTableDistr<>(pf1)));
-	Simulate("bound2-2g",BoundSimulation2Gamma("2",RG,P,RandomValueTableDistr<>(pf2)));
-	Simulate("bound3-2g",BoundSimulation2Gamma("3",RG,P,RandomValueTableDistr<>(pf3)));
+	Simulate("bound1-2g",BoundSimulation2Gamma(RG,P,RandomValueTableDistr<>(pf1)));
+	Simulate("bound2-2g",BoundSimulation2Gamma(RG,P,RandomValueTableDistr<>(pf2)));
+	Simulate("bound3-2g",BoundSimulation2Gamma(RG,P,RandomValueTableDistr<>(pf3)));
 	return 0;
 }
