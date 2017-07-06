@@ -30,16 +30,16 @@ const pair<Vector4<>,Vector4<>> Compound(RANDOM&RG,const RandomValueTableDistr<>
 const EventGenerator BoundSimulation2Gamma(RANDOM&RG,const RandomValueTableDistr<>&BW_distr,const RandomValueTableDistr<>&PF_distr){
 	return [&RG,BW_distr,PF_distr]()->list<particle_sim>{
 		const auto C=Compound(RG,BW_distr,PF_distr);
-		const auto&he3Plab=C.first;
-		const auto&etaPlab=C.second;
+		const auto&etaPlab=C.first;
+		const auto&he3Plab=C.second;
 		const auto g1Pcme=Vector4<>::bySpaceC_and_Length4(Vector3<double>::RandomIsotropicDirection(RG)*(etaPlab.length4()/2.0),0.0);
 		const auto g2Pcme=Vector4<>::bySpaceC_and_Length4(-g1Pcme.space_component(),0.0);
 		const auto g1Plab=g1Pcme.Lorentz(-etaPlab.Beta());
 		const auto g2Plab=g2Pcme.Lorentz(-etaPlab.Beta());
 		return {
-			{.type=Particle::he3() ,.P=he3Plab.space_component()},
 			{.type=Particle::gamma(),.P=g1Plab.space_component()},
-			{.type=Particle::gamma(),.P=g2Plab.space_component()}
+			{.type=Particle::gamma(),.P=g2Plab.space_component()},
+			{.type=Particle::he3() ,.P=he3Plab.space_component()}
 		};
 	};
 }
@@ -49,17 +49,17 @@ int main(){
 	const double mthr=Particle::he3().mass()+Particle::eta().mass();
 	const SortedPoints<> 
 	bw1([mthr](const double&x){return BreitWigner(x,mthr-0.00402,0.01560/2.0);},
-                ChainWithCount(1000,mthr-0.04,mthr+0.0)),
+                ChainWithCount(1000,mthr-0.07,mthr+0.03)),
 	bw2([mthr](const double&x){return BreitWigner(x,mthr-0.00619,0.01739/2.0);},
-		ChainWithCount(1000,mthr-0.04,mthr+0.0)),
+		ChainWithCount(1000,mthr-0.07,mthr+0.03)),
 	bw3([mthr](const double&x){return BreitWigner(x,mthr-0.01110,0.02059/2.0);},
-		ChainWithCount(1000,mthr-0.04,mthr+0.0));
+		ChainWithCount(1000,mthr-0.07,mthr+0.03));
 	Plot<>().Line(bw1,"1").Line(bw2,"2").Line(bw3,"3");
 
 	const auto
-	pf1=ReadFromFile("distributions/he3eta-pf-75-20.txt").XRange(0.001,0.4),
-	pf2=ReadFromFile("distributions/he3eta-pf-80-20.txt").XRange(0.001,0.4),
-	pf3=ReadFromFile("distributions/he3eta-pf-90-20.txt").XRange(0.001,0.4);
+	pf1=ReadFromFile("distributions/he3eta-pf-75-20.txt").XRange(0.0,0.5),
+	pf2=ReadFromFile("distributions/he3eta-pf-80-20.txt").XRange(0.0,0.5),
+	pf3=ReadFromFile("distributions/he3eta-pf-90-20.txt").XRange(0.0,0.5);
 	Plot<>().Line(pf1,"1").Line(pf2,"2").Line(pf3,"3");
 	
 	Simulate("bound1-2g",BoundSimulation2Gamma(RG,bw1,pf1));
