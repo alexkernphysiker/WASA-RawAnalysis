@@ -57,9 +57,9 @@ int main(){
 	Plot<>().Line(bw1,"1").Line(bw2,"2").Line(bw3,"3");
 
 	const auto
-	pf1=ReadFromFile("distributions/he3eta-pf-75-20.txt").XRange(0.0,0.5),
-	pf2=ReadFromFile("distributions/he3eta-pf-80-20.txt").XRange(0.0,0.5),
-	pf3=ReadFromFile("distributions/he3eta-pf-90-20.txt").XRange(0.0,0.5);
+	pf1=ReadFromFile("distributions/he3eta-pf-75-20.txt").XRange(0.0,0.4),
+	pf2=ReadFromFile("distributions/he3eta-pf-80-20.txt").XRange(0.0,0.4),
+	pf3=ReadFromFile("distributions/he3eta-pf-90-20.txt").XRange(0.0,0.4);
 	Plot<>().Line(pf1,"1").Line(pf2,"2").Line(pf3,"3");
 	
 	Simulate("bound1-2g",BoundSimulation2Gamma(RG,bw1,pf1));
