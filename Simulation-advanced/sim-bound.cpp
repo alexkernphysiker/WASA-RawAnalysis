@@ -18,19 +18,14 @@ const SortedPoints<> ReadFromFile(const string&name){
 	return data;
 }
 const pair<Vector4<>,Vector4<>> Compound(RANDOM&RG,const RandomValueTableDistr<>&BW_distr,const RandomValueTableDistr<>&PF_distr){
-	pair<Vector4<>,Vector4<>> res=make_pair(0.0,0.0);
-	while(res.first.time_component()<=0){
-		const double mB=BW_distr(RG);
-		const double Pb=sqrt(pow((pow(mB,2)-pow(Particle::p().mass(),2)-pow(Particle::d().mass(),2))/(2.0*Particle::d().mass()),2)-pow(Particle::p().mass(),2));
-		const auto TotalP=Vector4<>::bySpaceC_and_Length4(Vector3<>::basis_z()*Pb,Particle::p().mass())+Particle::d().mass();
-		const double pfe=PF_distr(RG);
-		const double m_eta_=sqrt(pow(mB,2)+pow(Particle::he3().mass(),2)-2.0*mB*sqrt(pow(Particle::he3().mass(),2)+pow(pfe,2)));
-		const auto etaPcm=Vector4<>::bySpaceC_and_Length4(Vector3<>::RandomIsotropicDirection(RG)*pfe,m_eta_);
-		const auto he3Pcm=Vector4<>::bySpaceC_and_Length4(-etaPcm.space_component(),Particle::he3().mass());
-		res.first=etaPcm.Lorentz(-TotalP.Beta());
-		res.second=he3Pcm.Lorentz(-TotalP.Beta());
-	}
-	return res;
+	const double mB=BW_distr(RG);
+	const double Pb=sqrt(pow((pow(mB,2)-pow(Particle::p().mass(),2)-pow(Particle::d().mass(),2))/(2.0*Particle::d().mass()),2)-pow(Particle::p().mass(),2));
+	const auto TotalP=Vector4<>::bySpaceC_and_Length4(Vector3<>::basis_z()*Pb,Particle::p().mass())+Particle::d().mass();
+	const double pfe=PF_distr(RG);
+	const double m_eta_=sqrt(pow(mB,2)+pow(Particle::he3().mass(),2)-2.0*mB*sqrt(pow(Particle::he3().mass(),2)+pow(pfe,2)));
+	const auto etaPcm=Vector4<>::bySpaceC_and_Length4(Vector3<>::RandomIsotropicDirection(RG)*pfe,m_eta_);
+	const auto he3Pcm=Vector4<>::bySpaceC_and_Length4(-etaPcm.space_component(),Particle::he3().mass());
+	return make_pair(etaPcm.Lorentz(-TotalP.Beta()),he3Pcm.Lorentz(-TotalP.Beta()));
 }
 const EventGenerator BoundSimulation2Gamma(RANDOM&RG,const RandomValueTableDistr<>&BW_distr,const RandomValueTableDistr<>&PF_distr){
 	return [&RG,BW_distr,PF_distr]()->list<particle_sim>{
@@ -54,17 +49,19 @@ int main(){
 	const double mthr=Particle::he3().mass()+Particle::eta().mass();
 	const SortedPoints<> 
 	bw1([mthr](const double&x){return BreitWigner(x,mthr-0.00402,0.01560/2.0);},
-                ChainWithCount(1000,mthr-0.07,mthr+0.03)),
+                ChainWithCount(1000,mthr-0.04,mthr+0.0)),
 	bw2([mthr](const double&x){return BreitWigner(x,mthr-0.00619,0.01739/2.0);},
-		ChainWithCount(1000,mthr-0.07,mthr+0.03)),
+		ChainWithCount(1000,mthr-0.04,mthr+0.0)),
 	bw3([mthr](const double&x){return BreitWigner(x,mthr-0.01110,0.02059/2.0);},
-		ChainWithCount(1000,mthr-0.07,mthr+0.03));
+		ChainWithCount(1000,mthr-0.04,mthr+0.0));
 	Plot<>().Line(bw1,"1").Line(bw2,"2").Line(bw3,"3");
-	const auto //I made cut of the distributions because of some overflow
-	pf1=ReadFromFile("distributions/he3eta-pf-75-20.txt").XRange(0.001,0.5),
-	pf2=ReadFromFile("distributions/he3eta-pf-80-20.txt").XRange(0.001,0.5),
-	pf3=ReadFromFile("distributions/he3eta-pf-90-20.txt").XRange(0.001,0.5);
+
+	const auto
+	pf1=ReadFromFile("distributions/he3eta-pf-75-20.txt").XRange(0.001,0.4),
+	pf2=ReadFromFile("distributions/he3eta-pf-80-20.txt").XRange(0.001,0.4),
+	pf3=ReadFromFile("distributions/he3eta-pf-90-20.txt").XRange(0.001,0.4);
 	Plot<>().Line(pf1,"1").Line(pf2,"2").Line(pf3,"3");
+	
 	Simulate("bound1-2g",BoundSimulation2Gamma(RG,bw1,pf1));
 	Simulate("bound2-2g",BoundSimulation2Gamma(RG,bw2,pf2));
 	Simulate("bound3-2g",BoundSimulation2Gamma(RG,bw3,pf3));
