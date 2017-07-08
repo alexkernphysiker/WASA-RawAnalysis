@@ -1,40 +1,12 @@
 // this file is distributed under
 // GPL license
-#include <fstream>
-#include <math_h/vectors.h>
-#include <math_h/randomfunc.h>
-#include <math_h/functions.h>
 #include <gnuplot_wrap.h>
 #include <Experiment/experiment_conv.h>
 #include "runsim.h"
+#include "bound.h"
 using namespace std;
 using namespace MathTemplates;
 using namespace GnuplotWrap;
-const SortedPoints<> ReadPfFromFile(const string&name){
-	SortedPoints<> data;
-	ifstream file(name);
-	double x,y;
-	while(file>>x>>y)data<<point<>(x/1000.,y);
-	return data;
-}
-const pair<Vector4<>,Vector4<>> Compound(
-	RANDOM&RG,const IFunction<double,RANDOM&>&Pb_distr,const IFunction<double,RANDOM&>&Pf_distr,
-	const double&s_thr=0
-){
-	const auto TotalP=
-		Vector4<>::bySpaceC_and_Length4(Vector3<>::basis_z()*Pb_distr(RG),Particle::p().mass())
-		+Particle::d().mass();
-	while(true){
-		const auto he3Pcm=Vector4<>::bySpaceC_and_Length4(
-			Vector3<>::RandomIsotropicDirection(RG)*Pf_distr(RG),
-			Particle::he3().mass()
-		);
-		const auto etaPcm=Vector4<>(TotalP.length4())-he3Pcm;
-		if(etaPcm.Sqr4()>s_thr){
-			return make_pair(etaPcm.Lorentz(-TotalP.Beta()),he3Pcm.Lorentz(-TotalP.Beta()));
-		}
-	}
-}
 const EventGenerator BoundSimulation2Gamma(
 	RANDOM&RG,const IFunction<double,RANDOM&>&Pb_distr,
 	const IFunction<double,RANDOM&>&Pf_distr
@@ -62,33 +34,15 @@ const EventGenerator BoundSimulation2Gamma(
 		};
 	};
 }
-const EventGenerator BoundSimulation6Gamma(
-	RANDOM&RG,const IFunction<double,RANDOM&>&Pb_distr,
-	const IFunction<double,RANDOM&>&Pf_distr
-){
-	return [&RG,&Pb_distr,&Pf_distr]()->list<particle_sim>{
-		const auto C=Compound(RG,Pb_distr,Pf_distr,pow(3.0*Particle::pi0().mass(),2));
-		const auto&etaPlab=C.first;
-		const auto&he3Plab=C.second;
-		static PlotDistr1D<> mplot("6g","m_{eta'}, GeV",BinsByCount(1000,0.0,1.0));
-		mplot.Fill(etaPlab.length4());
-		
-		return{
-			{.type=Particle::he3() ,.P=he3Plab.space_component()}
-		};
-	};
-}
 int main(){
 	RANDOM RG;
-	Plotter::Instance().SetOutput(".","sim-bound");
+	Plotter::Instance().SetOutput(".","sim-2g");
 	const RandomUniform<> P(p_beam_low,p_beam_hi); 
-
 	const auto
 	pf1=ReadPfFromFile("distributions/he3eta-pf-75-20.txt"),
 	pf2=ReadPfFromFile("distributions/he3eta-pf-80-20.txt"),
 	pf3=ReadPfFromFile("distributions/he3eta-pf-90-20.txt");
 	Plot<>().Line(pf1,"1").Line(pf2,"2").Line(pf3,"3")<<"set title 'read from file'";
-	
 	Simulate("bound1-2g",BoundSimulation2Gamma(RG,P,RandomValueTableDistr<>(pf1)));
 	Simulate("bound2-2g",BoundSimulation2Gamma(RG,P,RandomValueTableDistr<>(pf2)));
 	Simulate("bound3-2g",BoundSimulation2Gamma(RG,P,RandomValueTableDistr<>(pf3)));

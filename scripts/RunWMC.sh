@@ -19,7 +19,7 @@ for X in `seq 1 1 100`; do
 		echo "rm -r $PWD/wmc_tmp_$1-$X" >> ${scriptname}
 		echo "rm -f $PWD/${scriptname}" >> ${scriptname}
 		chmod u+x ${scriptname}
-		./${scriptname} &> /dev/null
+		./${scriptname}
 		echo "...done."
 	    fi
 	fi
