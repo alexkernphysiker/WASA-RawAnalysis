@@ -5,7 +5,11 @@ set(CMAKE_CPP_FLAGS "-DNoMySQL -DNoXerces -pthread -std=c++11 -Wno-deprecated-de
 set(CMAKE_CXX_FLAGS "-g -O2 -fPIC -fno-strict-aliasing -Wall -fno-strict-aliasing -std=c++11")
 set(${CMAKE_LINK_LIBRARY_FLAG} -pthread)
 
+add_subdirectory(math_h)
+add_subdirectory(FitGen)
 add_subdirectory(WASA-libs)
+include_directories(${MATH_H_INC})
+include_directories(${FITGEN_INC})
 include_directories(${WASA_LIBS_INC})
 link_directories(${ROOT_LIBRARY_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
