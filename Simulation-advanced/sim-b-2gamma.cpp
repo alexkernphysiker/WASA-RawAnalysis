@@ -18,7 +18,7 @@ const EventGenerator BoundSimulation2Gamma(
 		
 		static PlotDistr1D<> pbplot("","P_{beam,lab}, GeV/c",BinsByCount(160,p_beam_low,p_beam_hi));
 		static PlotDistr1D<> pfplot("","P_{eta,lab}, GeV/c",BinsByCount(1000,0.0,1.0));
-		static PlotDistr1D<> mplot("","m_{eta}, GeV",BinsByCount(1000,0.0,1.0));
+		static PlotDistr1D<> mplot("","m_{eta}, GeV",BinsByCount(200,0.4,0.6));
 		pbplot.Fill((etaPlab+he3Plab).space_component().mag());
 		pfplot.Fill(etaPlab.space_component().mag());
 		mplot.Fill(etaPlab.length4());
