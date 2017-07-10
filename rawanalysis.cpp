@@ -19,10 +19,7 @@ int main(int argc, char** argv) {
     const string type(argv[1]);
     SetAnalysisType([type](){
 	Analysis* res=nullptr;
-	if(
-		("DataL"==type)||
-		("DataR"==type)
-	)
+	if(type.substr(0,4)=="Data")
 		res=new RealData();
 	else{
 		if(
@@ -33,42 +30,26 @@ int main(int argc, char** argv) {
 		else 
 			res=new MonteCarlo(true);
 	}
-	if(
-		("REHe3eta"==type)||
-		("REHe3pi0"==type)||
-		("REHe3pi0pi0"==type)||
-		("REHe3pi0pi0pi0"==type)
-	)
+	if(type.substr(0,5)=="REHe3")
 		res->Trigger(0).per_track()<<ForwardHe3Reconstruction(*res);
-
-	if("REpd"==type){
-		res->Trigger(0).per_track()<<ForwardPReconstruction(*res);
-		res->Trigger(0).per_track()<<ForwardDReconstruction(*res);
-	}
-	if("REppn_qf"==type)
-		res->Trigger(0).per_track()<<ForwardPReconstruction(*res);
-
 	if(
 		(type.substr(0,5)=="MCHe3")||
 		(type.substr(0,7)=="MCbound")||
-		("DataL"==type)
+		("DataF"==type)
 	)
 		He3_X_analyse(*res);
-
 	if(
 		(type.substr(0,5)=="MCHe3")||
 		(type.substr(0,7)=="MCbound")||
-		("DataR"==type)
+		("DataC"==type)
 	)
 		SearchGamma(*res);
-
 	if(
 		("MCpd"==type)||
 		("MCppn_qf"==type)||
-		("DataL"==type)
+		("DataE"==type)
 	)
 		p_or_d_analyse(*res);
-
 	return res;
     });
     for(int i=1;i<=new_c;i++)

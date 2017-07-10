@@ -39,7 +39,8 @@ void SearchGamma(Analysis&res){
 	res.Trigger(tn).per_track()
 		<<(make_shared<ChainCheck>()
 		    << [](WTrack&T)->bool{return T.Type()==kCDN;}
-		    << [](WTrack&T)->bool{return T.Edep()>=0.04;}
+		    << [](WTrack&T)->bool{return T.Edep()>=0.06;}
+		    << [](WTrack&T)->bool{return T.Edep()<=0.20;}
 		    << [](WTrack&T)->bool{
 			registered.push_back(Get4Vector({.particle=Particle::gamma(),.E=T.Edep(),.theta=T.Theta(),.phi=T.Phi()}));
 			TotalE+=T.Edep();
@@ -93,46 +94,6 @@ void SearchGamma(Analysis&res){
 			Q_axis_full(res),
 			Axis([]()->double{return gamma_pair.X();},0.0,0.2,200)
 		    )
-		)
-		<< (make_shared<ChainCheck>()
-			<<[]()->bool{return registered.size()==4;}
-			<<[]()->bool{
-				static const auto M=Particle::pi0().mass();
-				SortedPoints<double> selector,selector_mm,e_table;
-				for(size_t i=0;i<(registered.size()-3);++i)
-				for(size_t j=i+1;j<registered.size();++j){
-					const auto pair1=registered[i]+registered[j];
-					const auto e1=registered[i].time_component()+registered[j].time_component();
-					const double diff1=pow(pair1.length4()-M,2);
-					for(size_t k=i+1;k<(registered.size()-1);(++k)+=((k==j)?1:0))
-					for(size_t l=k+1;l<registered.size();(++l)+=((l==j)?1:0)){
-					    const auto pair2=registered[k]+registered[l];
-					    const auto e2=registered[k].time_component()+registered[l].time_component();
-					    const double diff2=pow(pair2.length4()-M,2);
-					    selector<<point<double>(sqrt(diff1+diff2),(pair1+pair2).length4());
-					    selector_mm<<point<double>(sqrt(diff1+diff2),(Ptotal-(pair1+pair2)).length4());
-					    e_table<<point<double>(diff1+diff2,e1+e2);
-					}
-				}
-				pi0_pair=selector[0];
-				pi0_pair_mm=selector_mm[0];
-				AcceptedE=e_table[0].Y();
-				return true;
-			}
-			<<[]()->bool{return pi0_pair.X()<0.020;}
-			<< make_shared<Hist1D>("CentralGammas","GammaEnergy4Before",Axis([](){return AcceptedE;},0.0,1.6,800))
-			<< make_shared<SetOfHists1D>("CentralGammas","InvMass2PairsBefore",
-				Q_axis_full(res),
-				Axis([]()->double{return pi0_pair.Y();},0.0,1.0,1000)
-			)
-			<< make_shared<SetOfHists1D>("CentralGammas","MMass2PairsBefore",
-				Q_axis_full(res),
-				Axis([]()->double{return pi0_pair_mm.Y();},0.0,4.0,4000)
-			)
-			<< make_shared<SetOfHists1D>("CentralGammas","Diff2PairsBefore",
-				Q_axis_full(res),
-				Axis([]()->double{return pi0_pair.X();},0.0,0.2,200)
-			)
 		)
 		<< (make_shared<ChainCheck>()
 			<<[]()->bool{return registered.size()==6;}

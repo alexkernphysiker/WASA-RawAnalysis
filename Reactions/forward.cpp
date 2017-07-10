@@ -19,7 +19,7 @@ using namespace TrackAnalyse;
 
 const Reaction He3eta(Particle::p(),Particle::d(),{Particle::he3(),Particle::eta()});
 Axis Q_axis_over(const Analysis&res){
-	return Axis([&res](){return 1000.0*He3eta.P2Q(res.PBeam());},0.0,30.0,12);
+	return Axis([&res](){return 1000.0*He3eta.P2Q(res.PBeam());},-70.0,30.0,40);
 }
 const string dir_v_name="He3Forward_Vertices";
 const string dir_r_name="He3Forward_Reconstruction";
