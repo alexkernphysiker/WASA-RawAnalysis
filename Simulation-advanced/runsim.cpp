@@ -32,7 +32,7 @@ const string ParticleName(const Particle&p){
 void Simulate(const std::string&filename,const EventGenerator Generator){
     PUSHD();
     CD(PLUTO);
-    for(size_t runindex=1;runindex<=10;runindex++){
+    for(size_t runindex=1;runindex<=5;runindex++){
 	cerr<<"Running simulation number "<<runindex<<" started"<<endl;
 	TFile*f=new TFile(CSTR(filename+"-"+to_string(runindex)+".root"),"RECREATE");
 	auto Result=Generator();
@@ -45,8 +45,8 @@ void Simulate(const std::string&filename,const EventGenerator Generator){
 	T->Branch("Impact",&Impact,"Impact/F");
 	T->Branch("Phi",&Phi,"Phi/F");
 	T->Branch("Particles",&Particles);
-	for(size_t event=0;event<1000000;event++){
-	    if(((event%100000)==0)&&(event>0))cerr<<event<<" events"<<endl;
+	for(size_t event=1;event<=1000000;event++){
+	    if((event%10000)==0)cerr<<event<<" events"<<endl;
 	    while((Result=Generator()).size()==0);
 	    Npart=Result.size();
 	    Impact=0;
