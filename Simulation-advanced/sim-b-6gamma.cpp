@@ -14,8 +14,7 @@ const EventGenerator BoundSimulation6Gamma(
 	RANDOM&RG,const IFunction<double,RANDOM&>&Pb_distr,
 	const IFunction<double,RANDOM&>&Pf_distr
 ){
-	return [&RG,&Pb_distr,&Pf_distr]()->list<particle_sim>{
-		const auto C=Compound(RG,Pb_distr,Pf_distr,pow(3.0*Particle::pi0().mass(),2));
+	const auto generator=[&RG](const pair<Vector4<>,Vector4<>>&C)->list<particle_sim>{
 		const auto&etaPlab=C.first;
 		const auto&he3Plab=C.second;
 		static PlotDistr1D<> 
@@ -88,6 +87,13 @@ const EventGenerator BoundSimulation6Gamma(
 		im2plot.Fill(G.length4());
 		output.push_back({.type=Particle::he3() ,.P=he3Plab.space_component()});
 		return output;
+	};
+	return [generator,&RG,&Pb_distr,&Pf_distr]()->list<particle_sim>{
+		const auto C=Compound(RG,Pb_distr,Pf_distr,pow(3.0*Particle::pi0().mass(),2));
+		while(true){
+			const auto res=generator(C);
+			if(res.size()>0)return res;
+		};
 	};
 }
 int main(){
