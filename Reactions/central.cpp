@@ -39,8 +39,8 @@ void SearchGamma(Analysis&res){
 	res.Trigger(tn).per_track()
 		<<(make_shared<ChainCheck>()
 		    << [](WTrack&T)->bool{return T.Type()==kCDN;}
-		    << [](WTrack&T)->bool{return T.Edep()>=0.06;}
-		    << [](WTrack&T)->bool{return T.Edep()<=0.20;}
+		    << [](WTrack&T)->bool{return T.Edep()>=0.10;}
+		    << [](WTrack&T)->bool{return T.Edep()<=1.00;}
 		    << [](WTrack&T)->bool{
 			registered.push_back(Get4Vector({.particle=Particle::gamma(),.E=T.Edep(),.theta=T.Theta(),.phi=T.Phi()}));
 			TotalE+=T.Edep();
