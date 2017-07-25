@@ -1,10 +1,13 @@
 // this file is distributed under
 // GPL license
 #include <fstream>
+#include <gnuplot_wrap.h>
+#include <Experiment/experiment_conv.h>
 #include "bound.h"
 #include "runsim.h"
 using namespace std;
 using namespace MathTemplates;
+using namespace GnuplotWrap;
 const SortedPoints<> ReadPfFromFile(const string&name){
 	SortedPoints<> data;
 	ifstream file(name);
@@ -18,8 +21,12 @@ const pair<Vector4<>,Vector4<>> Compound(
 	const IFunction<double,RANDOM&>&Pf_distr,
 	const double&s_thr
 ){
+	static PlotDistr1D<>
+                PP("bound","P, GeV/c",BinsByCount(40,p_beam_low,p_beam_hi));
+	const auto P=Pb_distr(RG);
+	PP.Fill(P);
 	const auto TotalP=
-		Vector4<>::bySpaceC_and_Length4(Vector3<>::basis_z()*Pb_distr(RG),Particle::p().mass())
+		Vector4<>::bySpaceC_and_Length4(Vector3<>::basis_z()*P,Particle::p().mass())
 		+Particle::d().mass();
 	while(true){
 		const auto he3Pcm=Vector4<>::bySpaceC_and_Length4(

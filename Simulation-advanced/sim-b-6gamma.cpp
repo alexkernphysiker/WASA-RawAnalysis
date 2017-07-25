@@ -89,10 +89,14 @@ const EventGenerator BoundSimulation6Gamma(
 		return output;
 	};
 	return [generator,&RG,&Pb_distr,&Pf_distr]()->list<particle_sim>{
-		const auto C=Compound(RG,Pb_distr,Pf_distr,pow(3.0*Particle::pi0().mass(),2));
+		static PlotDistr1D<> pbplot("","P_{beam,lab}, GeV/c",BinsByCount(40,p_beam_low,p_beam_hi));
 		while(true){
+			const auto C=Compound(RG,Pb_distr,Pf_distr,pow(3.0*Particle::pi0().mass(),2));
 			const auto res=generator(C);
-			if(res.size()>0)return res;
+			if(res.size()>0){
+				pbplot.Fill((C.first+C.second).space_component().mag());
+				return res;
+			}
 		};
 	};
 }
