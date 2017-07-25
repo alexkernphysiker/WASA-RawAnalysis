@@ -43,7 +43,7 @@ int main(int argc, char** argv) {
 		(type.substr(0,7)=="MCbound")||
 		("DataC"==type)
 	)
-		SearchGamma(*res);
+		Search6Gamma(*res);
 	if(
 		("MCpd"==type)||
 		("MCppn_qf"==type)||
