@@ -8,7 +8,7 @@
 using namespace std;
 using namespace MathTemplates;
 using namespace GnuplotWrap;
-const SortedPoints<> ReadPfFromFile(const string&name){
+const LinearInterpolation<> ReadPfFromFile(const string&name){
 	SortedPoints<> data;
 	ifstream file(name);
 	double x,y;
@@ -17,8 +17,8 @@ const SortedPoints<> ReadPfFromFile(const string&name){
 }
 const pair<Vector4<>,Vector4<>> Compound(
 	RANDOM&RG,
-	const IFunction<double,RANDOM&>&Pb_distr,
-	const IFunction<double,RANDOM&>&Pf_distr,
+	const RandomValueGenerator<>&Pb_distr,
+	const RandomValueGenerator<>&Pf_distr,
 	const double&s_thr
 ){
 	static PlotDistr1D<>

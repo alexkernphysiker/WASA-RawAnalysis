@@ -7,10 +7,7 @@
 using namespace std;
 using namespace MathTemplates;
 using namespace GnuplotWrap;
-const EventGenerator BoundSimulation2Gamma(
-	RANDOM&RG,const IFunction<double,RANDOM&>&Pb_distr,
-	const IFunction<double,RANDOM&>&Pf_distr
-){
+const EventGenerator BoundSimulation2Gamma(RANDOM&RG,const RandomValueGenerator<>&Pb_distr,const RandomValueGenerator<>&Pf_distr){
 	return [&RG,&Pb_distr,&Pf_distr]()->list<particle_sim>{
 		const auto C=Compound(RG,Pb_distr,Pf_distr);
 		const auto&etaPlab=C.first;

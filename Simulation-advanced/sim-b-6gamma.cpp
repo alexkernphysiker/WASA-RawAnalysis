@@ -10,10 +10,7 @@ using namespace GnuplotWrap;
 const double lambda(const double&x,const double&y,const double&z){
 	return x*x+y*y+z*z-2.*x*y-2.*y*z-2.*z*x;
 }
-const EventGenerator BoundSimulation6Gamma(
-	RANDOM&RG,const IFunction<double,RANDOM&>&Pb_distr,
-	const IFunction<double,RANDOM&>&Pf_distr
-){
+const EventGenerator BoundSimulation6Gamma(RANDOM&RG,const RandomValueGenerator<>&Pb_distr,const RandomValueGenerator<>&Pf_distr){
 	const auto generator=[&RG](const pair<Vector4<>,Vector4<>>&C)->list<particle_sim>{
 		const auto&etaPlab=C.first;
 		const auto&he3Plab=C.second;
@@ -103,7 +100,7 @@ const EventGenerator BoundSimulation6Gamma(
 int main(){
 	RANDOM RG;
 	Plotter::Instance().SetOutput(".","sim-6gamma");
-	const RandomUniform<> P(p_beam_low,p_beam_hi); 
+	const RandomValueTableDistr<>P={{p_beam_low,3.0},{p_beam_hi,1.0}}; 
 	const auto
 	pf1=ReadPfFromFile("distributions/he3eta-pf-75-20.txt"),
 	pf2=ReadPfFromFile("distributions/he3eta-pf-80-20.txt"),
