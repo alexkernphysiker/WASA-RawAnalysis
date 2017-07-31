@@ -45,7 +45,7 @@ void Search2Gamma(Analysis&res){
 			TotalE+=T.Edep();
 			return true;
 		    }
-		    << make_shared<Hist1D>("CentralGammas","GammaEnergy",Axis([](WTrack&T)->double{return T.Edep();},0.0,1.6,800))
+		    << make_shared<Hist1D>("CentralGammas","GammaEnergy2",Axis([](WTrack&T)->double{return T.Edep();},0.0,1.6,800))
 		)
 	;
 
@@ -60,7 +60,7 @@ void Search2Gamma(Analysis&res){
 	    << []()->bool{return registered.size()>0;}
 	    << []()->bool{AcceptedE=0;return true;}
 	    << make_shared<Hist1D>("CentralGammas","GammaTotalEnergy2",Axis([](){return TotalE;},0.0,1.6,800))
-	    << []()->bool{return registered.size()==2;}
+	    << []()->bool{return registered.size()>=2;}
 	    << []()->bool{
 		static const auto M=Particle::eta().mass();
 		SortedPoints<double> table,table2,e_table;
@@ -113,14 +113,14 @@ void Search6Gamma(Analysis&res){
 	res.Trigger(tn).per_track()
 		<<(make_shared<ChainCheck>()
 		    << [](WTrack&T)->bool{return T.Type()==kCDN;}
-		    << [](WTrack&T)->bool{return T.Edep()>=0.02;}
-		    << [](WTrack&T)->bool{return T.Edep()<=0.10;}
+		    << [](WTrack&T)->bool{return T.Edep()>=0.030;}
+		    << [](WTrack&T)->bool{return T.Edep()<=1.000;}
 		    << [](WTrack&T)->bool{
 			registered.push_back(Get4Vector({.particle=Particle::gamma(),.E=T.Edep(),.theta=T.Theta(),.phi=T.Phi()}));
 			TotalE+=T.Edep();
 			return true;
 		    }
-		    << make_shared<Hist1D>("CentralGammas","GammaEnergy",Axis([](WTrack&T)->double{return T.Edep();},0.0,1.6,800))
+		    << make_shared<Hist1D>("CentralGammas","GammaEnergy6",Axis([](WTrack&T)->double{return T.Edep();},0.0,1.6,800))
 		)
 	;
 	
@@ -135,7 +135,7 @@ void Search6Gamma(Analysis&res){
 		<< []()->bool{return registered.size()>0;}
 		<< []()->bool{AcceptedE=0;return true;}
 		<< make_shared<Hist1D>("CentralGammas","GammaTotalEnergy6",Axis([](){return TotalE;},0.0,1.6,800))
-		<<[]()->bool{return registered.size()==6;}
+		<<[]()->bool{return registered.size()>=6;}
 		<<[]()->bool{
 			static const auto M=Particle::pi0().mass();
 			SortedPoints<double> selector,selector_mm,e_table;
@@ -164,7 +164,7 @@ void Search6Gamma(Analysis&res){
 			AcceptedE=e_table[0].Y();
 			return true;
 		}
-		<<[]()->bool{return pi0_triple.X()<0.010;}
+		<<[]()->bool{return pi0_triple.X()<0.030;}
 		<< make_shared<Hist1D>("CentralGammas","GammaEnergy6Before",Axis([](){return AcceptedE;},0.0,1.6,800))
 		<< make_shared<SetOfHists1D>("CentralGammas","InvMass3PairsBefore",
 			Q_axis_full(res),
