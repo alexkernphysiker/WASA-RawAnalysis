@@ -65,9 +65,9 @@ const EventGenerator BoundSimulation6Gamma(RANDOM&RG,const RandomValueGenerator<
 			decayorientation(RG)
 		);
 		const vector<LorentzVector<>> pizeros={
-			DecayPlane(P1),
-			DecayPlane(P2),
-			DecayPlane(P3)
+			DecayPlane(P1).Lorentz(-etaPlab.Beta()),
+			DecayPlane(P2).Lorentz(-etaPlab.Beta()),
+			DecayPlane(P3).Lorentz(-etaPlab.Beta())
 		};
 		im1plot.Fill((pizeros[0]+pizeros[1]+pizeros[2]).length4());
 		auto G=LorentzVector<>::zero();
@@ -86,12 +86,18 @@ const EventGenerator BoundSimulation6Gamma(RANDOM&RG,const RandomValueGenerator<
 		return output;
 	};
 	return [generator,&RG,&Pb_distr,&Pf_distr]()->list<particle_sim>{
-		static PlotDistr1D<> pbplot("","P_{beam,lab}, GeV/c",BinsByCount(40,p_beam_low,p_beam_hi));
+		static PlotDistr1D<> pbplot("he3eta","P_{beam,lab}, GeV/c",BinsByCount(40,p_beam_low,p_beam_hi));
+		static PlotDistr1D<> pbplot2("he36gamma","P_{beam,lab},Gev/c",BinsByCount(40,p_beam_low,p_beam_hi));
 		while(true){
 			const auto C=Compound(RG,Pb_distr,Pf_distr,pow(3.0*Particle::pi0().mass(),2));
 			const auto res=generator(C);
 			if(res.size()>0){
 				pbplot.Fill((C.first+C.second).space_component().mag());
+				Vector4<> P=0;
+				for(const auto&p:res){
+					P+=Vector4<>::bySpaceC_and_Length4(p.P,p.type.mass());
+				}
+				pbplot2.Fill(P.space_component().mag());
 				return res;
 			}
 		};
