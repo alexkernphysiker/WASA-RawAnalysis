@@ -24,12 +24,12 @@ Axis Q_axis(const Analysis&res){
 void p_or_d_analyse(Analysis&res){
 	static SortedPoints<double,particle_kine> tracks;
 	static size_t FC,CC;
-	res.Trigger(21).pre()
+	res.Trigger(trigger_elastic1.number).pre()
 		<<[](){FC=0;CC=0;return true;}
 		<<[](){tracks.clear();return true;}
 		<<make_shared<Hist1D>("elastic","0-Reference",Q_axis(res))
 	;
-	res.Trigger(21).per_track()<<(make_shared<ChainOr>()
+	res.Trigger(trigger_elastic1.number).per_track()<<(make_shared<ChainOr>()
 		<<(make_shared<ChainCheck>()
 			<<[](WTrack&T){return T.Type()==kFDC;}
 			<<[](WTrack&T){return T.Theta()!=0.125;}
@@ -73,7 +73,7 @@ void p_or_d_analyse(Analysis&res){
 		Axis([](){return trackpairs[0].Y().first.E;} ,0.0,1.0,100),
 		Axis([](){return trackpairs[0].Y().second.E;},0.0,1.0,100)
 	);
-	res.Trigger(21).post()<<(make_shared<ChainCheck>()
+	res.Trigger(trigger_elastic1.number).post()<<(make_shared<ChainCheck>()
 		<<make_shared<Hist1D>("elastic","Forward_charged_tracks",Axis([]()->double{return FC;},-0.5,9.5,10))
 		<<make_shared<Hist1D>("elastic","Central_charged_tracks",Axis([]()->double{return CC;},-0.5,9.5,10))
 		<<make_shared<Hist1D>("elastic","Vectors",Axis([]()->double{return tracks.size();},-0.5,9.5,10))
