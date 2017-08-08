@@ -65,7 +65,11 @@ void SearchGamma(Analysis&res){
 	static point<double> pi0_triple_mm(INFINITY,INFINITY);
 	res.Trigger(tn).post()<<(make_shared<ChainCheck>()
 	    << []()->bool{return registered.size()>1;}
-	    <<[](){return (isfinite(he3MM))&&(he3MM>0.40)&&(he3MM<0.58);}
+	    <<[&res](){
+		if(!isfinite(he3MM))return false;
+		const double Q=He3eta.P2Q(res.PBeam());
+		return (he3MM>0.50+Q*10.)&&(he3MM<0.55+Q*10.);
+	    }
 	    << make_shared<SetOfHists1D>("CentralGammas","He3MM",Q_axis_full(res),Axis([]()->double{return he3MM;},0.4,0.6,200))
 	    << make_shared<Hist1D>("CentralGammas","GammaCount",Axis([]()->double{return registered.size();},-0.5,9.5,10))
 	    << make_shared<Hist1D>("CentralGammas","GammaTotalEnergy",Axis([](){return TotalE;},0.0,1.6,800))
