@@ -68,7 +68,7 @@ void SearchGamma(Analysis&res){
 	    <<[&res](){
 		if(!isfinite(he3MM))return false;
 		const double Q=He3eta.P2Q(res.PBeam());
-		return (he3MM>0.50+Q*10.)&&(he3MM<0.55+Q*10.);
+		return (he3MM>0.50+Q)&&(he3MM<0.55+Q);
 	    }
 	    << make_shared<SetOfHists1D>("CentralGammas","He3MM",Q_axis_full(res),Axis([]()->double{return he3MM;},0.4,0.6,200))
 	    << make_shared<Hist1D>("CentralGammas","GammaCount",Axis([]()->double{return registered.size();},-0.5,9.5,10))
