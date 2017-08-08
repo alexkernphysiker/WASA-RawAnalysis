@@ -31,7 +31,7 @@ int main(int argc, char** argv) {
 			res=new MonteCarlo(true);
 	}
 	if(type.substr(0,5)=="REHe3")
-		res->Trigger(0).per_track()<<ForwardHe3Reconstruction(*res);
+		res->Trigger(0).per_track()<<ForwardHe3Reconstruction("He3Forward",*res);
 	if(
 		(type.substr(0,5)=="MCHe3")||
 		(type.substr(0,7)=="MCbound")||
@@ -43,7 +43,7 @@ int main(int argc, char** argv) {
 		(type.substr(0,7)=="MCbound")||
 		("DataC"==type)
 	)
-		Search6Gamma(*res);
+		SearchGamma(*res);
 	if(
 		("MCpd"==type)||
 		("MCppn_qf"==type)||
