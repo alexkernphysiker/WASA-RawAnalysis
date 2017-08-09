@@ -77,8 +77,9 @@ void SearchGamma(Analysis&res){
 		<< ( make_shared<ChainCheck>()
 			<< []()->bool{return registered.size()==2;}
 			<< []()->bool{AcceptedE=0;return true;}
-			<< []()->bool{
-				static const auto M=Particle::eta().mass();
+			<< [&res]()->bool{
+				const double Q=He3eta.P2Q(res.PBeam());
+				const auto M=Particle::eta().mass()+Q;
 				SortedPoints<double> table,table2,e_table;
 				for(size_t i=0;i<(registered.size()-1);i++)for(size_t j=i+1;j<registered.size();j++){
 				    const double im=(registered[i]+registered[j]).length4();
@@ -94,12 +95,12 @@ void SearchGamma(Analysis&res){
 				AcceptedE=e_table[0].Y();
 				return true;
 			}
-			<< [](){return gamma_pair.X()<0.06;}
+			<< [](){return gamma_pair.X()<0.2;}
 			<< make_shared<Hist1D>("CentralGammas2","TotalEnergy",Axis([](){return AcceptedE;},0.0,1.6,800))
 			<< make_shared<SetOfHists1D>("CentralGammas2","He3MM",Q_axis_full(res),Axis([]()->double{return he3MM;},0.4,0.6,200))
-			<< make_shared<SetOfHists1D>("CentralGammas2","GInvMass",Q_axis_full(res),Axis([]()->double{return gamma_pair.Y();},0.0,1.0,1000))
-			<< make_shared<SetOfHists1D>("CentralGammas2","GMMass",Q_axis_full(res),Axis([]()->double{return gamma_pair_mm.Y();},0.0,4.0,4000))
-	        	<< make_shared<SetOfHists1D>("CentralGammas2","GMMDiff",Q_axis_full(res),Axis([]()->double{return gamma_pair.X();},0.0,0.2,200))
+			<< make_shared<SetOfHists1D>("CentralGammas2","GIM",Q_axis_full(res),Axis([]()->double{return gamma_pair.Y();},0.0,1.0,1000))
+			<< make_shared<SetOfHists1D>("CentralGammas2","GMM",Q_axis_full(res),Axis([]()->double{return gamma_pair_mm.Y();},0.0,4.0,4000))
+	        	<< make_shared<SetOfHists1D>("CentralGammas2","GIMDiff",Q_axis_full(res),Axis([]()->double{return gamma_pair.X();},0.0,0.2,200))
 		)
 	        << ( make_shared<ChainCheck>()
 			<<[]()->bool{return registered.size()==6;}
@@ -135,9 +136,14 @@ void SearchGamma(Analysis&res){
 	                <<[]()->bool{return pi0_triple.X()<0.030;}
 			<< make_shared<Hist1D>("CentralGammas6","TotalEnergy",Axis([](){return AcceptedE;},0.0,1.6,800))
 			<< make_shared<SetOfHists1D>("CentralGammas6","He3MM",Q_axis_full(res),Axis([]()->double{return he3MM;},0.4,0.6,200))
-			<< make_shared<SetOfHists1D>("CentralGammas6","GInvMass",Q_axis_full(res),Axis([]()->double{return pi0_triple.Y();},0.0,1.0,1000))
+			<< make_shared<SetOfHists1D>("CentralGammas6","GIM",Q_axis_full(res),Axis([]()->double{return pi0_triple.Y();},0.0,1.0,1000))
+			<< make_shared<SetOfHists1D>("CentralGammas6","GIMTDiff",Q_axis_full(res),Axis([&res]()->double{
+				const double Q=He3eta.P2Q(res.PBeam());
+				const auto M=Particle::eta().mass()+Q;
+				return pi0_triple.Y()-M;
+			},0.0,0.5,500))
 			<< make_shared<SetOfHists1D>("CentralGammas6","GMMass",Q_axis_full(res),Axis([]()->double{return pi0_triple_mm.Y();},0.0,4.0,4000))
-			<< make_shared<SetOfHists1D>("CentralGammas6","GMMDiff",Q_axis_full(res),Axis([]()->double{return pi0_triple.X();},0.0,0.2,200))
+			<< make_shared<SetOfHists1D>("CentralGammas6","GMMPDiff",Q_axis_full(res),Axis([]()->double{return pi0_triple.X();},0.0,0.2,200))
 	        )
 	    )
 	);
