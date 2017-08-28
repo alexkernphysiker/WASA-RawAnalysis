@@ -33,7 +33,7 @@ const EventGenerator BoundSimulation2Gamma(RANDOM&RG,const RandomValueGenerator<
 }
 int main(){
 	RANDOM RG;
-	Plotter::Instance().SetOutput(".","sim-2g");
+	Plotter<>::Instance().SetOutput(".","sim-2g");
 	const RandomUniform<> P(p_beam_low,p_beam_hi); 
 	const auto
 	pf1=ReadPfFromFile("distributions/he3eta-pf-75-20.txt"),

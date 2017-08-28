@@ -55,7 +55,7 @@ if(NOT $ENV{PLUTOSYS} STREQUAL "")
     foreach(example ${SIMULATIONS_ADV})
 	get_filename_component(ex_app ${example} NAME_WE)
 	add_executable(${ex_app} ${example} Simulation-advanced/runsim.cpp Simulation-advanced/bound.cpp)
-	target_link_libraries(${ex_app} Pluto ${ROOT_LIBRARIES} ${libs} experiment kinematics gpwrap)
+	target_link_libraries(${ex_app} Pluto ${ROOT_LIBRARIES} ${libs} experiment kinematics)
     endforeach()
 endif()
 
