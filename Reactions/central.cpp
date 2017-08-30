@@ -196,6 +196,50 @@ void SearchHe3nGamma(Analysis&res){
 			<< make_shared<SetOfHists1D>("He3nCentralGammas2","He3MM1",Q_axis_full(res),Axis([](){return he3MM;},0.4,0.6,200))
 			<< make_shared<SetOfHists1D>("He3nCentralGammas2","GIM1",Q_axis_full(res),Axis([](){return gamma_pair.Y();},0.0,1.0,1000))
 		)
+	        << ( make_shared<ChainCheck>()
+			<<[]()->bool{return registered.size()>=6;}
+			<<make_shared<Hist1D>("He3nCentralGammas6","GTE0",Axis([](){return TotalE;},0.0,1.6,800))
+	                <<[]()->bool{AcceptedE=0;return true;}
+	                <<[]()->bool{
+        	                static const auto M=Particle::pi0().mass();
+	                        SortedPoints<double> selector,selector_mm,e_table;
+        	                for(size_t i=0;i<(registered.size()-5);++i)for(size_t j=i+1;j<registered.size();++j){
+                	                const auto pair1=registered[i]+registered[j];
+                        	        const auto e1=registered[i].time_component()+registered[j].time_component();
+                                	const double diff1=pow(pair1.length4()-M,2);
+	                                for(size_t k=i+1;k<(registered.size()-3);(++k)+=((k==j)?1:0))
+        	                        for(size_t l=k+1;l<registered.size();(++l)+=((l==j)?1:0)){
+                	                        const auto pair2=registered[k]+registered[l];
+                        	                const auto e2=registered[k].time_component()+registered[l].time_component();
+                                	        const double diff2=pow(pair2.length4()-M,2);
+                                        	for(size_t o=k+1;o<(registered.size()-1);(++o)+=(((o==j)||(o==l))?1:0))
+	                                        for(size_t p=o+1;p<registered.size();(++p)+=(((p==j)||(p==l))?1:0)){
+        	                                    const auto pair3=registered[o]+registered[p];
+                	                            const auto e3=registered[o].time_component()+registered[p].time_component();
+                        	                    const double diff3=pow(pair3.length4()-M,2);
+                                	            selector<<point<double>(sqrt(diff1+diff2+diff3),(pair1+pair2+pair3).length4());
+                                        	    selector_mm<<point<double>(sqrt(diff1+diff2+diff3),(Ptotal-(pair1+pair2+pair3)).length4());
+	                                            e_table<<point<double>(diff1+diff2+diff3,e1+e2+e3);
+        	                                }
+                	                }
+	                        }
+	                        pi0_triple=selector[0];
+	                        pi0_triple_mm=selector_mm[0];
+	                        AcceptedE=e_table[0].Y();
+	                        return true;
+	                }
+			<< make_shared<Hist1D>("He3nCentralGammas6","TotalEnergy0",Axis([](){return AcceptedE;},0.0,1.6,800))
+			<< make_shared<Hist1D>("He3nCentralGammas6","GIMDiff0",Axis([&res]()->double{return pi0_triple.Y()-Particle::eta().mass()+He3eta.P2Q(res.PBeam());},0.0,0.5,500))
+			<< make_shared<Hist1D>("He3nCentralGammas6","GMM0",Axis([]()->double{return pi0_triple_mm.Y();},0.0,4.0,4000))
+			<< make_shared<Hist1D>("He3nCentralGammas6","GMMPDiff0",Axis([]()->double{return pi0_triple.X();},0.0,0.2,200))
+			<< make_shared<SetOfHists1D>("He3nCentralGammas6","GIM0",Q_axis_full(res),Axis([]()->double{return pi0_triple.Y();},0.0,1.0,1000))
+	                <<[]()->bool{return pi0_triple.X()<0.030;}
+			<< make_shared<Hist1D>("He3nCentralGammas6","TotalEnergy1",Axis([](){return AcceptedE;},0.0,1.6,800))
+			<< make_shared<Hist1D>("He3nCentralGammas6","GIMDiff1",Axis([&res]()->double{return pi0_triple.Y()-Particle::eta().mass()+He3eta.P2Q(res.PBeam());},0.0,0.5,500))
+			<< make_shared<Hist1D>("He3nCentralGammas6","GMM1",Axis([]()->double{return pi0_triple_mm.Y();},0.0,4.0,4000))
+			<< make_shared<Hist1D>("He3nCentralGammas6","GMMPDiff1",Axis([]()->double{return pi0_triple.X();},0.0,0.2,200))
+			<< make_shared<SetOfHists1D>("He3nCentralGammas6","GIM1",Q_axis_full(res),Axis([]()->double{return pi0_triple.Y();},0.0,1.0,1000))
+	        )
 	    )
 	);
 }
