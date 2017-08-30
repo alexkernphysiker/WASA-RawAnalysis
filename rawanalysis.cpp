@@ -42,8 +42,10 @@ int main(int argc, char** argv) {
 		(type.substr(0,5)=="MCHe3")||
 		(type.substr(0,7)=="MCbound")||
 		("DataC"==type)
-	)
+	){
+		SearchHe3nGamma(*res);
 		SearchGamma(*res);
+	}
 	if(
 		("MCpd"==type)||
 		("MCppn_qf"==type)||
