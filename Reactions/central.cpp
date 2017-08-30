@@ -155,7 +155,7 @@ void SearchHe3nGamma(Analysis&res){
 	    << make_shared<SetOfHists1D>("He3nCentralGammas","He3MM0",Q_axis_full(res),Axis([]()->double{return he3MM;},0.4,0.6,200))
 	    <<[&res](){
 		const double Q=He3eta.P2Q(res.PBeam());
-		return (he3MM>0.50+Q)&&(he3MM<0.55+Q);
+		return (he3MM>0.51+Q)&&(he3MM<0.55+Q);
 	    }
 	    << make_shared<SetOfHists1D>("He3nCentralGammas","He3MM1",Q_axis_full(res),Axis([]()->double{return he3MM;},0.4,0.6,200))
 	    << make_shared<Hist1D>("He3nCentralGammas","GammaCount",Axis([]()->double{return registered.size();},-0.5,9.5,10))
@@ -185,11 +185,13 @@ void SearchHe3nGamma(Analysis&res){
 			<< make_shared<SetOfHists1D>("He3nCentralGammas2","He3MM0",Q_axis_full(res),Axis([](){return he3MM;},0.4,0.6,200))
 			<< make_shared<SetOfHists1D>("He3nCentralGammas2","GIM0",Q_axis_full(res),Axis([](){return gamma_pair.Y();},0.0,1.0,1000))
 			<< make_shared<Hist1D>("He3nCentralGammas2","GMM0",Axis([](){return gamma_pair_mm.Y();},0.0,4.0,4000))
-			<< make_shared<Hist1D>("He3nCentralGammas2","GIMDiff0",Axis([](){return gamma_pair.X();},0.0,0.2,200))
+			<< make_shared<Hist1D>("He3nCentralGammas2","GIMDiff0",Axis([](){return gamma_pair.X();},0.0,0.3,300))
 			<< make_shared<Hist1D>("He3nCentralGammas2","GTE0",Axis([](){return AcceptedE;},0.0,1.0,1000))
-			<< [](){return gamma_pair.X()<0.2;}
+			<< [](){return gamma_pair.X()<0.10;}
+			<< [](){return (gamma_pair_mm.Y()<2.65)&&(gamma_pair_mm.Y()>2.40);}
+			<< [](){return AcceptedE>0.4;}
 			<< make_shared<Hist1D>("He3nCentralGammas2","GTE1",Axis([](){return AcceptedE;},0.0,1.0,1000))
-			<< make_shared<Hist1D>("He3nCentralGammas2","GIMDiff1",Axis([](){return gamma_pair.X();},0.0,0.2,200))
+			<< make_shared<Hist1D>("He3nCentralGammas2","GIMDiff1",Axis([](){return gamma_pair.X();},0.0,0.3,300))
 			<< make_shared<Hist1D>("He3nCentralGammas2","GMM1",Axis([](){return gamma_pair_mm.Y();},0.0,4.0,4000))
 			<< make_shared<SetOfHists1D>("He3nCentralGammas2","He3MM1",Q_axis_full(res),Axis([](){return he3MM;},0.4,0.6,200))
 			<< make_shared<SetOfHists1D>("He3nCentralGammas2","GIM1",Q_axis_full(res),Axis([](){return gamma_pair.Y();},0.0,1.0,1000))
