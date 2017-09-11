@@ -44,6 +44,12 @@ int main(int argc, char** argv) {
 		("DataC"==type)
 	){
 		SearchHe3nGamma(*res);
+	}
+	if(
+		(type.substr(0,5)=="MCHe3")||
+		(type.substr(0,7)=="MCbound")||
+		("DataCC"==type)
+	){
 		SearchGamma(*res);
 	}
 	if(
