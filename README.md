@@ -1,6 +1,6 @@
 WASA raw data Analysis
 ======================
-Sources of my software for the analysis of raw data obtained from the experiment WASA-at-COSY on searching eta-mesic 3He in May 2014.
+Sources of my software providing raw data analysis for the experiment WASA-at-COSY on searching eta-mesic 3He in May 2014.
 All files are distributed under GPL license
 
 
@@ -65,7 +65,7 @@ Configure WMC and rootsorter for current experimental setup
     ./config.sh 
     cd ..
 
-Run pluto (for all reactions that are implemented)
+Run simulation (for all reactions that are implemented)
 
     ./sim-*
 
@@ -79,16 +79,29 @@ Analyse Monte Carlo
 
 Analyse raw data
 
-    ./RunAnalysis-data.sh
+    ./RunAnalysis-data.sh <analysis type>
 
 
-List of implemented reactions
-=============================
+List of implemented reactions for Monte Carlo
+=============================================
 
     He3eta
     He3pi0
     He3pi0pi0
     He3pi0pi0pi0
-    He3eta6g (eta decays into 6 gammas)
-    He3pi06g (3pi0 each decays into 2 gammas)
-    pd (elastic scattering for forward tracks reconstruction)
+    pd
+    ppn (n-spectator)
+    bound1-2g (simulation of direct decay of eta coupled by 3He into 2 gammas)
+    bound1-6g (simulation of direct decay of eta coupled by 3He into 6 gammas)
+    bound2-2g (different p_{Fermi} distribution)
+    bound2-6g
+    bound3-2g (one more different p_{Fermi} distribution)
+    bound3-6g 
+
+List of analyses for data
+=========================
+
+    F - forward 3He tracks
+    E - pd and ppn reactions
+    C - forward 3He + central gammas
+    CC - central gammas only
