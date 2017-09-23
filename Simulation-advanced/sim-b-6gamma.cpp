@@ -11,9 +11,9 @@ const double lambda(const double&x,const double&y,const double&z){
 	return x*x+y*y+z*z-2.*x*y-2.*y*z-2.*z*x;
 }
 const EventGenerator BoundSimulation6Gamma(RANDOM&RG,const RandomValueGenerator<>&Pb_distr,const RandomValueGenerator<>&Pf_distr){
-	const auto generator=[&RG](const pair<Vector4<>,Vector4<>>&C)->list<particle_sim>{
-		const auto&etaPlab=C.first;
-		const auto&he3Plab=C.second;
+	const auto generator=[&RG](const etamesic&C)->list<particle_sim>{
+		const auto&etaPlab=C.eta_;
+		const auto&he3Plab=C.he3;
 		static PlotDistr1D<> 
 		mplot("6g","m_{eta}, GeV",BinsByCount(100,0.3,0.7)),
 		im1plot("6g","IM before, GeV",BinsByCount(100,0.3,0.7)),
@@ -92,7 +92,7 @@ const EventGenerator BoundSimulation6Gamma(RANDOM&RG,const RandomValueGenerator<
 			const auto C=Compound(RG,Pb_distr,Pf_distr,pow(3.0*Particle::pi0().mass(),2));
 			const auto res=generator(C);
 			if(res.size()>0){
-				pbplot.Fill((C.first+C.second).space_component().mag());
+				pbplot.Fill((C.he3+C.eta_).space_component().mag());
 				Vector4<> P=0;
 				for(const auto&p:res){
 					P+=Vector4<>::bySpaceC_and_Length4(p.P,p.type.mass());

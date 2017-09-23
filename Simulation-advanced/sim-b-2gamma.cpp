@@ -10,8 +10,8 @@ using namespace GnuplotWrap;
 const EventGenerator BoundSimulation2Gamma(RANDOM&RG,const RandomValueGenerator<>&Pb_distr,const RandomValueGenerator<>&Pf_distr){
 	return [&RG,&Pb_distr,&Pf_distr]()->list<particle_sim>{
 		const auto C=Compound(RG,Pb_distr,Pf_distr);
-		const auto&etaPlab=C.first;
-		const auto&he3Plab=C.second;
+		const auto&etaPlab=C.eta_;
+		const auto&he3Plab=C.he3;
 		
 		static PlotDistr1D<> pbplot("","P_{beam,lab}, GeV/c",BinsByCount(40,p_beam_low,p_beam_hi));
 		static PlotDistr1D<> pfplot("","P_{eta,lab}, GeV/c",BinsByCount(1000,0.0,1.0));

@@ -15,7 +15,7 @@ const LinearInterpolation<> ReadPfFromFile(const string&name){
 	while(file>>x>>y)data<<point<>(x/1000.,y);
 	return data;
 }
-const pair<Vector4<>,Vector4<>> Compound(
+const etamesic Compound(
 	RANDOM&RG,
 	const RandomValueGenerator<>&Pb_distr,
 	const RandomValueGenerator<>&Pf_distr,
@@ -35,7 +35,7 @@ const pair<Vector4<>,Vector4<>> Compound(
 		);
 		const auto etaPcm=Vector4<>(TotalP.length4())-he3Pcm;
 		if(etaPcm.Sqr4()>s_thr){
-			return make_pair(etaPcm.Lorentz(-TotalP.Beta()),he3Pcm.Lorentz(-TotalP.Beta()));
+			return {.he3=he3Pcm.Lorentz(-TotalP.Beta()),.eta_=etaPcm.Lorentz(-TotalP.Beta())};
 		}
 	}
 }
