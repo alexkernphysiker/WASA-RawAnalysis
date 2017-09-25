@@ -50,9 +50,9 @@ const EventGenerator BoundSimulation6Gamma(RANDOM&RG,const RandomValueGenerator<
 		const double p2x=(E3*E3-E2*E2-p1*p1)/(2.*p1);
 		const double p2y=sqrt(p2*p2-p2x*p2x);
 		const double p3x=-(p1+p2x);
-		const auto P1=LorentzVector<Vector2<>>::bySpaceC_and_Length4({p1,0.},m),
-		P2=LorentzVector<Vector2<>>::bySpaceC_and_Length4({p2x,p2y},m),
-		P3=LorentzVector<Vector2<>>::bySpaceC_and_Length4({p3x,-p2y},m);
+		const auto P1=lorentz_byPM(DesCartes(p1,0.),m),
+		P2=lorentz_byPM(DesCartes(p2x,p2y),m),
+		P3=lorentz_byPM(DesCartes(p3x,-p2y),m);
 		if(!isfinite(P1.length4()))return {};
 		if(!isfinite(P2.length4()))return {};
 		if(!isfinite(P3.length4()))return {};
@@ -60,21 +60,18 @@ const EventGenerator BoundSimulation6Gamma(RANDOM&RG,const RandomValueGenerator<
 		s12plot.Fill(s1,s2);s13plot.Fill(s1,s3);s23plot.Fill(s2,s3);
 		p1plot.Fill(p1);p2plot.Fill(p2);p3plot.Fill(p3);
 		static RandomUniform<> decayorientation(0,2.0*PI());
-		const auto DecayPlane=Plane3D<>::ByNormalVectorAndTheta(
-			Vector3<>::RandomIsotropicDirection(RG),
-			decayorientation(RG)
-		);
+		const auto DecayPlane=Plane3D<>::ByNormalVectorAndTheta(RandomIsotropicDirection3<>(RG),decayorientation(RG));
 		const vector<LorentzVector<>> pizeros={
-			DecayPlane(P1).Lorentz(-etaPlab.Beta()),
-			DecayPlane(P2).Lorentz(-etaPlab.Beta()),
-			DecayPlane(P3).Lorentz(-etaPlab.Beta())
+			lorentz_byPM(DecayPlane(P1.space_component()),P1.length4()).Lorentz(-etaPlab.Beta()),
+			lorentz_byPM(DecayPlane(P2.space_component()),P2.length4()).Lorentz(-etaPlab.Beta()),
+			lorentz_byPM(DecayPlane(P3.space_component()),P3.length4()).Lorentz(-etaPlab.Beta()),
 		};
 		im1plot.Fill((pizeros[0]+pizeros[1]+pizeros[2]).length4());
-		auto G=LorentzVector<>::zero();
+		LorentzVector<> G=0;
 		list<particle_sim> output;
 		for(const auto PiP:pizeros){
-			const auto g1Pcm=LorentzVector<>::bySpaceC_and_Length4(Vector3<>::RandomIsotropicDirection(RG)*m/2.,0);
-			const auto g2Pcm=LorentzVector<>::bySpaceC_and_Length4(-g1Pcm.space_component(),0);
+			const auto g1Pcm=lorentz_byPM(RandomIsotropicDirection3<>(RG)*m/2.,0.);
+			const auto g2Pcm=lorentz_byPM(-g1Pcm.space_component(),0.);
 			const auto piframe=PiP.Beta();
 			if(!isfinite(piframe.mag()))throw Exception<EventGenerator,106>("Invalid pi0 frame");
 			output.push_back({.type=Particle::gamma(),.P=g1Pcm.Lorentz(-piframe).space_component()});
@@ -93,9 +90,9 @@ const EventGenerator BoundSimulation6Gamma(RANDOM&RG,const RandomValueGenerator<
 			const auto res=generator(C);
 			if(res.size()>0){
 				pbplot.Fill((C.he3+C.eta_).space_component().mag());
-				Vector4<> P=0;
+				LorentzVector<> P=0;
 				for(const auto&p:res){
-					P+=Vector4<>::bySpaceC_and_Length4(p.P,p.type.mass());
+					P+=lorentz_byPM(p.P,p.type.mass());
 				}
 				pbplot2.Fill(P.space_component().mag());
 				return res;

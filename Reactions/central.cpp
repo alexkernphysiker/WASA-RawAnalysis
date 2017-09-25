@@ -22,8 +22,8 @@ const Reaction He3eta(Particle::p(),Particle::d(),{Particle::he3(),Particle::eta
 Axis Q_axis_full(const Analysis&res){return Axis([&res]()->double{return 1000.0*He3eta.P2Q(res.PBeam());},-70.0,30.0,40);}
 void SearchGamma(Analysis&res){
 	const auto&tn=trigger_gammas_central.number;
-	static vector<Vector4<double>> registered;
-	static auto Ptotal=Vector4<double>::zero();
+	static vector<LorentzVector<>> registered;
+	static LorentzVector<> Ptotal=0;
 	static double TotalE;
 	static double AcceptedE_6,AcceptedE_4;
 	res.Trigger(tn).pre()<<(make_shared<ChainOr>()
@@ -158,8 +158,8 @@ void SearchGamma(Analysis&res){
 }
 void SearchHe3nGamma(Analysis&res){
 	const auto&tn=trigger_he3_forward.number;
-	static vector<Vector4<double>> registered;
-	static auto Ptotal=Vector4<double>::zero();
+	static vector<LorentzVector<>> registered;
+	static LorentzVector<> Ptotal=0;
 	static double TotalE;
 	static double AcceptedE;
 	static particle_kine he3;

@@ -25,16 +25,11 @@ const etamesic Compound(
                 PP("bound","P, GeV/c",BinsByCount(40,p_beam_low,p_beam_hi));
 	const auto P=Pb_distr(RG);
 	PP.Fill(P);
-	const auto TotalP=
-		Vector4<>::bySpaceC_and_Length4(Vector3<>::basis_z()*P,Particle::p().mass())
-		+Particle::d().mass();
+	const auto TotalP=lorentz_byPM(Z<>()*P,Particle::p().mass())+Particle::d().mass();
 	while(true){
-		const auto he3Pcm=Vector4<>::bySpaceC_and_Length4(
-			Vector3<>::RandomIsotropicDirection(RG)*Pf_distr(RG),
-			Particle::he3().mass()
-		);
-		const auto etaPcm=Vector4<>(TotalP.length4())-he3Pcm;
-		if(etaPcm.Sqr4()>s_thr){
+		const auto he3Pcm=lorentz_byPM(RandomIsotropicDirection3<>(RG)*Pf_distr(RG),Particle::he3().mass());
+		const auto etaPcm=LorentzVector<>(TotalP.length4())-he3Pcm;
+		if(etaPcm.length4_sqr()>s_thr){
 			return {.he3=he3Pcm.Lorentz(-TotalP.Beta()),.eta_=etaPcm.Lorentz(-TotalP.Beta())};
 		}
 	}

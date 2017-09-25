@@ -6,7 +6,7 @@
 #include <math_h/interpolate.h>
 #include "runsim.h"
 const MathTemplates::LinearInterpolation<> ReadPfFromFile(const std::string&name);
-struct etamesic{MathTemplates::Vector4<>he3;MathTemplates::Vector4<>eta_;};
+struct etamesic{MathTemplates::LorentzVector<>he3;MathTemplates::LorentzVector<>eta_;};
 const etamesic Compound(
 	MathTemplates::RANDOM&RG,
 	const MathTemplates::RandomValueGenerator<>&Pb_distr,
