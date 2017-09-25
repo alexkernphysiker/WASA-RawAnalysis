@@ -57,6 +57,7 @@ if(NOT $ENV{PLUTOSYS} STREQUAL "")
 	add_executable(${ex_app} ${example} Simulation-advanced/runsim.cpp Simulation-advanced/bound.cpp)
 	target_link_libraries(${ex_app} Pluto ${ROOT_LIBRARIES} ${libs} experiment kinematics)
     endforeach()
+    file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/Simulation-advanced/pp DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 endif()
 
 if(NOT $ENV{ROOTSORTERSYS} STREQUAL "")
