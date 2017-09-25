@@ -20,10 +20,9 @@ const EventGenerator BoundSimulation2Gamma(RANDOM&RG,const RandomValueGenerator<
 		pfplot.Fill(etaPlab.space_component().mag());
 		mplot.Fill(etaPlab.length4());
 		
-		const auto g1Pcme=lorentz_byPM(RandomIsotropicDirection3<>(RG)*etaPlab.length4()/2.0,0.0);
-		const auto g2Pcme=lorentz_byPM(-g1Pcme.space_component(),0.0);
-		const auto g1Plab=g1Pcme.Lorentz(-etaPlab.Beta());
-		const auto g2Plab=g2Pcme.Lorentz(-etaPlab.Beta());
+		const auto gammas_cme=binaryDecay(etaPlab.length4(),0.0,0.0,RandomIsotropicDirection3<>(RG));
+		const auto g1Plab=gammas_cme.first.Lorentz(-etaPlab.Beta());
+		const auto g2Plab=gammas_cme.second.Lorentz(-etaPlab.Beta());
 		return {
 			{.type=Particle::gamma(),.P=g1Plab.space_component()},
 			{.type=Particle::gamma(),.P=g2Plab.space_component()},
