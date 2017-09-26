@@ -55,6 +55,7 @@ int main(int argc, char** argv) {
 	if(
 		("MCpd"==type)||
 		("MCppn_qf"==type)||
+		("MCppn_qf_"==type)||
 		("DataE"==type)
 	)
 		p_or_d_analyse(*res);
