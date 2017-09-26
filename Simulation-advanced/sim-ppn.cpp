@@ -52,11 +52,11 @@ int main(){
 		static PlotDistr1D<> p_dep_x("Pp(pt)_x","",BinsByCount(100,-0.5,0.5));
 		static PlotDistr1D<> p_dep_y("Pp(pt)_y","",BinsByCount(100,-0.5,0.5));
 		static PlotDistr1D<> p_dep_z("Pp(pt)_z","",BinsByCount(100,1.0,2.0));
+                const static RandomUniform<> PHI(-PI(),PI());
+		if(PP.M()<=(2.0*Particle::p().mass()))return {};
 		p_dep_x.Fill(ppr_t.S().x());
 		p_dep_y.Fill(ppr_t.S().y());
 		p_dep_z.Fill(ppr_t.S().z());
-                const static RandomUniform<> PHI(-PI(),PI());
-		if(PP.M()<=(2.0*Particle::p().mass()))return {};
                 const auto final_chm=binaryDecay(PP.M(),Particle::p().mass(),Particle::p().mass(),Angles(ppr_cm.S()));
 		const auto transform=[&ppr_cm,&ppr_t,&THETA,&RG](const LorentzVector<>&P)->const LorentzVector<>{
 			return P.Rotate(ppr_cm.S()^X<>(),THETA(RG,ppr_t.S().M())).Rotate(ppr_cm.S(),PHI(RG));
