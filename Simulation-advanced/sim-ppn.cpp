@@ -47,18 +47,27 @@ int main(){
                 const auto pt_lab=d_lab-nt_lab;
                 const auto pr_lab=lorentz_byPM(Z<>()*Pb_distr(RG),Particle::p().mass());
                 const auto PP=pr_lab+pt_lab;
-                const double ppr_dep=pr_lab.Lorentz(pt_lab.Beta()).space_component().mag();
-                static PlotDistr1D<> p_dep("Pp(pt)","",BinsByCount(100,1.0,2.0));
-                p_dep.Fill(ppr_dep);
-                const static RandomUniform<> PHI(0.0,2.0*PI<>());
-		if(PP.length4()<=(2.0*Particle::p().mass()))return {};
-                const auto final_cm=binaryDecay(PP.length4(),Particle::p().mass(),Particle::p().mass(),THETA(RG,ppr_dep),PHI(RG));
-                const auto p1_lab=final_cm.first.Lorentz(-PP.Beta());
-                const auto p2_lab=final_cm.second.Lorentz(-PP.Beta());
+		const auto ppr_t =pr_lab.Transform(pt_lab.Beta());
+		const auto ppr_cm=pr_lab.Transform(PP.Beta());
+		static PlotDistr1D<> p_dep_x("Pp(pt)_x","",BinsByCount(100,-0.5,0.5));
+		static PlotDistr1D<> p_dep_y("Pp(pt)_y","",BinsByCount(100,-0.5,0.5));
+		static PlotDistr1D<> p_dep_z("Pp(pt)_z","",BinsByCount(100,1.0,2.0));
+		p_dep_x.Fill(ppr_t.S().x());
+		p_dep_y.Fill(ppr_t.S().y());
+		p_dep_z.Fill(ppr_t.S().z());
+                const static RandomUniform<> PHI(-PI(),PI());
+		if(PP.M()<=(2.0*Particle::p().mass()))return {};
+                const auto final_chm=binaryDecay(PP.M(),Particle::p().mass(),Particle::p().mass(),Angles(ppr_cm.S()));
+		const auto transform=[&ppr_cm,&ppr_t,&THETA,&RG](const LorentzVector<>&P)->const LorentzVector<>{
+			return P.Rotate(ppr_cm.S()^X<>(),THETA(RG,ppr_t.S().M())).Rotate(ppr_cm.S(),PHI(RG));
+		};
+		const auto final_cm=make_pair(transform(final_chm.first),transform(final_chm.second));
+                const auto p1_lab=final_cm.first.Transform(-PP.Beta());
+                const auto p2_lab=final_cm.second.Transform(-PP.Beta());
                 return {
-                        {.type=Particle::n(),.P=nt_lab.space_component()},
-                        {.type=Particle::p(),.P=p1_lab.space_component()},
-                        {.type=Particle::p(),.P=p2_lab.space_component()}
+                        {.type=Particle::n(),.P=nt_lab.S()},
+                        {.type=Particle::p(),.P=p1_lab.S()},
+                        {.type=Particle::p(),.P=p2_lab.S()}
                 };
         });
 	return 0;

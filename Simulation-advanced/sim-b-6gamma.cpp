@@ -28,8 +28,8 @@ const EventGenerator BoundSimulation6Gamma(RANDOM&RG,const RandomValueGenerator<
 		s12plot("s1 vs s2",BinsByCount(100,0.0,0.4),BinsByCount(100,0.0,0.4)),
 		s13plot("s1 vs s3",BinsByCount(100,0.0,0.4),BinsByCount(100,0.0,0.4)),
 		s23plot("s2 vs s3",BinsByCount(100,0.0,0.4),BinsByCount(100,0.0,0.4));
-		mplot.Fill(etaPlab.length4());
-		const double M=etaPlab.length4(),s=M*M,m=Particle::pi0().mass();
+		mplot.Fill(etaPlab.M());
+		const double M=etaPlab.M(),s=M*M,m=Particle::pi0().mass();
 		const double smin=pow(m,2),smax=pow(M-m,2);
 		const RandomValueTableDistr<> s1_distr(
 			[&M,&m,&s](const double&s1){
@@ -53,33 +53,33 @@ const EventGenerator BoundSimulation6Gamma(RANDOM&RG,const RandomValueGenerator<
 		const auto P1=lorentz_byPM(DesCartes(p1,0.),m),
 		P2=lorentz_byPM(DesCartes(p2x,p2y),m),
 		P3=lorentz_byPM(DesCartes(p3x,-p2y),m);
-		if(!isfinite(P1.length4()))return {};
-		if(!isfinite(P2.length4()))return {};
-		if(!isfinite(P3.length4()))return {};
+		if(!isfinite(P1.M()))return {};
+		if(!isfinite(P2.M()))return {};
+		if(!isfinite(P3.M()))return {};
 		s1plot.Fill(s1);s2plot.Fill(s2);s3plot.Fill(s3);
 		s12plot.Fill(s1,s2);s13plot.Fill(s1,s3);s23plot.Fill(s2,s3);
 		p1plot.Fill(p1);p2plot.Fill(p2);p3plot.Fill(p3);
 		static RandomUniform<> decayorientation(0,2.0*PI());
 		const auto DecayPlane=Plane3D<>::ByNormalVectorAndTheta(RandomIsotropicDirection3<>(RG),decayorientation(RG));
 		const vector<LorentzVector<>> pizeros={
-			lorentz_byPM(DecayPlane(P1.space_component()),P1.length4()).Lorentz(-etaPlab.Beta()),
-			lorentz_byPM(DecayPlane(P2.space_component()),P2.length4()).Lorentz(-etaPlab.Beta()),
-			lorentz_byPM(DecayPlane(P3.space_component()),P3.length4()).Lorentz(-etaPlab.Beta()),
+			lorentz_byPM(DecayPlane(P1.S()),P1.M()).Transform(-etaPlab.Beta()),
+			lorentz_byPM(DecayPlane(P2.S()),P2.M()).Transform(-etaPlab.Beta()),
+			lorentz_byPM(DecayPlane(P3.S()),P3.M()).Transform(-etaPlab.Beta()),
 		};
-		im1plot.Fill((pizeros[0]+pizeros[1]+pizeros[2]).length4());
+		im1plot.Fill((pizeros[0]+pizeros[1]+pizeros[2]).M());
 		LorentzVector<> G=0;
 		list<particle_sim> output;
 		for(const auto PiP:pizeros){
 			const auto g1Pcm=lorentz_byPM(RandomIsotropicDirection3<>(RG)*m/2.,0.);
-			const auto g2Pcm=lorentz_byPM(-g1Pcm.space_component(),0.);
+			const auto g2Pcm=lorentz_byPM(-g1Pcm.S(),0.);
 			const auto piframe=PiP.Beta();
-			if(!isfinite(piframe.mag()))throw Exception<EventGenerator,106>("Invalid pi0 frame");
-			output.push_back({.type=Particle::gamma(),.P=g1Pcm.Lorentz(-piframe).space_component()});
-			output.push_back({.type=Particle::gamma(),.P=g2Pcm.Lorentz(-piframe).space_component()});
-			G+=g1Pcm.Lorentz(-piframe)+g2Pcm.Lorentz(-piframe);
+			if(!isfinite(piframe.M()))throw Exception<EventGenerator,106>("Invalid pi0 frame");
+			output.push_back({.type=Particle::gamma(),.P=g1Pcm.Transform(-piframe).S()});
+			output.push_back({.type=Particle::gamma(),.P=g2Pcm.Transform(-piframe).S()});
+			G+=g1Pcm.Transform(-piframe)+g2Pcm.Transform(-piframe);
 		}
-		im2plot.Fill(G.length4());
-		output.push_back({.type=Particle::he3() ,.P=he3Plab.space_component()});
+		im2plot.Fill(G.M());
+		output.push_back({.type=Particle::he3() ,.P=he3Plab.S()});
 		return output;
 	};
 	return [generator,&RG,&Pb_distr,&Pf_distr]()->list<particle_sim>{
@@ -89,12 +89,12 @@ const EventGenerator BoundSimulation6Gamma(RANDOM&RG,const RandomValueGenerator<
 			const auto C=Compound(RG,Pb_distr,Pf_distr,pow(3.0*Particle::pi0().mass(),2));
 			const auto res=generator(C);
 			if(res.size()>0){
-				pbplot.Fill((C.he3+C.eta_).space_component().mag());
+				pbplot.Fill((C.he3+C.eta_).S().M());
 				LorentzVector<> P=0;
 				for(const auto&p:res){
 					P+=lorentz_byPM(p.P,p.type.mass());
 				}
-				pbplot2.Fill(P.space_component().mag());
+				pbplot2.Fill(P.S().M());
 				return res;
 			}
 		};

@@ -12,7 +12,7 @@ const LinearInterpolation<> ReadPfFromFile(const string&name){
 	SortedPoints<> data;
 	ifstream file(name);
 	double x,y;
-	while(file>>x>>y)data<<point<>(x/1000.,y);
+	while(file>>x>>y)data<<make_point(x/1000.,y);
 	return data;
 }
 const etamesic Compound(
@@ -28,9 +28,9 @@ const etamesic Compound(
 	const auto TotalP=lorentz_byPM(Z<>()*P,Particle::p().mass())+Particle::d().mass();
 	while(true){
 		const auto he3Pcm=lorentz_byPM(RandomIsotropicDirection3<>(RG)*Pf_distr(RG),Particle::he3().mass());
-		const auto etaPcm=LorentzVector<>(TotalP.length4())-he3Pcm;
-		if(etaPcm.length4_sqr()>s_thr){
-			return {.he3=he3Pcm.Lorentz(-TotalP.Beta()),.eta_=etaPcm.Lorentz(-TotalP.Beta())};
+		const auto etaPcm=LorentzVector<>(TotalP.M())-he3Pcm;
+		if(etaPcm.M_sqr()>s_thr){
+			return {.he3=he3Pcm.Transform(-TotalP.Beta()),.eta_=etaPcm.Transform(-TotalP.Beta())};
 		}
 	}
 }

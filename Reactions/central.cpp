@@ -68,20 +68,20 @@ void SearchGamma(Analysis&res){
 	                        SortedPoints<double> selector,selector_mm,e_table;
         	                for(size_t i=0;i<(registered.size()-5);++i)for(size_t j=i+1;j<registered.size();++j){
                 	                const auto pair1=registered[i]+registered[j];
-                        	        const auto e1=registered[i].time_component()+registered[j].time_component();
-                                	const double diff1=pow(pair1.length4()-M,2);
+                        	        const auto e1=registered[i].T()+registered[j].T();
+                                	const double diff1=pow(pair1.M()-M,2);
 	                                for(size_t k=i+1;k<(registered.size()-3);(++k)+=((k==j)?1:0))
         	                        for(size_t l=k+1;l<registered.size();(++l)+=((l==j)?1:0)){
                 	                        const auto pair2=registered[k]+registered[l];
-                        	                const auto e2=registered[k].time_component()+registered[l].time_component();
-                                	        const double diff2=pow(pair2.length4()-M,2);
+                        	                const auto e2=registered[k].T()+registered[l].T();
+                                	        const double diff2=pow(pair2.M()-M,2);
                                         	for(size_t o=k+1;o<(registered.size()-1);(++o)+=(((o==j)||(o==l))?1:0))
 	                                        for(size_t p=o+1;p<registered.size();(++p)+=(((p==j)||(p==l))?1:0)){
         	                                    const auto pair3=registered[o]+registered[p];
-                	                            const auto e3=registered[o].time_component()+registered[p].time_component();
-                        	                    const double diff3=pow(pair3.length4()-M,2);
-                                	            selector<<point<double>(sqrt(diff1+diff2+diff3),(pair1+pair2+pair3).length4());
-                                        	    selector_mm<<point<double>(sqrt(diff1+diff2+diff3),(Ptotal-(pair1+pair2+pair3)).length4());
+                	                            const auto e3=registered[o].T()+registered[p].T();
+                        	                    const double diff3=pow(pair3.M()-M,2);
+                                	            selector<<point<double>(sqrt(diff1+diff2+diff3),(pair1+pair2+pair3).M());
+                                        	    selector_mm<<point<double>(sqrt(diff1+diff2+diff3),(Ptotal-(pair1+pair2+pair3)).M());
 	                                            e_table<<point<double>(diff1+diff2+diff3,e1+e2+e3);
         	                                }
                 	                }
@@ -118,15 +118,15 @@ void SearchGamma(Analysis&res){
 	                        SortedPoints<double> selector,selector_mm,e_table;
         	                for(size_t i=0;i<(registered.size()-3);++i)for(size_t j=i+1;j<registered.size();++j){
                 	                const auto pair1=registered[i]+registered[j];
-                        	        const auto e1=registered[i].time_component()+registered[j].time_component();
-                                	const double diff1=pow(pair1.length4()-M,2);
+                        	        const auto e1=registered[i].T()+registered[j].T();
+                                	const double diff1=pow(pair1.M()-M,2);
 	                                for(size_t k=i+1;k<(registered.size()-1);(++k)+=((k==j)?1:0))
         	                        for(size_t l=k+1;l<registered.size();(++l)+=((l==j)?1:0)){
                 	                        const auto pair2=registered[k]+registered[l];
-                        	                const auto e2=registered[k].time_component()+registered[l].time_component();
-                                	        const double diff2=pow(pair2.length4()-M,2);
-                                	        selector<<point<double>(sqrt(diff1+diff2),(pair1+pair2).length4());
-                                        	selector_mm<<point<double>(sqrt(diff1+diff2),(Ptotal-(pair1+pair2)).length4());
+                        	                const auto e2=registered[k].T()+registered[l].T();
+                                	        const double diff2=pow(pair2.M()-M,2);
+                                	        selector<<point<double>(sqrt(diff1+diff2),(pair1+pair2).M());
+                                        	selector_mm<<point<double>(sqrt(diff1+diff2),(Ptotal-(pair1+pair2)).M());
 	                                        e_table<<point<double>(diff1+diff2,e1+e2);
                 	                }
 	                        }
@@ -218,9 +218,9 @@ void SearchHe3nGamma(Analysis&res){
 				const auto M=Particle::eta().mass()+Q;
 				SortedPoints<double> table,table2,e_table;
 				for(size_t i=0;i<(registered.size()-1);i++)for(size_t j=i+1;j<registered.size();j++){
-				    const double im=(registered[i]+registered[j]).length4();
-				    const double mm=(Ptotal-(registered[i]+registered[j])).length4();
-				    const double e=registered[i].time_component()+registered[j].time_component();
+				    const double im=(registered[i]+registered[j]).M();
+				    const double mm=(Ptotal-(registered[i]+registered[j])).M();
+				    const double e=registered[i].T()+registered[j].T();
 				    const double diff=pow(im-M,2);
 				    table<<point<double>(sqrt(diff),im);
 				    table2<<point<double>(sqrt(diff),mm);
@@ -260,20 +260,20 @@ void SearchHe3nGamma(Analysis&res){
 	                        SortedPoints<double> selector,selector_mm,e_table;
         	                for(size_t i=0;i<(registered.size()-5);++i)for(size_t j=i+1;j<registered.size();++j){
                 	                const auto pair1=registered[i]+registered[j];
-                        	        const auto e1=registered[i].time_component()+registered[j].time_component();
-                                	const double diff1=pow(pair1.length4()-M,2);
+                        	        const auto e1=registered[i].T()+registered[j].T();
+                                	const double diff1=pow(pair1.M()-M,2);
 	                                for(size_t k=i+1;k<(registered.size()-3);(++k)+=((k==j)?1:0))
         	                        for(size_t l=k+1;l<registered.size();(++l)+=((l==j)?1:0)){
                 	                        const auto pair2=registered[k]+registered[l];
-                        	                const auto e2=registered[k].time_component()+registered[l].time_component();
-                                	        const double diff2=pow(pair2.length4()-M,2);
+                        	                const auto e2=registered[k].T()+registered[l].T();
+                                	        const double diff2=pow(pair2.M()-M,2);
                                         	for(size_t o=k+1;o<(registered.size()-1);(++o)+=(((o==j)||(o==l))?1:0))
 	                                        for(size_t p=o+1;p<registered.size();(++p)+=(((p==j)||(p==l))?1:0)){
         	                                    const auto pair3=registered[o]+registered[p];
-                	                            const auto e3=registered[o].time_component()+registered[p].time_component();
-                        	                    const double diff3=pow(pair3.length4()-M,2);
-                                	            selector<<point<double>(sqrt(diff1+diff2+diff3),(pair1+pair2+pair3).length4());
-                                        	    selector_mm<<point<double>(sqrt(diff1+diff2+diff3),(Ptotal-(pair1+pair2+pair3)).length4());
+                	                            const auto e3=registered[o].T()+registered[p].T();
+                        	                    const double diff3=pow(pair3.M()-M,2);
+                                	            selector<<point<double>(sqrt(diff1+diff2+diff3),(pair1+pair2+pair3).M());
+                                        	    selector_mm<<point<double>(sqrt(diff1+diff2+diff3),(Ptotal-(pair1+pair2+pair3)).M());
 	                                            e_table<<point<double>(diff1+diff2+diff3,e1+e2+e3);
         	                                }
                 	                }

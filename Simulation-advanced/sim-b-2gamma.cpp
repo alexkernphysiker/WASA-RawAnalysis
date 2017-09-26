@@ -16,17 +16,17 @@ const EventGenerator BoundSimulation2Gamma(RANDOM&RG,const RandomValueGenerator<
 		static PlotDistr1D<> pbplot("","P_{beam,lab}, GeV/c",BinsByCount(40,p_beam_low,p_beam_hi));
 		static PlotDistr1D<> pfplot("","P_{eta,lab}, GeV/c",BinsByCount(1000,0.0,1.0));
 		static PlotDistr1D<> mplot("","m_{eta}, GeV",BinsByCount(200,0.4,0.6));
-		pbplot.Fill((etaPlab+he3Plab).space_component().mag());
-		pfplot.Fill(etaPlab.space_component().mag());
-		mplot.Fill(etaPlab.length4());
+		pbplot.Fill((etaPlab+he3Plab).S().M());
+		pfplot.Fill(etaPlab.S().M());
+		mplot.Fill(etaPlab.M());
 		
-		const auto gammas_cme=binaryDecay(etaPlab.length4(),0.0,0.0,RandomIsotropicDirection3<>(RG));
-		const auto g1Plab=gammas_cme.first.Lorentz(-etaPlab.Beta());
-		const auto g2Plab=gammas_cme.second.Lorentz(-etaPlab.Beta());
+		const auto gammas_cme=binaryDecay(etaPlab.M(),0.0,0.0,RandomIsotropicDirection3<>(RG));
+		const auto g1Plab=gammas_cme.first.Transform(-etaPlab.Beta());
+		const auto g2Plab=gammas_cme.second.Transform(-etaPlab.Beta());
 		return {
-			{.type=Particle::gamma(),.P=g1Plab.space_component()},
-			{.type=Particle::gamma(),.P=g2Plab.space_component()},
-			{.type=Particle::he3() ,.P=he3Plab.space_component()}
+			{.type=Particle::gamma(),.P=g1Plab.S()},
+			{.type=Particle::gamma(),.P=g2Plab.S()},
+			{.type=Particle::he3() ,.P=he3Plab.S()}
 		};
 	};
 }
