@@ -24,6 +24,7 @@ int main(int argc, char** argv) {
 	else{
 		if(
 			(type.substr(2,6)=="ppn_qf")||
+			(type.substr(2,6)=="ppn_qf_")||
 			(type.substr(2,5)=="bound")
 		)
 			res=new MonteCarlo(false);
