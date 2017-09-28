@@ -23,7 +23,7 @@ Axis Q_axis_full(const Analysis&res){return Axis([&res]()->double{return 1000.0*
 void SearchGamma(Analysis&res){
 	const auto&tn=trigger_gammas_central.number;
 	static vector<LorentzVector<>> registered;
-	static LorentzVector<> Ptotal=0;
+	static auto Ptotal=LorentzVector<>::zero();
 	static double TotalE;
 	static double AcceptedE_6,AcceptedE_4;
 	res.Trigger(tn).pre()<<(make_shared<ChainOr>()
@@ -159,7 +159,7 @@ void SearchGamma(Analysis&res){
 void SearchHe3nGamma(Analysis&res){
 	const auto&tn=trigger_he3_forward.number;
 	static vector<LorentzVector<>> registered;
-	static LorentzVector<> Ptotal=0;
+	static auto Ptotal=LorentzVector<>::zero();
 	static double TotalE;
 	static double AcceptedE;
 	static particle_kine he3;

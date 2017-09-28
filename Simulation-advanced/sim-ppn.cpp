@@ -33,18 +33,20 @@ int main(){
 	const RandomValueTableDistr<>Pf_distr=Pf_dens;
 	const auto CS=PrepareCrossSection(ReadCrossSection());
 	const auto THETA=[&CS](RANDOM&RG,double p)->double{
-		size_t index=size_t(((p-1.0)*100.0)+0.5);
+		size_t index=size_t(((p-1.)*100.)+0.5);
 		static PlotDistr1D<> p_dep("Pp(pt) index","",BinsByCount(101,-0.5,100.5));
                 p_dep.Fill(index);
 		if(index<CS.size())
 			return CS[index](RG);
 		else
-			return 0;
+			return -1;
 	};
 	Simulate("ppn_qf_",[&RG,&Pb_distr,&Pf_distr,&THETA]()->list<particle_sim>{
-                const LorentzVector<> d_lab=Particle::d().mass();
-                const auto nt_lab=lorentz_byPM(RandomIsotropicDirection3<>(RG)*Pf_distr(RG),Particle::n().mass());
+                const auto d_lab=lorentz_byPM(Zero<>(),Particle::d().mass());
+                const auto nt_lab=lorentz_byPM(randomIsotropic<3>(RG)*Pf_distr(RG),Particle::n().mass());
                 const auto pt_lab=d_lab-nt_lab;
+		static PlotDistr1D<> p_mass("p_t mass","",BinsByCount(100,0.9,1.0));
+		p_mass.Fill(pt_lab.M());
                 const auto pr_lab=lorentz_byPM(Z<>()*Pb_distr(RG),Particle::p().mass());
                 const auto PP=pr_lab+pt_lab;
 		const auto ppr_t =pr_lab.Transform(pt_lab.Beta());
@@ -52,14 +54,23 @@ int main(){
 		static PlotDistr1D<> p_dep_x("Pp(pt)_x","",BinsByCount(100,-0.5,0.5));
 		static PlotDistr1D<> p_dep_y("Pp(pt)_y","",BinsByCount(100,-0.5,0.5));
 		static PlotDistr1D<> p_dep_z("Pp(pt)_z","",BinsByCount(100,1.0,2.0));
-                const static RandomUniform<> PHI(-PI(),PI());
+		static PlotDistr1D<> IM_plot_before("IM before","",BinsByCount(200,1.8,2.0));
+		static PlotDistr1D<> IM_plot_after("IM after","",BinsByCount(200,1.8,2.0));
+		static PlotDistr1D<> IM_plot_after2("IM exists in CS table","",BinsByCount(200,1.8,2.0));
+		IM_plot_before.Fill(PP.M());
 		if(PP.M()<=(2.0*Particle::p().mass()))return {};
+		IM_plot_after.Fill(PP.M());
 		p_dep_x.Fill(ppr_t.S().x());
 		p_dep_y.Fill(ppr_t.S().y());
 		p_dep_z.Fill(ppr_t.S().z());
-                const auto final_chm=binaryDecay(PP.M(),Particle::p().mass(),Particle::p().mass(),Angles(ppr_cm.S()));
-		const auto transform=[&ppr_cm,&ppr_t,&THETA,&RG](const LorentzVector<>&P)->const LorentzVector<>{
-			return P.Rotate(ppr_cm.S()^X<>(),THETA(RG,ppr_t.S().M())).Rotate(ppr_cm.S(),PHI(RG));
+                const auto final_chm=binaryDecay(PP.M(),Particle::p().mass(),Particle::p().mass(),direction(ppr_cm.S()));
+                const static RandomUniform<> PHI(-PI(),PI());
+		const auto theta_cm=THETA(RG,ppr_t.S().M());
+		if(theta_cm<0)return {};
+		IM_plot_after2.Fill(PP.M());
+		const auto phi_cm=PHI(RG);
+		const auto transform=[&theta_cm,&phi_cm,&ppr_cm](const LorentzVector<>&P)->const LorentzVector<>{
+			return P.Rotate(direction(ppr_cm.S()^X<>()),theta_cm).Rotate(direction(ppr_cm.S()),phi_cm);
 		};
 		const auto final_cm=make_pair(transform(final_chm.first),transform(final_chm.second));
                 const auto p1_lab=final_cm.first.Transform(-PP.Beta());

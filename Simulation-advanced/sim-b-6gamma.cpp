@@ -50,27 +50,26 @@ const EventGenerator BoundSimulation6Gamma(RANDOM&RG,const RandomValueGenerator<
 		const double p2x=(E3*E3-E2*E2-p1*p1)/(2.*p1);
 		const double p2y=sqrt(p2*p2-p2x*p2x);
 		const double p3x=-(p1+p2x);
-		const auto P1=lorentz_byPM(DesCartes(p1,0.),m),
-		P2=lorentz_byPM(DesCartes(p2x,p2y),m),
-		P3=lorentz_byPM(DesCartes(p3x,-p2y),m);
+		const auto P1=lorentz_byPM(desCartes(p1,0.),m),
+		P2=lorentz_byPM(desCartes(p2x,p2y),m),
+		P3=lorentz_byPM(desCartes(p3x,-p2y),m);
 		if(!isfinite(P1.M()))return {};
 		if(!isfinite(P2.M()))return {};
 		if(!isfinite(P3.M()))return {};
 		s1plot.Fill(s1);s2plot.Fill(s2);s3plot.Fill(s3);
 		s12plot.Fill(s1,s2);s13plot.Fill(s1,s3);s23plot.Fill(s2,s3);
 		p1plot.Fill(p1);p2plot.Fill(p2);p3plot.Fill(p3);
-		static RandomUniform<> decayorientation(0,2.0*PI());
-		const auto DecayPlane=Plane3D<>::ByNormalVectorAndTheta(RandomIsotropicDirection3<>(RG),decayorientation(RG));
+		const auto DecayPlane=Plane3D<>::ByNormalVector(randomIsotropic<3>(RG),randomIsotropic<2>(RG));
 		const vector<LorentzVector<>> pizeros={
 			lorentz_byPM(DecayPlane(P1.S()),P1.M()).Transform(-etaPlab.Beta()),
 			lorentz_byPM(DecayPlane(P2.S()),P2.M()).Transform(-etaPlab.Beta()),
 			lorentz_byPM(DecayPlane(P3.S()),P3.M()).Transform(-etaPlab.Beta()),
 		};
 		im1plot.Fill((pizeros[0]+pizeros[1]+pizeros[2]).M());
-		LorentzVector<> G=0;
+		auto G=LorentzVector<>::zero();
 		list<particle_sim> output;
 		for(const auto PiP:pizeros){
-			const auto g1Pcm=lorentz_byPM(RandomIsotropicDirection3<>(RG)*m/2.,0.);
+			const auto g1Pcm=lorentz_byPM(randomIsotropic<3>(RG)*m/2.,0.);
 			const auto g2Pcm=lorentz_byPM(-g1Pcm.S(),0.);
 			const auto piframe=PiP.Beta();
 			if(!isfinite(piframe.M()))throw Exception<EventGenerator,106>("Invalid pi0 frame");
@@ -90,7 +89,7 @@ const EventGenerator BoundSimulation6Gamma(RANDOM&RG,const RandomValueGenerator<
 			const auto res=generator(C);
 			if(res.size()>0){
 				pbplot.Fill((C.he3+C.eta_).S().M());
-				LorentzVector<> P=0;
+				auto P=LorentzVector<>::zero();
 				for(const auto&p:res){
 					P+=lorentz_byPM(p.P,p.type.mass());
 				}
