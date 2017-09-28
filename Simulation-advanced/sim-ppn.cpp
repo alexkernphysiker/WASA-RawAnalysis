@@ -45,7 +45,7 @@ int main(){
                 const auto d_lab=lorentz_byPM(Zero<>(),Particle::d().mass());
                 const auto nt_lab=lorentz_byPM(randomIsotropic<3>(RG)*Pf_distr(RG),Particle::n().mass());
                 const auto pt_lab=d_lab-nt_lab;
-		static PlotDistr1D<> p_mass("p_t mass","",BinsByCount(100,0.9,1.0));
+		static PlotDistr1D<> p_mass("p_t mass","",BinsByCount(100,0.8,1.0));
 		p_mass.Fill(pt_lab.M());
                 const auto pr_lab=lorentz_byPM(Z<>()*Pb_distr(RG),Particle::p().mass());
                 const auto PP=pr_lab+pt_lab;
@@ -54,9 +54,9 @@ int main(){
 		static PlotDistr1D<> p_dep_x("Pp(pt)_x","",BinsByCount(100,-0.5,0.5));
 		static PlotDistr1D<> p_dep_y("Pp(pt)_y","",BinsByCount(100,-0.5,0.5));
 		static PlotDistr1D<> p_dep_z("Pp(pt)_z","",BinsByCount(100,1.0,2.0));
-		static PlotDistr1D<> IM_plot_before("IM before","",BinsByCount(200,1.8,2.0));
-		static PlotDistr1D<> IM_plot_after("IM after","",BinsByCount(200,1.8,2.0));
-		static PlotDistr1D<> IM_plot_after2("IM exists in CS table","",BinsByCount(200,1.8,2.0));
+		static PlotDistr1D<> IM_plot_before("IM before","",BinsByCount(500,1.8,2.8));
+		static PlotDistr1D<> IM_plot_after("IM after","",BinsByCount(500,1.8,2.8));
+		static PlotDistr1D<> IM_plot_after2("IM exists in CS table","",BinsByCount(500,1.8,2.8));
 		IM_plot_before.Fill(PP.M());
 		if(PP.M()<=(2.0*Particle::p().mass()))return {};
 		IM_plot_after.Fill(PP.M());
