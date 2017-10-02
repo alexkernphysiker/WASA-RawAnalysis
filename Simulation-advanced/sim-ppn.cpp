@@ -7,20 +7,23 @@ using namespace std;
 using namespace MathTemplates;
 using namespace GnuplotWrap;
 const BiSortedPoints<> ReadCrossSection(){
-    BiSortedPoints<> result(ChainWithCount(181, 0., PI<>()), ChainWithCount(13, 1.000, 2.200));
-    for (size_t degree = 0; degree <= 180; degree++) {
+    BiSortedPoints<> result(ChainWithCount(91, 0., PI<>()/2.0), ChainWithCount(13, 1.000, 2.200));
+    for (size_t degree = 0; degree <= 90; degree++) {
         ifstream file("pp/Theta_" + to_string(degree) + ".txt");
         for (double E = 0, C = 0; (file >> E >> C); result.Bin(degree, (size_t(E) - 1000) / 100) = C);
         file.close();
     }
     return result;
 }
-const vector<RandomValueTableDistr<>> PrepareCrossSection(const BiLinearInterpolation<>&source){
+const vector<RandomValueTableDistr<>> AngularDistribution(const BiLinearInterpolation<>&source){
 	vector<RandomValueTableDistr<>> res;
 	for(double p=1.0;p<2.1;p+=0.001){
 		SortedPoints<> chain;
 		for(const auto&angle:source.X())chain<<make_point(angle,source(angle,p));
-		res.push_back(RandomValueTableDistr<>(chain*[](const double&th){return sin(th);} ));
+		if(size_t(p*1000.)%100==0)Plot<>().Line(chain)<<"set title'P="+to_string(p)+", cross section";
+		chain*=[](const double&th){return sin(th);};
+		if(size_t(p*1000.)%100==0)Plot<>().Line(chain)<<"set title'P="+to_string(p)+", theta distribution density'";
+		res.push_back(RandomValueTableDistr<>(chain));
 	}
 	return res;
 }
@@ -31,15 +34,19 @@ int main(){
 	const auto Pf_dens=Plotter<>::Instance().GetPoints<double>("pp/pfermi");
 	Plot<>().Line(Pf_dens);
 	const RandomValueTableDistr<>Pf_distr=Pf_dens;
-	const auto CS=PrepareCrossSection(ReadCrossSection());
+	const auto CS=AngularDistribution(ReadCrossSection());
 	const auto THETA=[&CS](RANDOM&RG,double p)->double{
-		size_t index=size_t(((p-1.)*100.)+0.5);
+		int index=size_t(((p-1.)*100.)+0.5);
 		static PlotDistr1D<> p_dep("Pp(pt) index","",BinsByCount(101,-0.5,100.5));
                 p_dep.Fill(index);
-		if(index<CS.size())
-			return CS[index](RG);
-		else
-			return -1;
+		if(index<0){
+			return CS[0](RG);
+		}else{
+			if(size_t(index)<CS.size())
+				return CS[index](RG);
+			else
+				return CS[CS.size()-1](RG);
+		}
 	};
 	Simulate("ppn_qf_",[&RG,&Pb_distr,&Pf_distr,&THETA]()->list<particle_sim>{
                 const auto d_lab=lorentz_byPM(Zero<>(),Particle::d().mass());
@@ -55,8 +62,7 @@ int main(){
 		static PlotDistr1D<> p_dep_y("Pp(pt)_y","",BinsByCount(100,-0.5,0.5));
 		static PlotDistr1D<> p_dep_z("Pp(pt)_z","",BinsByCount(100,1.0,2.0));
 		static PlotDistr1D<> IM_plot_before("IM before","",BinsByCount(500,1.8,2.8));
-		static PlotDistr1D<> IM_plot_after("IM after","",BinsByCount(500,1.8,2.8));
-		static PlotDistr1D<> IM_plot_after2("IM exists in CS table","",BinsByCount(500,1.8,2.8));
+		static PlotDistr1D<> IM_plot_after("IM","",BinsByCount(500,1.8,2.8));
 		IM_plot_before.Fill(PP.M());
 		if(PP.M()<=(2.0*Particle::p().mass()))return {};
 		IM_plot_after.Fill(PP.M());
@@ -66,8 +72,6 @@ int main(){
                 const auto final_chm=binaryDecay(PP.M(),Particle::p().mass(),Particle::p().mass(),direction(ppr_cm.S()));
                 const static RandomUniform<> PHI(-PI(),PI());
 		const auto theta_cm=THETA(RG,ppr_t.S().M());
-		if(theta_cm<0)return {};
-		IM_plot_after2.Fill(PP.M());
 		const auto phi_cm=PHI(RG);
 		const auto transform=[&theta_cm,&phi_cm,&ppr_cm](const LorentzVector<>&P)->const LorentzVector<>{
 			return P.Rotate(direction(ppr_cm.S()^X<>()),theta_cm).Rotate(direction(ppr_cm.S()),phi_cm);
