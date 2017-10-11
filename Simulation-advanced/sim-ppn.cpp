@@ -7,8 +7,8 @@ using namespace std;
 using namespace MathTemplates;
 using namespace GnuplotWrap;
 const BiSortedPoints<> ReadCrossSection(){
-    BiSortedPoints<> result(ChainWithCount(91, 0., PI<>()/2.0), ChainWithCount(13, 1.000, 2.200));
-    for (size_t degree = 0; degree <= 90; degree++) {
+    BiSortedPoints<> result(ChainWithCount(181, 0., PI<>()), ChainWithCount(13, 1.000, 2.200));
+    for (size_t degree = 0; degree <= 180; degree++) {
         ifstream file("pp/Theta_" + to_string(degree) + ".txt");
         for (double E = 0, C = 0; (file >> E >> C); result.Bin(degree, (size_t(E) - 1000) / 100) = C);
         file.close();
@@ -20,7 +20,7 @@ const vector<RandomValueTableDistr<>> AngularDistribution(const BiLinearInterpol
 	for(double p=1.0;p<2.1;p+=0.001){
 		SortedPoints<> chain;
 		for(const auto&angle:source.X())chain<<make_point(angle,source(angle,p));
-		if(size_t(p*1000.)%100==0)Plot<>().Line(chain)<<"set title'P="+to_string(p)+", cross section";
+		if(size_t(p*1000.)%100==0)Plot<>().Line(chain)<<"set title'P="+to_string(p)+", cross section"<<"set log y";
 		chain*=[](const double&th){return sin(th);};
 		if(size_t(p*1000.)%100==0)Plot<>().Line(chain)<<"set title'P="+to_string(p)+", theta distribution density'";
 		res.push_back(RandomValueTableDistr<>(chain));
@@ -84,6 +84,6 @@ int main(){
                         {.type=Particle::p(),.P=p1_lab.S()},
                         {.type=Particle::p(),.P=p2_lab.S()}
                 };
-        });
+        },40);
 	return 0;
 }

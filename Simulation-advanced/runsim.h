@@ -9,6 +9,6 @@
 #include <Kinematics/particles.h>
 struct particle_sim{Particle type;MathTemplates::Vector<3> P;};
 typedef std::function<std::list<particle_sim>()> EventGenerator;
-void Simulate(const std::string&filename,const EventGenerator gen);
+void Simulate(const std::string&filename,const EventGenerator gen,const size_t millions=10);
 #endif
 

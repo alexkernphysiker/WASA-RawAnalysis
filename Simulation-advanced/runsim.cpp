@@ -29,10 +29,10 @@ const string ParticleName(const Particle&p){
     if(p==Particle::pi_minus())return "pi-";
     throw Exception<Particle>("Unknown particle type: cannot find it's name");
 }
-void Simulate(const std::string&filename,const EventGenerator Generator){
+void Simulate(const std::string&filename,const EventGenerator Generator,const size_t millions){
     PUSHD();
     CD(PLUTO);
-    for(size_t runindex=1;runindex<=10;runindex++){
+    for(size_t runindex=1;runindex<=millions;runindex++){
 	cerr<<"Running simulation number "<<runindex<<" started"<<endl;
 	TFile*f=new TFile(CSTR(filename+"-"+to_string(runindex)+".root"),"RECREATE");
 	auto Result=Generator();
