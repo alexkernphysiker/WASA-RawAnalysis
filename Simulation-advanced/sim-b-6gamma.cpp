@@ -23,7 +23,8 @@ const EventGenerator BoundSimulation6Gamma(RANDOM&RG,const RandomValueGenerator<
 		s3plot("6g","s3, GeV^2",BinsByCount(100,0.0,0.4)),
 		p1plot("6g","p1, GeV/c",BinsByCount(100,0.0,0.4)),
 		p2plot("6g","p2, GeV/c",BinsByCount(100,0.0,0.4)),
-		p3plot("6g","p3, GeV/c",BinsByCount(100,0.0,0.4));
+		p3plot("6g","p3, GeV/c",BinsByCount(100,0.0,0.4)),
+		plplot("pl","",BinsByCount(100,-1.0,1.0));
 		static PlotDistr2D<>
 		s12plot("s1 vs s2",BinsByCount(100,0.0,0.4),BinsByCount(100,0.0,0.4)),
 		s13plot("s1 vs s3",BinsByCount(100,0.0,0.4),BinsByCount(100,0.0,0.4)),
@@ -50,20 +51,21 @@ const EventGenerator BoundSimulation6Gamma(RANDOM&RG,const RandomValueGenerator<
 		const double p2x=(E3*E3-E2*E2-p1*p1)/(2.*p1);
 		const double p2y=sqrt(p2*p2-p2x*p2x);
 		const double p3x=-(p1+p2x);
-		const auto P1=lorentz_byPM(desCartes(p1,0.),m),
-		P2=lorentz_byPM(desCartes(p2x,p2y),m),
-		P3=lorentz_byPM(desCartes(p3x,-p2y),m);
+		const auto P1=lorentz_byPM(desCartes(p1,0.,0.),m),
+		P2=lorentz_byPM(desCartes(p2x,p2y,0.),m),
+		P3=lorentz_byPM(desCartes(p3x,-p2y,0.),m);
 		if(!isfinite(P1.M()))return {};
 		if(!isfinite(P2.M()))return {};
 		if(!isfinite(P3.M()))return {};
 		s1plot.Fill(s1);s2plot.Fill(s2);s3plot.Fill(s3);
 		s12plot.Fill(s1,s2);s13plot.Fill(s1,s3);s23plot.Fill(s2,s3);
 		p1plot.Fill(p1);p2plot.Fill(p2);p3plot.Fill(p3);
-		const auto DecayPlane=Plane3D<>::ByNormalVector(randomIsotropic<3>(RG),randomIsotropic<2>(RG));
+		const auto RR=randomIsotropic<3>(RG).Rotations();
+		plplot.Fill(((RR*P1.S())^(RR*P2.S()))*(RR*P3.S()));
 		const vector<LorentzVector<>> pizeros={
-			lorentz_byPM(DecayPlane(P1.S()),P1.M()).Transform(-etaPlab.Beta()),
-			lorentz_byPM(DecayPlane(P2.S()),P2.M()).Transform(-etaPlab.Beta()),
-			lorentz_byPM(DecayPlane(P3.S()),P3.M()).Transform(-etaPlab.Beta()),
+			lorentz_byPM(RR*P1.S(),P1.M()).Transform(-etaPlab.Beta()),
+			lorentz_byPM(RR*P2.S(),P2.M()).Transform(-etaPlab.Beta()),
+			lorentz_byPM(RR*P3.S(),P3.M()).Transform(-etaPlab.Beta()),
 		};
 		im1plot.Fill((pizeros[0]+pizeros[1]+pizeros[2]).M());
 		auto G=LorentzVector<>::zero();
