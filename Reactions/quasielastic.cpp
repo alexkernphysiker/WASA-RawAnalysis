@@ -103,6 +103,7 @@ void p_or_d_analyse(Analysis&res){
 				<<make_shared<Hist2D>("elastic","t_vs_t_21",ct_axis.first,ct_axis.second)
 				<<make_shared<Hist2D>("elastic","e_vs_e_21",ed_axis.first,ed_axis.second)
 				<<make_shared<SetOfHists1D>("elastic","theta_sum_21",Q_axis(res),ct_sum)
+				<<make_shared<SetOfHists1D>("elastic","theta_s_21",Q_axis(res),ct_axis.second)
 			)
 			<<(make_shared<ChainCheck>()
 				<<[](WTrack&T){return((ct_axis.first(T)>20.0)&&(ct_axis.first(T)<45.0));}
@@ -111,6 +112,25 @@ void p_or_d_analyse(Analysis&res){
 				<<make_shared<Hist2D>("elastic","t_vs_t_22",ct_axis.first,ct_axis.second)
 				<<make_shared<Hist2D>("elastic","e_vs_e_22",ed_axis.first,ed_axis.second)
 				<<make_shared<SetOfHists1D>("elastic","theta_sum_22",Q_axis(res),ct_sum)
+				<<make_shared<SetOfHists1D>("elastic","theta_s_22",Q_axis(res),ct_axis.second)
+			)
+			<<(make_shared<ChainCheck>()
+				<<[](WTrack&T){return((ct_axis.first(T)>20.0)&&(ct_axis.first(T)<35.0));}
+				<<make_shared<Hist1D>("elastic","pair_phi_diff_23",Axis([](){return trackpairs[0].X();},0.0,90.0,90))
+				<<make_shared<Hist2D>("elastic","t_vs_e_23",ct_axis.first,ed_axis.first)
+				<<make_shared<Hist2D>("elastic","t_vs_t_23",ct_axis.first,ct_axis.second)
+				<<make_shared<Hist2D>("elastic","e_vs_e_23",ed_axis.first,ed_axis.second)
+				<<make_shared<SetOfHists1D>("elastic","theta_sum_23",Q_axis(res),ct_sum)
+				<<make_shared<SetOfHists1D>("elastic","theta_s_23",Q_axis(res),ct_axis.second)
+			)
+			<<(make_shared<ChainCheck>()
+				<<[](WTrack&T){return((ct_axis.first(T)>20.0)&&(ct_axis.first(T)<30.0));}
+				<<make_shared<Hist1D>("elastic","pair_phi_diff_24",Axis([](){return trackpairs[0].X();},0.0,90.0,90))
+				<<make_shared<Hist2D>("elastic","t_vs_e_24",ct_axis.first,ed_axis.first)
+				<<make_shared<Hist2D>("elastic","t_vs_t_24",ct_axis.first,ct_axis.second)
+				<<make_shared<Hist2D>("elastic","e_vs_e_24",ed_axis.first,ed_axis.second)
+				<<make_shared<SetOfHists1D>("elastic","theta_sum_24",Q_axis(res),ct_sum)
+				<<make_shared<SetOfHists1D>("elastic","theta_s_24",Q_axis(res),ct_axis.second)
 			)
 		)
 	);
