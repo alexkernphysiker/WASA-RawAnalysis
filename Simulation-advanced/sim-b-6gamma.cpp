@@ -51,7 +51,8 @@ const EventGenerator BoundSimulation6Gamma(RANDOM&RG,const RandomValueGenerator<
 		const double p2x=(E3*E3-E2*E2-p1*p1)/(2.*p1);
 		const double p2y=sqrt(p2*p2-p2x*p2x);
 		const double p3x=-(p1+p2x);
-		const auto P1=lorentz_byPM(desCartes(p1,0.,0.),m),
+		const auto 
+		P1=lorentz_byPM(desCartes(p1,0.,0.),m),
 		P2=lorentz_byPM(desCartes(p2x,p2y,0.),m),
 		P3=lorentz_byPM(desCartes(p3x,-p2y,0.),m);
 		if(!isfinite(P1.M()))return {};
@@ -60,7 +61,9 @@ const EventGenerator BoundSimulation6Gamma(RANDOM&RG,const RandomValueGenerator<
 		s1plot.Fill(s1);s2plot.Fill(s2);s3plot.Fill(s3);
 		s12plot.Fill(s1,s2);s13plot.Fill(s1,s3);s23plot.Fill(s2,s3);
 		p1plot.Fill(p1);p2plot.Fill(p2);p3plot.Fill(p3);
-		const auto RR=randomIsotropic<3>(RG).Rotations();
+		const RandomUniform<> TH(-PI<>(),PI<>());
+		const auto 
+		RR=randomIsotropic<3>(RG).Rotations()*Rotation(direction(P1.S()),TH(RG));
 		plplot.Fill(((RR*P1.S())^(RR*P2.S()))*(RR*P3.S()));
 		const vector<LorentzVector<>> pizeros={
 			lorentz_byPM(RR*P1.S(),P1.M()).Transform(-etaPlab.Beta()),
