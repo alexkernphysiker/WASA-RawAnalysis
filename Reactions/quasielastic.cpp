@@ -97,7 +97,7 @@ void p_or_d_analyse(Analysis&res){
 		<<make_shared<Hist1D>("elastic","count_1",Q_axis(res))
 		<<(make_shared<ChainOr>()
 			<<(make_shared<ChainCheck>()
-				<<[](WTrack&T){return (ct_axis.first(T)<23.0)&&(ct_axis.first(T)<40.0);}
+				<<[](WTrack&T){return (ct_axis.first(T)>23.0)&&(ct_axis.first(T)<40.0);}
 				<<make_shared<Hist1D>("elastic","pair_phi_diff_21",Axis([](){return trackpairs[0].X();},0.0,90.0,90))
 				<<make_shared<Hist2D>("elastic","t_vs_e_21",ct_axis.first,ed_axis.first)
 				<<make_shared<Hist2D>("elastic","t_vs_t_21",ct_axis.first,ct_axis.second)
