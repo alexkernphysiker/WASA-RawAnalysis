@@ -105,7 +105,7 @@ void p_or_d_analyse(Analysis&res){
 				<<make_shared<SetOfHists1D>("elastic","theta_sum_21",Q_axis(res),ct_sum)
 				<<make_shared<SetOfHists1D>("elastic","theta_s_21",Q_axis(res),ct_axis.second)
 
-				<<[](WTrack&T){return((ed_axis.first(T)>0.16)&&(ed_axis.second(T)<0.28));}
+				<<[](WTrack&T){return((ed_axis.first(T)>0.16)&&(ed_axis.first(T)<0.28));}
 				<<make_shared<Hist1D>("elastic","pair_phi_diff_22",Axis([](){return trackpairs[0].X();},0.0,90.0,90))
 				<<make_shared<Hist2D>("elastic","t_vs_e_22",ct_axis.first,ed_axis.first)
 				<<make_shared<Hist2D>("elastic","t_vs_t_22",ct_axis.first,ct_axis.second)
