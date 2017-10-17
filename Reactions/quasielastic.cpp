@@ -97,38 +97,31 @@ void p_or_d_analyse(Analysis&res){
 		<<make_shared<Hist1D>("elastic","count_1",Q_axis(res))
 		<<(make_shared<ChainOr>()
 			<<(make_shared<ChainCheck>()
-				<<[](WTrack&T){return(ct_axis.first(T)<23.0);}
+				<<[](WTrack&T){return (ct_axis.first(T)<23.0)&&(ct_axis.first(T)<40.0);}
 				<<make_shared<Hist1D>("elastic","pair_phi_diff_21",Axis([](){return trackpairs[0].X();},0.0,90.0,90))
 				<<make_shared<Hist2D>("elastic","t_vs_e_21",ct_axis.first,ed_axis.first)
 				<<make_shared<Hist2D>("elastic","t_vs_t_21",ct_axis.first,ct_axis.second)
 				<<make_shared<Hist2D>("elastic","e_vs_e_21",ed_axis.first,ed_axis.second)
 				<<make_shared<SetOfHists1D>("elastic","theta_sum_21",Q_axis(res),ct_sum)
 				<<make_shared<SetOfHists1D>("elastic","theta_s_21",Q_axis(res),ct_axis.second)
-			)
-			<<(make_shared<ChainCheck>()
-				<<[](WTrack&T){return((ct_axis.first(T)>23.0)&&(ct_axis.first(T)<40.0));}
+
+				<<[](WTrack&T){return((ed_axis.first(T)>0.16)&&(ed_axis.second(T)<0.28));}
 				<<make_shared<Hist1D>("elastic","pair_phi_diff_22",Axis([](){return trackpairs[0].X();},0.0,90.0,90))
 				<<make_shared<Hist2D>("elastic","t_vs_e_22",ct_axis.first,ed_axis.first)
 				<<make_shared<Hist2D>("elastic","t_vs_t_22",ct_axis.first,ct_axis.second)
 				<<make_shared<Hist2D>("elastic","e_vs_e_22",ed_axis.first,ed_axis.second)
 				<<make_shared<SetOfHists1D>("elastic","theta_sum_22",Q_axis(res),ct_sum)
 				<<make_shared<SetOfHists1D>("elastic","theta_s_22",Q_axis(res),ct_axis.second)
-			)
-			<<(make_shared<ChainCheck>()
-				<<[](WTrack&T){return((ct_axis.first(T)>23.0)&&(ct_axis.first(T)<40.0));}
-				<<[](WTrack&T){return((ed_axis.first(T)<0.29)&&(ed_axis.first(T)>0.15));}
-				<<[](WTrack&T){return((ed_axis.second(T)<0.35)&&(ed_axis.second(T)>0.10));}
+
+				<<[](WTrack&T){return((ed_axis.second(T)>0.12)&&(ed_axis.second(T)<0.32));}
 				<<make_shared<Hist1D>("elastic","pair_phi_diff_23",Axis([](){return trackpairs[0].X();},0.0,90.0,90))
 				<<make_shared<Hist2D>("elastic","t_vs_e_23",ct_axis.first,ed_axis.first)
 				<<make_shared<Hist2D>("elastic","t_vs_t_23",ct_axis.first,ct_axis.second)
 				<<make_shared<Hist2D>("elastic","e_vs_e_23",ed_axis.first,ed_axis.second)
 				<<make_shared<SetOfHists1D>("elastic","theta_sum_23",Q_axis(res),ct_sum)
 				<<make_shared<SetOfHists1D>("elastic","theta_s_23",Q_axis(res),ct_axis.second)
-			)
-			<<(make_shared<ChainCheck>()
-				<<[](WTrack&T){return((ct_axis.first(T)>23.0)&&(ct_axis.first(T)<35.0));}
-                                <<[](WTrack&T){return((ed_axis.first(T)<0.28)&&(ed_axis.first(T)>0.16));}
-                                <<[](WTrack&T){return((ed_axis.second(T)<0.32)&&(ed_axis.second(T)>0.12));}
+
+				<<[](WTrack&T){return((ct_axis.first(T)>23.0)&&(ct_axis.first(T)<30.0));}
 				<<make_shared<Hist1D>("elastic","pair_phi_diff_24",Axis([](){return trackpairs[0].X();},0.0,90.0,90))
 				<<make_shared<Hist2D>("elastic","t_vs_e_24",ct_axis.first,ed_axis.first)
 				<<make_shared<Hist2D>("elastic","t_vs_t_24",ct_axis.first,ct_axis.second)
