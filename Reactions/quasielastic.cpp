@@ -89,7 +89,7 @@ void p_or_d_analyse(Analysis&res){
 		}
 		<<make_shared<Hist1D>("elastic","pair_phi_diff_0",Axis([](){return trackpairs[0].X();},0.0,90.0,90))
 		<<make_shared<Hist1D>("elastic","count_0",Q_axis(res))
-		<<[](){return trackpairs[0].X()<10.0;}
+		<<[](){return trackpairs[0].X()<20.0;}
 		<<make_shared<Hist1D>("elastic","pair_phi_diff_1",Axis([](){return trackpairs[0].X();},0.0,90.0,90))
 		<<make_shared<Hist2D>("elastic","t_vs_e_1",ct_axis.first,ed_axis.first)
 		<<make_shared<Hist2D>("elastic","t_vs_t_1",ct_axis.first,ct_axis.second)
