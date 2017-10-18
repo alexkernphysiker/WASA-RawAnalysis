@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.0)
 project(WASAatCOSY_etamesic_3He)
-
-set(CMAKE_CPP_FLAGS "-DNoMySQL -DNoXerces -pthread -std=c++11 -Wno-deprecated-declarations -m64 -DNoQT")
-set(CMAKE_CXX_FLAGS "-g -O2 -fPIC -fno-strict-aliasing -Wall -fno-strict-aliasing -std=c++11")
+add_definitions(-std=c++11 -pthread)
+set(CMAKE_CPP_FLAGS "-DNoMySQL -DNoXerces -Wno-deprecated-declarations -m64 -DNoQT")
+set(CMAKE_CXX_FLAGS "-g -O2 -fPIC -fno-strict-aliasing -Wall -fno-strict-aliasing")
 set(${CMAKE_LINK_LIBRARY_FLAG} -pthread)
 
 add_subdirectory(math_h)
