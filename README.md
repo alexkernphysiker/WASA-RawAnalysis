@@ -90,7 +90,7 @@ List of implemented reactions for Monte Carlo
     He3pi0pi0
     He3pi0pi0pi0
     pd
-    ppn (n-spectator)
+    ppn_qf_ (n-spectator)
     bound1-2g (simulation of direct decay of eta coupled by 3He into 2 gammas)
     bound1-6g (simulation of direct decay of eta coupled by 3He into 6 gammas)
     bound2-2g (different p_{Fermi} distribution)
