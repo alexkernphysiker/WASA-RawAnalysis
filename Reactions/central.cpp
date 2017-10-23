@@ -37,7 +37,7 @@ void SearchGamma(Analysis&res){
 		    << [](WTrack&T)->bool{return T.Type()==kCDN;}
 		    << make_shared<Hist1D>("OnlyCentralGammas","GammaEnergy",Axis([](WTrack&T)->double{return T.Edep();},0.0,1.6,800))
 
-		    << [](WTrack&T)->bool{return T.Edep()>=0.08;}
+		    << [](WTrack&T)->bool{return T.Edep()>=0.05;}
 		    << [](WTrack&T)->bool{
 			registered.push_back(lorentz_byPM(direction(T.Phi(),T.Theta())*T.Edep(),0.));
 			return true;
@@ -132,7 +132,7 @@ void SearchHe3nGamma(Analysis&res){
 		    << [](WTrack&T)->bool{return T.Type()==kCDN;}
 		    << make_shared<Hist1D>("He3nCentralGammas","GammaEnergy",Axis([](WTrack&T)->double{return T.Edep();},0.0,1.6,800))
 
-		    << [](WTrack&T)->bool{return T.Edep()>=0.08;}
+		    << [](WTrack&T)->bool{return T.Edep()>=0.05;}
 		    << [](WTrack&T)->bool{
 			registered.push_back(lorentz_byPM(direction(T.Phi(),T.Theta())*T.Edep(),0.));
 			return true;
