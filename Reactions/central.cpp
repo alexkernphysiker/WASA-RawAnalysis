@@ -90,7 +90,7 @@ void SearchGamma(Analysis&res){
 			<< make_shared<SetOfHists1D>("OnlyCentralGammas6","GMM3",Q_axis_full(res),Axis([]()->double{return MM6G;},0.0,4.0,4000))
 			<< make_shared<Hist1D>("OnlyCentralGammas6","GMMPDiff3",Axis([]()->double{return IMdiff6G3Pi;},0.0,0.2,200))
 			<< make_shared<SetOfHists1D>("OnlyCentralGammas6","GIM3",Q_axis_full(res),Axis([]()->double{return IM6G;},0.0,1.0,1000))
-	                <<[]()->bool{return IMdiff6G3Pi<0.020;}
+	                <<[]()->bool{return IMdiff6G3Pi<0.040;}
 			<< make_shared<SetOfHists1D>("OnlyCentralGammas6","GMM4",Q_axis_full(res),Axis([]()->double{return MM6G;},0.0,4.0,4000))
 			<< make_shared<Hist1D>("OnlyCentralGammas6","GMMPDiff4",Axis([]()->double{return IMdiff6G3Pi;},0.0,0.2,200))
 			<< make_shared<SetOfHists1D>("OnlyCentralGammas6","GIM4",Q_axis_full(res),Axis([]()->double{return IM6G;},0.0,1.0,1000))
@@ -262,7 +262,7 @@ void SearchHe3nGamma(Analysis&res){
 			<< make_shared<SetOfHists1D>("He3nCentralGammas6","GMM3",Q_axis_full(res),Axis([]()->double{return MM6G;},0.0,4.0,4000))
 			<< make_shared<Hist1D>("He3nCentralGammas6","GMMPDiff3",Axis([]()->double{return IMdiff6G3Pi;},0.0,0.2,200))
 			<< make_shared<SetOfHists1D>("He3nCentralGammas6","GIM3",Q_axis_full(res),Axis([]()->double{return IM6G;},0.0,1.0,1000))
-	                <<[]()->bool{return IMdiff6G3Pi<0.025;}
+	                <<[]()->bool{return IMdiff6G3Pi<0.040;}
 			<< make_shared<SetOfHists1D>("He3nCentralGammas6","He3MM4",Q_axis_full(res),Axis([](){return he3MM;},0.4,0.6,200))
 			<< make_shared<SetOfHists1D>("He3nCentralGammas6","GMM4",Q_axis_full(res),Axis([]()->double{return MM6G;},0.0,4.0,4000))
 			<< make_shared<Hist1D>("He3nCentralGammas6","GMMPDiff4",Axis([]()->double{return IMdiff6G3Pi;},0.0,0.2,200))
