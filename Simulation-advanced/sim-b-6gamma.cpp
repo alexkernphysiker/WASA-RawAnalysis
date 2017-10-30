@@ -32,12 +32,6 @@ const EventGenerator BoundSimulation6Gamma(RANDOM&RG,const RandomValueGenerator<
 		mplot.Fill(etaPlab.M());
 		const double M=etaPlab.M(),s=M*M,m=Particle::pi0().mass();
 		const double smin=pow(m,2),smax=pow(M-m,2);
-		const RandomValueTableDistr<> s1_distr(
-			[&M,&m,&s](const double&s1){
-				return (1.0/s1)*sqrt(lambda(s1,s,m)*lambda(s1,m,m));
-			},
-			ChainWithCount(100,smin,smax)
-		);
 		const RandomUniform<> s_distr(smin,smax);
 		const double s1=s_distr(RG);
 		const double s2=s_distr(RG);
