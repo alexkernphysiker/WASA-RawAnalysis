@@ -100,13 +100,13 @@ const EventGenerator BoundSimulation6Gamma(RANDOM&RG,const RandomValueGenerator<
 }
 int main(){
 	RANDOM RG;
-	Plotter<>::Instance().SetOutput(".","sim-6gamma");
+	Plotter::Instance().SetOutput(".","sim-6gamma");
 	const RandomValueTableDistr<>P=Points<>{{p_beam_low,3.0},{p_beam_hi,1.0}}; 
 	const auto
 	pf1=ReadPfFromFile("distributions/he3eta-pf-75-20.txt"),
 	pf2=ReadPfFromFile("distributions/he3eta-pf-80-20.txt"),
 	pf3=ReadPfFromFile("distributions/he3eta-pf-90-20.txt");
-	Plot<>().Line(pf1,"1").Line(pf2,"2").Line(pf3,"3")<<"set title 'read from file'";
+	Plot().Line(pf1,"1").Line(pf2,"2").Line(pf3,"3")<<"set title 'read from file'";
 	Simulate("bound1-6g",BoundSimulation6Gamma(RG,P,RandomValueTableDistr<>(pf1)));
 	Simulate("bound2-6g",BoundSimulation6Gamma(RG,P,RandomValueTableDistr<>(pf2)));
 	Simulate("bound3-6g",BoundSimulation6Gamma(RG,P,RandomValueTableDistr<>(pf3)));

@@ -27,13 +27,13 @@ const EventGenerator BoundSimulation2Gamma(RANDOM&RG,const RandomValueGenerator<
 }
 int main(){
 	RANDOM RG;
-	Plotter<>::Instance().SetOutput(".","sim-2g");
+	Plotter::Instance().SetOutput(".","sim-2g");
 	const RandomUniform<> P(p_beam_low,p_beam_hi); 
 	const auto
 	pf1=ReadPfFromFile("distributions/he3eta-pf-75-20.txt"),
 	pf2=ReadPfFromFile("distributions/he3eta-pf-80-20.txt"),
 	pf3=ReadPfFromFile("distributions/he3eta-pf-90-20.txt");
-	Plot<>().Line(pf1,"1").Line(pf2,"2").Line(pf3,"3")<<"set title 'read from file'";
+	Plot().Line(pf1,"1").Line(pf2,"2").Line(pf3,"3")<<"set title 'read from file'";
 	vector<PlotDistr1D<>>
 	plots1{
 		PlotDistr1D<>("1","P_{beam,lab},GeV/C",BinsByCount(40,p_beam_low,p_beam_hi)),

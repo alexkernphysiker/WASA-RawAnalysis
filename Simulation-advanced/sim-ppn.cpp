@@ -20,19 +20,19 @@ const vector<RandomValueTableDistr<>> AngularDistribution(const BiLinearInterpol
 	for(double p=1.0;p<2.1;p+=0.001){
 		SortedPoints<> chain;
 		for(const auto&angle:source.X())chain<<make_point(angle,source(angle,p));
-		if(size_t(p*1000.)%100==0)Plot<>().Line(chain)<<"set title'P="+to_string(p)+", cross section"<<"set log y";
+		if(size_t(p*1000.)%100==0)Plot().Line(chain)<<"set title'P="+to_string(p)+", cross section"<<"set log y";
 		chain*=[](const double&th){return sin(th);};
-		if(size_t(p*1000.)%100==0)Plot<>().Line(chain)<<"set title'P="+to_string(p)+", theta distribution density'"<<"unset log y";
+		if(size_t(p*1000.)%100==0)Plot().Line(chain)<<"set title'P="+to_string(p)+", theta distribution density'"<<"unset log y";
 		res.push_back(RandomValueTableDistr<>(chain));
 	}
 	return res;
 }
 int main(){
 	RANDOM RG;
-	Plotter<>::Instance().SetOutput(".","sim-ppn");
+	Plotter::Instance().SetOutput(".","sim-ppn");
 	const RandomUniform<>Pb_distr(p_beam_low,p_beam_hi);
-	const auto Pf_dens=Plotter<>::Instance().GetPoints<double>("pp/pfermi");
-	Plot<>().Line(Pf_dens);
+	const auto Pf_dens=Plotter::Instance().GetPoints<double>("pp/pfermi");
+	Plot().Line(Pf_dens);
 	const RandomValueTableDistr<>Pf_distr=Pf_dens;
 	const auto CS=AngularDistribution(ReadCrossSection());
 	const auto THETA=[&CS](RANDOM&RG,double p)->double{
