@@ -12,16 +12,16 @@ const EventGenerator BoundSimulation2Gamma(RANDOM&RG,const RandomValueGenerator<
 		const auto C=Compound(RG,Pb_distr,Pf_distr);
 		const auto&etaPlab=C.eta_;
 		const auto&he3Plab=C.he3;
-		plots[0].Fill((etaPlab+he3Plab).S().M());
-		plots[1].Fill(etaPlab.S().M());
+		plots[0].Fill((etaPlab+he3Plab).P().M());
+		plots[1].Fill(etaPlab.P().M());
 		plots[2].Fill(etaPlab.M());
 		const auto gammas_cme=binaryDecay(etaPlab.M(),0.0,0.0,randomIsotropic<3>(RG));
 		const auto g1Plab=gammas_cme.first.Transform(-etaPlab.Beta());
 		const auto g2Plab=gammas_cme.second.Transform(-etaPlab.Beta());
 		return {
-			{.type=Particle::gamma(),.P=g1Plab.S()},
-			{.type=Particle::gamma(),.P=g2Plab.S()},
-			{.type=Particle::he3() ,.P=he3Plab.S()}
+			{.type=Particle::gamma(),.P=g1Plab.P()},
+			{.type=Particle::gamma(),.P=g2Plab.P()},
+			{.type=Particle::he3() ,.P=he3Plab.P()}
 		};
 	};
 }

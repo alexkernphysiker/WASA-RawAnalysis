@@ -49,12 +49,12 @@ int main(){
 		}
 	};
 	Simulate("ppn_qf_",[&RG,&Pb_distr,&Pf_distr,&THETA]()->list<particle_sim>{
-                const auto d_lab=lorentz_byPM(Zero<>(),Particle::d().mass());
+                const auto d_lab=lorentz_byPM(Zero(),Particle::d().mass());
                 const auto nt_lab=lorentz_byPM(randomIsotropic<3>(RG)*Pf_distr(RG),Particle::n().mass());
                 const auto pt_lab=d_lab-nt_lab;
 		static PlotDistr1D<> p_mass("p_t mass","",BinsByCount(100,0.8,1.0));
 		p_mass.Fill(pt_lab.M());
-                const auto pr_lab=lorentz_byPM(Z<>()*Pb_distr(RG),Particle::p().mass());
+                const auto pr_lab=lorentz_byPM(Z()*Pb_distr(RG),Particle::p().mass());
                 const auto PP=pr_lab+pt_lab;
 		const auto ppr_t =pr_lab.Transform(pt_lab.Beta());
 		const auto ppr_cm=pr_lab.Transform(PP.Beta());
@@ -66,23 +66,23 @@ int main(){
 		IM_plot_before.Fill(PP.M());
 		if(PP.M()<=(2.0*Particle::p().mass()))return {};
 		IM_plot_after.Fill(PP.M());
-		p_dep_x.Fill(ppr_t.S().x());
-		p_dep_y.Fill(ppr_t.S().y());
-		p_dep_z.Fill(ppr_t.S().z());
-                const auto final_chm=binaryDecay(PP.M(),Particle::p().mass(),Particle::p().mass(),direction(ppr_cm.S()));
+		p_dep_x.Fill(ppr_t.P().x());
+		p_dep_y.Fill(ppr_t.P().y());
+		p_dep_z.Fill(ppr_t.P().z());
+                const auto final_chm=binaryDecay(PP.M(),Particle::p().mass(),Particle::p().mass(),direction(ppr_cm.P()));
                 const static RandomUniform<> PHI(-PI(),PI());
-		const auto theta_cm=THETA(RG,ppr_t.S().M());
+		const auto theta_cm=THETA(RG,ppr_t.P().M());
 		const auto phi_cm=PHI(RG);
 		const auto transform=[&theta_cm,&phi_cm,&ppr_cm](const LorentzVector<>&P)->const LorentzVector<>{
-			return P.Rotate(direction(ppr_cm.S()^X<>()),theta_cm).Rotate(direction(ppr_cm.S()),phi_cm);
+			return P.Rotate(direction(ppr_cm.P()^X()),theta_cm).Rotate(direction(ppr_cm.P()),phi_cm);
 		};
 		const auto final_cm=make_pair(transform(final_chm.first),transform(final_chm.second));
                 const auto p1_lab=final_cm.first.Transform(-PP.Beta());
                 const auto p2_lab=final_cm.second.Transform(-PP.Beta());
                 return {
-                        {.type=Particle::n(),.P=nt_lab.S()},
-                        {.type=Particle::p(),.P=p1_lab.S()},
-                        {.type=Particle::p(),.P=p2_lab.S()}
+                        {.type=Particle::n(),.P=nt_lab.P()},
+                        {.type=Particle::p(),.P=p1_lab.P()},
+                        {.type=Particle::p(),.P=p2_lab.P()}
                 };
         },40);
 	return 0;

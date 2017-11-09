@@ -57,27 +57,27 @@ const EventGenerator BoundSimulation6Gamma(RANDOM&RG,const RandomValueGenerator<
 		p1plot.Fill(p1);p2plot.Fill(p2);p3plot.Fill(p3);
 		const RandomUniform<> TH(-PI<>(),PI<>());
 		const auto 
-		RR=randomIsotropic<3>(RG).Rotations()*Rotation(direction(P1.S()),TH(RG));
-		plplot.Fill(((RR*P1.S())^(RR*P2.S()))*(RR*P3.S()));
+		RR=randomIsotropic<3>(RG).Rotations()*Rotation(direction(P1.P()),TH(RG));
+		plplot.Fill(((RR*P1.P())^(RR*P2.P()))*(RR*P3.P()));
 		const vector<LorentzVector<>> pizeros={
-			lorentz_byPM(RR*P1.S(),P1.M()).Transform(-etaPlab.Beta()),
-			lorentz_byPM(RR*P2.S(),P2.M()).Transform(-etaPlab.Beta()),
-			lorentz_byPM(RR*P3.S(),P3.M()).Transform(-etaPlab.Beta()),
+			lorentz_byPM(RR*P1.P(),P1.M()).Transform(-etaPlab.Beta()),
+			lorentz_byPM(RR*P2.P(),P2.M()).Transform(-etaPlab.Beta()),
+			lorentz_byPM(RR*P3.P(),P3.M()).Transform(-etaPlab.Beta()),
 		};
 		im1plot.Fill((pizeros[0]+pizeros[1]+pizeros[2]).M());
 		auto G=LorentzVector<>::zero();
 		list<particle_sim> output;
 		for(const auto PiP:pizeros){
 			const auto g1Pcm=lorentz_byPM(randomIsotropic<3>(RG)*m/2.,0.);
-			const auto g2Pcm=lorentz_byPM(-g1Pcm.S(),0.);
+			const auto g2Pcm=lorentz_byPM(-g1Pcm.P(),0.);
 			const auto piframe=PiP.Beta();
 			if(!isfinite(piframe.M()))throw Exception<EventGenerator,106>("Invalid pi0 frame");
-			output.push_back({.type=Particle::gamma(),.P=g1Pcm.Transform(-piframe).S()});
-			output.push_back({.type=Particle::gamma(),.P=g2Pcm.Transform(-piframe).S()});
+			output.push_back({.type=Particle::gamma(),.P=g1Pcm.Transform(-piframe).P()});
+			output.push_back({.type=Particle::gamma(),.P=g2Pcm.Transform(-piframe).P()});
 			G+=g1Pcm.Transform(-piframe)+g2Pcm.Transform(-piframe);
 		}
 		im2plot.Fill(G.M());
-		output.push_back({.type=Particle::he3() ,.P=he3Plab.S()});
+		output.push_back({.type=Particle::he3() ,.P=he3Plab.P()});
 		return output;
 	};
 	return [generator,&RG,&Pb_distr,&Pf_distr]()->list<particle_sim>{
@@ -87,12 +87,12 @@ const EventGenerator BoundSimulation6Gamma(RANDOM&RG,const RandomValueGenerator<
 			const auto C=Compound(RG,Pb_distr,Pf_distr,pow(3.0*Particle::pi0().mass(),2));
 			const auto res=generator(C);
 			if(res.size()>0){
-				pbplot.Fill((C.he3+C.eta_).S().M());
+				pbplot.Fill((C.he3+C.eta_).P().M());
 				auto P=LorentzVector<>::zero();
 				for(const auto&p:res){
 					P+=lorentz_byPM(p.P,p.type.mass());
 				}
-				pbplot2.Fill(P.S().M());
+				pbplot2.Fill(P.P().M());
 				return res;
 			}
 		};
