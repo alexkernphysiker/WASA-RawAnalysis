@@ -84,6 +84,6 @@ int main(){
                         {.type=Particle::p(),.P=p1_lab.P()},
                         {.type=Particle::p(),.P=p2_lab.P()}
                 };
-        },40);
+        },10);
 	return 0;
 }

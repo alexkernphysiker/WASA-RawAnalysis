@@ -50,8 +50,8 @@ int main(){
 		PlotDistr1D<>("3","P_{eta,lab},GeV/C",BinsByCount(1000,0.0,1.0)),
 		PlotDistr1D<>("3","m_{eta_b},GeV",BinsByCount(200,0.4,0.6))
 	};
-	Simulate("bound1-2g",BoundSimulation2Gamma(RG,P,RandomValueTableDistr<>(pf1),plots1));
-	Simulate("bound2-2g",BoundSimulation2Gamma(RG,P,RandomValueTableDistr<>(pf2),plots2));
-	Simulate("bound3-2g",BoundSimulation2Gamma(RG,P,RandomValueTableDistr<>(pf3),plots3));
+	Simulate("bound1-2g",BoundSimulation2Gamma(RG,P,RandomValueTableDistr<>(pf1),plots1),10);
+	Simulate("bound2-2g",BoundSimulation2Gamma(RG,P,RandomValueTableDistr<>(pf2),plots2),10);
+	Simulate("bound3-2g",BoundSimulation2Gamma(RG,P,RandomValueTableDistr<>(pf3),plots3),10);
 	return 0;
 }
