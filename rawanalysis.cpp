@@ -24,7 +24,8 @@ int main(int argc, char** argv) {
 	else{
 		if(
 			(type.substr(2,6)=="ppn_qf")||
-			(type.substr(2,6)=="ppn_qf_")||
+			(type.substr(2,7)=="ppn_qf_")||
+			(type.substr(2,3)=="pd_")||
 			(type.substr(2,5)=="bound")
 		)
 			res=new MonteCarlo(false);
@@ -55,6 +56,7 @@ int main(int argc, char** argv) {
 	}
 	if(
 		("MCpd"==type)||
+		("MCpd_"==type)||
 		("MCppn_qf"==type)||
 		("MCppn_qf_"==type)||
 		("DataE"==type)

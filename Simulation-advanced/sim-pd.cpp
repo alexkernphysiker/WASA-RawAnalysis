@@ -16,7 +16,7 @@ int main(){
 	vector<LinearInterpolation<>> theta_cm_table;
 	for(double pb=p_beam_low;pb<=p_beam_hi;pb+=0.001){
         	SortedPoints<> out;
-	        for(double theta_cm=0.001;theta_cm<PI();theta_cm+=0.001){
+	        for(double theta_cm=0;theta_cm<PI();theta_cm+=0.001){
         	    const auto p0=lorentz_byPM(x()*pb,Particle::p().mass());
 	            const auto d0=lorentz_byPM(zero(),Particle::d().mass());
         	    const auto total=p0+d0;
