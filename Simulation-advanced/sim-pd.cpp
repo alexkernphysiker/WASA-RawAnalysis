@@ -47,8 +47,8 @@ int main(){
             const auto p1=final_cm.first.Transform(beta);
             const auto d1=final_cm.second.Transform(beta);
             return {
-                        {.type=Particle::p(),.P=p1.P()},
-                        {.type=Particle::d(),.P=d1.P()}
+                   {.type=Particle::p(),.P=p1.P()},
+                   {.type=Particle::d(),.P=d1.P()}
             };
         },10);
 	return 0;
