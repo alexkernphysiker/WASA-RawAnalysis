@@ -12,7 +12,7 @@ int main(){
 	const RandomUniform<>Pb_distr(p_beam_low,p_beam_hi);
 	const RandomValueTableDistr<> T=LinearInterpolation<>([](double t)->double{
 		return exp(12.6932-33.2654*t+66.2139*t*t-68.9458*t*t*t);
-	},ChainWithStep(0.0,0.001,0.45));
+	},ChainWithStep(0.0,0.001,0.5));
 	vector<LinearInterpolation<>> theta_cm_table;
 	for(double pb=p_beam_low;pb<=p_beam_hi;pb+=0.001){
         	SortedPoints<> out;
