@@ -19,6 +19,8 @@ software for Monte Carlo simulation of registration of previously simulated part
     RootSorter
 framework for data preselection (both WMC-generated and obtained from the measurements). Uses ROOT.
 
+    gnuplot
+pluto-less simulation algorithms show debug information in the plots that are created by this software
 
 Needed environment variables
 ============================
@@ -118,5 +120,5 @@ These analyses can be provided independently from each other
 The result of analysis
 ======================
 
-I copy all *.root files that are created in the directory pointed by WASA_OUTPUT_DATA vaviable to my laptop.
+I copy all *.root files created in the directory pointed by WASA_OUTPUT_DATA variable to my laptop.
 Then I analyse them using the software that is here: https://github.com/alexkernphysiker/WASA-analysis
