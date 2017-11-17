@@ -7,9 +7,6 @@
 using namespace std;
 using namespace MathTemplates;
 using namespace GnuplotWrap;
-inline const double lambda(const double&x,const double&y,const double&z){
-	return x*x+y*y+z*z-2.*x*y-2.*y*z-2.*z*x;
-}
 int main(){
 	RANDOM RG;
 	Plotter::Instance().SetOutput(".","sim-pd");

@@ -7,9 +7,6 @@
 using namespace std;
 using namespace MathTemplates;
 using namespace GnuplotWrap;
-inline const double lambda(const double&x,const double&y,const double&z){
-	return x*x+y*y+z*z-2.*x*y-2.*y*z-2.*z*x;
-}
 const EventGenerator BoundSimulation6Gamma(RANDOM&RG,const RandomValueGenerator<>&Pb_distr,const RandomValueGenerator<>&Pf_distr){
 	return [&RG,&Pb_distr,&Pf_distr]()->list<particle_sim>{
 		static PlotDistr1D<> pbplot("he3eta","P_{beam,lab}, GeV/c",BinsByCount(40,p_beam_low,p_beam_hi));
