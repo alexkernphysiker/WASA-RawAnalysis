@@ -13,3 +13,7 @@ const etamesic Compound(
 	const MathTemplates::RandomValueGenerator<>&Pf_distr,
 	const double&s_thr=0
 );
+const std::list<particle_sim> ThreePi0Decay(
+	MathTemplates::RANDOM&RG,
+	const MathTemplates::LorentzVector<>&eta
+);
