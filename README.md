@@ -86,10 +86,13 @@ List of implemented reactions for Monte Carlo
 =============================================
 
     He3eta
+    He3eta_gg (with angulat distribution taken into account)
+    He3eta_6g (with angular distribution taken into account)
     He3pi0
     He3pi0pi0
     He3pi0pi0pi0
     pd
+    pd_ (with angular distribution taken into account)
     ppn_qf_ (n-spectator)
     bound1-2g (simulation of direct decay of eta coupled by 3He into 2 gammas)
     bound1-6g (simulation of direct decay of eta coupled by 3He into 6 gammas)
@@ -104,4 +107,3 @@ List of analyses for data
     F - forward 3He tracks
     E - pd and ppn reactions
     C - forward 3He + central gammas
-    CC - central gammas only
