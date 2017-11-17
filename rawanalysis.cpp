@@ -23,8 +23,7 @@ int main(int argc, char** argv) {
 		res=new RealData();
 	else{
 		if(
-			(type.substr(2,6)=="ppn_qf")||
-			(type.substr(2,7)=="ppn_qf_")||
+			(type.substr(2,3)=="ppn")||
 			(type.substr(2,3)=="pd_")||
 			(type.substr(2,5)=="bound")
 		)
@@ -55,10 +54,7 @@ int main(int argc, char** argv) {
 		SearchGamma(*res);
 	}
 	if(
-		("MCpd"==type)||
-		("MCpd_"==type)||
-		("MCppn_qf"==type)||
-		("MCppn_qf_"==type)||
+		(type.substr(0,3)=="MCp")||
 		("DataE"==type)
 	)
 		p_or_d_analyse(*res);
