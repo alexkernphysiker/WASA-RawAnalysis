@@ -28,6 +28,10 @@ Pluto-less simulation algorithms show debug information in the plots that are cr
 
     gnuplot
 
+
+Unfortunately, RootSorter cannot be compiler by the newest versions of gcc.
+That's why I compile the whole code with gcc that supports only C++11 standard.
+
 Needed environment variables
 ============================
 
