@@ -11,13 +11,7 @@ inline const double lambda(const double&x,const double&y,const double&z){
 	return x*x+y*y+z*z-2.*x*y-2.*y*z-2.*z*x;
 }
 const EventGenerator BoundSimulation6Gamma(RANDOM&RG,const RandomValueGenerator<>&Pb_distr,const RandomValueGenerator<>&Pf_distr){
-	const auto generator=[&RG](const etamesic&C)->list<particle_sim>{
-		if(C.eta_.M()<3.0*Particle::pi0().mass())return {};
-		list<particle_sim> output=ThreePi0Decay(RG,C.eta_);
-		output.push_back({.type=Particle::he3() ,.P=C.he3.P()});
-		return output;
-	};
-	return [generator,&RG,&Pb_distr,&Pf_distr]()->list<particle_sim>{
+	return [&RG,&Pb_distr,&Pf_distr]()->list<particle_sim>{
 		static PlotDistr1D<> pbplot("he3eta","P_{beam,lab}, GeV/c",BinsByCount(40,p_beam_low,p_beam_hi));
 		static PlotDistr1D<> pbplot2("he36gamma","P_{beam,lab},Gev/c",BinsByCount(40,p_beam_low,p_beam_hi));
 		while(true){
