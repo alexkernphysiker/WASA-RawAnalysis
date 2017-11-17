@@ -65,25 +65,18 @@ Configure WMC and rootsorter for current experimental setup
     ./config.sh 
     cd ..
 
-Run simulation (for all reactions that are implemented)
+Running Monte Carlo simulations
+===============================
+
+First run simulation for all reactions that are implemented. All these algorithms are implemented in programs named:
 
     ./sim-*
 
-Run WMC
+Then run WMC for all reactions
 
     ./RunWMC.sh <reaction>
 
-Analyse Monte Carlo
-
-    ./RunAnalysis-mc.sh <reaction>
-
-Analyse raw data
-
-    ./RunAnalysis-data.sh <analysis type>
-
-
-List of implemented reactions for Monte Carlo
-=============================================
+Here is the list of implemented reactions for Monte Carlo
 
     He3eta
     He3eta_gg (with angulat distribution taken into account)
@@ -101,9 +94,23 @@ List of implemented reactions for Monte Carlo
     bound3-2g (one more different p_{Fermi} distribution)
     bound3-6g 
 
+After that run analysis for these reaction
+
+    ./RunAnalysis-mc.sh <reaction>
+
+The analysis application will run apropriate analysis algorithms for each reaction
+
+Analyse raw data
+================
+
+For the analysis of raw data you should run
+
+    ./RunAnalysis-data.sh <analysis type>
+
 List of analyses for data
-=========================
 
     F - forward 3He tracks
     E - pd and ppn reactions
     C - forward 3He + central gammas
+
+These analyses can be provided independently from each other
