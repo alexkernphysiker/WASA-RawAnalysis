@@ -9,41 +9,54 @@ Required software
 =================
 
 Framework for calulations
+
     ROOT
 
 Library for Monte Carlo simulation of reaction products. Uses ROOT.
+
     Pluto
 
 Software for Monte Carlo simulation of registration of previously simulated particles by WASA detector. Uses ROOT and Pluto.
+
     WMC
 
 Framework for data preselection (both WMC-generated and obtained from the measurements). Uses ROOT.
+
     RootSorter
 
 Pluto-less simulation algorithms show debug information in the plots that are created by this software
+
     gnuplot
 
 Needed environment variables
 ============================
+
 path where ROOT is installed
+
     ROOTSYS
 
 path where WMC is installed
+
     WASA_ROOT
 
 path where RootSorter is installed
+
     ROOTSORTERSYS
 
 path where resulting files after running simulations are stored
+
     PLUTO_OUTPUT
 
 path where data from experiment are located
+
     RUNS_DATA
 
 path where the resulting data after running WMC are stored.
+
     WMC_DATA
 
 path to store raw analysis results
+
     WASA_OUTPUT_DATA
 
 
