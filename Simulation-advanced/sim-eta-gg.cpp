@@ -25,6 +25,9 @@ int main(){
 	    const auto V1=binaryDecay(eta.M(),0.,0.,randomIsotropic<3>(RG));
 	    const auto g1=V1.first.Transform(-eta.Beta());
 	    const auto g2=V1.second.Transform(-eta.Beta());
+	    const auto P=he3.P()+g1.P()+g2.P();
+	    static PlotDistr1D<> p_diff("2g","p diff, GeV/c",BinsByStep(-1.0,0.001,1.0));
+	    p_diff.Fill(P.M()-pb);
             return {
                    {.type=Particle::he3(),.P=he3.P()},
                    {.type=Particle::gamma(),.P=g1.P()},
