@@ -8,7 +8,7 @@ using namespace MathTemplates;
 using namespace GnuplotWrap;
 int main(){
 	RANDOM RG;
-	Plotter::Instance().SetOutput(".","sim-pd");
+	Plotter::Instance().SetOutput(".","sim-he3eta-gg");
 	const RandomUniform<>Pb_distr(1.573,p_beam_hi);
 	const RandomValueTableDistr<> THETA=LinearInterpolation<>([](double t)->double{
 		return sin(t)*(3.+cos(t));
