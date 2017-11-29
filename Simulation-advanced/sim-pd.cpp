@@ -12,7 +12,7 @@ int main(){
 	const RandomUniform<>Pb_distr(p_beam_low,p_beam_hi);
 	const RandomValueTableDistr<> T=LinearInterpolation<>([](double t)->double{
 		return exp(12.6932-33.2654*t+66.2139*t*t-68.9458*t*t*t);
-	},ChainWithStep(0.0,0.001,0.5));
+	},ChainWithStep(0.01,0.0001,0.49));
 	vector<LinearInterpolation<>> theta_cm_table;
 	for(double pb=p_beam_low;pb<=p_beam_hi;pb+=0.001){
         	SortedPoints<> out;
@@ -20,11 +20,11 @@ int main(){
         	    const auto p0=lorentz_byPM(x()*pb,Particle::p().mass());
 	            const auto d0=lorentz_byPM(zero(),Particle::d().mass());
         	    const auto total=p0+d0;
+	            const auto beta=-total.Beta();
+        	    const auto d0_cm=d0.Transform(beta);
 	            const auto final_cm=binaryDecay(total.M(),Particle::p().mass(),Particle::d().mass(),direction(theta_cm));
-        	    const auto beta=-total.Beta();
-	            const auto p1=final_cm.first.Transform(beta);
-        	    const auto d1=final_cm.second.Transform(beta);
-	            out<<make_point(d1.P().M(),theta_cm);
+	            const auto t=(final_cm.second.P()-d0_cm.P()).M();
+	            out<<make_point(t,theta_cm);
 		}
 		theta_cm_table.push_back(out);
         }
