@@ -14,7 +14,7 @@ int main(){
 	const RandomValueTableDistr<> THETA=LinearInterpolation<>([](double t)->double{
 		return sin(t)*(3.+cos(t));
 	},ChainWithStep(0.0,0.001,PI()));
-	Simulate("He3eta_6g",[&RG,&Pb_distr,&THETA]()->list<particle_sim>{
+	Simulate("He3eta-6g",[&RG,&Pb_distr,&THETA]()->list<particle_sim>{
 		const auto pb=Pb_distr(RG);
 		const auto p0=lorentz_byPM(Z()*pb,Particle::p().mass());
     		const auto d0=lorentz_byPM(Zero(),Particle::d().mass());

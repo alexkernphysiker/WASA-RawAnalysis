@@ -31,23 +31,6 @@ void p_or_d_analyse(Analysis&res){
 	;
 	res.Trigger(trigger_elastic1.number).per_track()<<(make_shared<ChainOr>()
 		<<(make_shared<ChainCheck>()
-			<<[](WTrack&T){return T.Type()==kFDC;}
-			<<[](WTrack&T){return T.Theta()!=0.125;}
-			<<[](WTrack&T){return Forward::Get()[kFRH1].Edep(T)<0.035;}
-			<<[](WTrack&T){return Forward::Get()[kFRH1].Edep(T)>0.020;}
-			<<[](WTrack&T){return Forward::Get()[kFRH2].Edep(T)<0.045;}
-			<<[](WTrack&T){return Forward::Get()[kFRH2].Edep(T)>0.020;}
-			<<[](WTrack&T){return T.Theta()<0.30;}
-			<<[](){FC++;return true;}
-			<<[](WTrack&T){
-				tracks<<point<double,particle_kine>(
-					T.Theta(),
-					{.particle=Particle::p(),.E=Forward::Get()[kFRH1].Edep(T)+Forward::Get()[kFRH2].Edep(T),.theta=T.Theta(),.phi=T.Phi()}
-				);
-				return true;
-			}
-		)
-		<<(make_shared<ChainCheck>()
 			<<[](WTrack&T){return T.Type()==kCDC;}
 			<<[](WTrack&T){return T.Theta()>0.40;}
 			<<[](WTrack&T){return T.Edep()>0.05;}
@@ -69,6 +52,13 @@ void p_or_d_analyse(Analysis&res){
 	static auto ct_sum=Axis([](){
 		return ((trackpairs[0].Y().first.theta*1.0)+(trackpairs[0].Y().second.theta*1.6))*180./PI();
 	},0,400,400);
+	static auto coplanarity=Axis([](){
+		auto dphi=trackpairs[0].Y().first.phi-trackpairs[0].Y().second.phi;
+		dphi*=180./PI();
+		while(dphi<0.)dphi+=360;
+		while(dphi>360.)dphi-=360;
+		return dphi;
+	},0.0,360.0,360);
 	static const auto ed_axis=make_pair(
 		Axis([](){return trackpairs[0].Y().first.E;} ,0.0,1.0,100),
 		Axis([](){return trackpairs[0].Y().second.E;},0.0,1.0,100)
@@ -87,10 +77,10 @@ void p_or_d_analyse(Analysis&res){
 			}
 			return trackpairs.size()>0;
 		}
-		<<make_shared<Hist1D>("elastic","pair_phi_diff_0",Axis([](){return trackpairs[0].X();},0.0,90.0,90))
+		<<make_shared<Hist1D>("elastic","pair_phi_diff_0",coplanarity)
 		<<make_shared<Hist1D>("elastic","count_0",Q_axis(res))
 		<<[](){return trackpairs[0].X()<90.0;}
-		<<make_shared<Hist1D>("elastic","pair_phi_diff_1",Axis([](){return trackpairs[0].X();},0.0,90.0,90))
+		<<make_shared<Hist1D>("elastic","pair_phi_diff_1",coplanarity)
 		<<make_shared<Hist2D>("elastic","t_vs_e_1",ct_axis.first,ed_axis.first)
 		<<make_shared<Hist2D>("elastic","t_vs_t_1",ct_axis.first,ct_axis.second)
 		<<make_shared<Hist2D>("elastic","e_vs_e_1",ed_axis.first,ed_axis.second)
@@ -103,31 +93,16 @@ void p_or_d_analyse(Analysis&res){
 				<<make_shared<Hist2D>("elastic","e_vs_e_21",ed_axis.first,ed_axis.second)
 				<<make_shared<SetOfHists1D>("elastic","theta_sum_21",Q_axis(res),ct_sum)
 				<<make_shared<SetOfHists1D>("elastic","theta_s_21",Q_axis(res),ct_axis.second)
-				<<make_shared<SetOfHists1D>("elastic","pair_phi_diff_21",Q_axis(res),Axis([](){return trackpairs[0].X();},0.0,90.0,90))
+				<<make_shared<SetOfHists1D>("elastic","pair_phi_diff_21",Q_axis(res),coplanarity)
 
 				<<[](WTrack&T){return((ed_axis.first(T)>0.16)&&(ed_axis.first(T)<0.28));}
+				<<[](WTrack&T){return((ed_axis.second(T)>0.12)&&(ed_axis.second(T)<0.32));}
 				<<make_shared<Hist2D>("elastic","t_vs_e_22",ct_axis.first,ed_axis.first)
 				<<make_shared<Hist2D>("elastic","t_vs_t_22",ct_axis.first,ct_axis.second)
 				<<make_shared<Hist2D>("elastic","e_vs_e_22",ed_axis.first,ed_axis.second)
 				<<make_shared<SetOfHists1D>("elastic","theta_sum_22",Q_axis(res),ct_sum)
 				<<make_shared<SetOfHists1D>("elastic","theta_s_22",Q_axis(res),ct_axis.second)
-				<<make_shared<SetOfHists1D>("elastic","pair_phi_diff_22",Q_axis(res),Axis([](){return trackpairs[0].X();},0.0,90.0,90))
-
-				<<[](WTrack&T){return((ed_axis.second(T)>0.12)&&(ed_axis.second(T)<0.32));}
-				<<make_shared<Hist2D>("elastic","t_vs_e_23",ct_axis.first,ed_axis.first)
-				<<make_shared<Hist2D>("elastic","t_vs_t_23",ct_axis.first,ct_axis.second)
-				<<make_shared<Hist2D>("elastic","e_vs_e_23",ed_axis.first,ed_axis.second)
-				<<make_shared<SetOfHists1D>("elastic","theta_sum_23",Q_axis(res),ct_sum)
-				<<make_shared<SetOfHists1D>("elastic","theta_s_23",Q_axis(res),ct_axis.second)
-				<<make_shared<SetOfHists1D>("elastic","pair_phi_diff_0",Q_axis(res),Axis([](){return trackpairs[0].X();},0.0,90.0,90))
-
-				<<[](WTrack&T){return((ct_axis.first(T)>23.0)&&(ct_axis.first(T)<30.0));}
-				<<make_shared<Hist2D>("elastic","t_vs_e_24",ct_axis.first,ed_axis.first)
-				<<make_shared<Hist2D>("elastic","t_vs_t_24",ct_axis.first,ct_axis.second)
-				<<make_shared<Hist2D>("elastic","e_vs_e_24",ed_axis.first,ed_axis.second)
-				<<make_shared<SetOfHists1D>("elastic","theta_sum_24",Q_axis(res),ct_sum)
-				<<make_shared<SetOfHists1D>("elastic","theta_s_24",Q_axis(res),ct_axis.second)
-				<<make_shared<SetOfHists1D>("elastic","pair_phi_diff_24",Q_axis(res),Axis([](){return trackpairs[0].X();},0.0,90.0,90))
+				<<make_shared<SetOfHists1D>("elastic","pair_phi_diff_22",Q_axis(res),coplanarity)
 			)
 		)
 	);
