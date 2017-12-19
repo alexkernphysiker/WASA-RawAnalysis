@@ -171,9 +171,8 @@ void SearchHe3nGamma(Analysis&res){
 			<< make_shared<SetOfHists1D>("He3nCentralGammas2","GMM4",Q_axis_full(res),ggmm)
 			<< make_shared<SetOfHists1D>("He3nCentralGammas2","TIM4",Q_axis_full(res),he3ggimdiff)
                         <<[he3ggimdiff](WTrack&T)->bool{
-                                // I take from zero because I beleive
-                                // it cuts off the 3He+2pi0 background reaction
-                                return (he3ggimdiff(T)>-0.0)&&(he3ggimdiff(T)<0.3);
+				//last cut that can be varied
+                                return (he3ggimdiff(T)>0.05)&&(he3ggimdiff(T)<0.20);
                         }
 			<< make_shared<Hist1D>("He3nCentralGammas2","Events5",Q_axis_full(res))
 			<< make_shared<SetOfHists1D>("He3nCentralGammas2","t5",Q_axis_full(res),ggt)
