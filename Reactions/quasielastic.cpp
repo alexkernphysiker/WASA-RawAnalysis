@@ -33,7 +33,7 @@ void p_or_d_analyse(Analysis&res){
 		<<(make_shared<ChainCheck>()
 			<<[](WTrack&T){return T.Type()==kCDC;}
 			<<[](WTrack&T){return T.Theta()>0.40;}
-			<<[](WTrack&T){return T.Edep()>0.01;}
+			<<[](WTrack&T){return T.Edep()>0.03;}
 			<<[](){CC++;return true;}
 			<<[](WTrack&T){
 				tracks<<point<double,particle_kine>(
