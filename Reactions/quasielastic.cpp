@@ -70,16 +70,16 @@ void p_or_d_analyse(Analysis&res){
 		<<[](){
 			trackpairs.clear();
 			for(size_t i=0;i<tracks.size();i++)for(size_t j=(i+1);j<tracks.size();j++){
-				trackpairs<<point<double,pair<particle_kine,particle_kine>>(
-					sqrt(pow(tracks[i].Y().phi-tracks[j].Y().phi-PI(),2))*180/PI(),
-					make_pair(tracks[i].Y(),tracks[j].Y())
-				);
+                                double dphi=tracks[i].Y().phi-tracks[j].Y().phi;
+                                dphi*=180./PI();
+                                while(dphi<0.)dphi+=360;while(dphi>360.)dphi-=360;
+				trackpairs<<make_point(abs(dphi-180),make_pair(tracks[i].Y(),tracks[j].Y()));
 			}
 			return trackpairs.size()>0;
 		}
 		<<make_shared<Hist1D>("elastic","pair_phi_diff_0",coplanarity)
 		<<make_shared<Hist1D>("elastic","count_0",Q_axis(res))
-		<<[](){return trackpairs[0].X()<90.0;}
+		<<[](){return trackpairs[0].X()<180.0;}
 		<<make_shared<Hist1D>("elastic","pair_phi_diff_1",coplanarity)
 		<<make_shared<Hist2D>("elastic","t_vs_e_1",ct_axis.first,ed_axis.first)
 		<<make_shared<Hist2D>("elastic","t_vs_t_1",ct_axis.first,ct_axis.second)
