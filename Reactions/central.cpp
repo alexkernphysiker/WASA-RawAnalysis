@@ -324,7 +324,7 @@ void SearchHe3nGamma(Analysis&res){
 			<< make_shared<SetOfHists1D>("He3nCentralGammas2","GMM4",Q_axis_full(res),ggmm)
 			<< make_shared<SetOfHists1D>("He3nCentralGammas2","TIM4",Q_axis_full(res),he3ggimdiff)
 		    
-                        <<[he3ggimdiff](WTrack&T)->bool{return (he3ggimdiff(T)>0.03;}
+                        <<[he3ggimdiff](WTrack&T)->bool{return (he3ggimdiff(T)>0.03);}
 			<< make_shared<Hist1D>("He3nCentralGammas2","Events5",Q_axis_full(res))
 			<< make_shared<SetOfHists1D>("He3nCentralGammas2","t5",Q_axis_full(res),ggt)
 			<< make_shared<SetOfHists1D>("He3nCentralGammas2","dt5",Q_axis_full(res),ggdt)
