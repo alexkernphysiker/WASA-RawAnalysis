@@ -38,7 +38,7 @@ void p_or_d_analyse(Analysis&res){
 			<<[](){CC++;return true;}
 			<<[](WTrack&T){
 				tracks<<point<double,track_info>(
-					T.Time(),
+					T.Theta(),
 					{.L=lorentz_byEkM(double(T.Edep()),Particle::p().mass(),direction(double(T.Phi()),T.Theta())),.t=T.Time()}
 				);
 				return true;
@@ -52,7 +52,7 @@ void p_or_d_analyse(Analysis&res){
 	);
 	static auto time_axis=Axis([](){
 		return trackpairs[0].Y().second.t-trackpairs[0].Y().first.t;
-	},0.,50.,50);
+	},-50.,50.,100);
 	static auto coplanarity=Axis([](){
 		auto dphi=
 			direction(trackpairs[0].Y().first.L.P()).phi()
@@ -84,7 +84,7 @@ void p_or_d_analyse(Analysis&res){
 		<<make_shared<Hist1D>("elastic","pair_phi_diff_0",coplanarity)
 		<<make_shared<Hist1D>("elastic","pair_time_diff_0",time_axis)
 
-		<<[](WTrack&T){return (time_axis(T)<100.0);}
+		<<[](WTrack&T){return (time_axis(T)>-50.0)&&(time_axis(T)<50.0);}
 		<<make_shared<Hist1D>("elastic","pair_phi_diff_1",coplanarity)
 		<<make_shared<Hist1D>("elastic","pair_time_diff_1",time_axis)
 		<<make_shared<Hist2D>("elastic","t_vs_e_1",ct_axis.first,ed_axis.first)
