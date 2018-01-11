@@ -16,7 +16,7 @@ void SimulatePluto(const string&reaction,const string&filename,const double&from
     CD(PLUTO);
     std::mt19937 gen;
     std::uniform_int_distribution<int> d(1,254);
-    for(ALLMC){
+    for(size_t runindex=1;runindex<=40;runindex++){
 	TF1 *mf=new TF1(CSTR("Uniform"),CSTR("1"),from,to);
 	PBeamSmearing *smear = new PBeamSmearing(CSTR("beam_smear"),CSTR("Beam smearing"));
 	smear->SetReaction(CSTR("p + d"));
