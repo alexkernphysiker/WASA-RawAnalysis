@@ -39,13 +39,41 @@ etamesic Direct_eta_production(
 		const auto P=Pb_distr(RG);
 		const auto TotalP=lorentz_byPM(Z<>()*P,Particle::p().mass())+lorentz_byPM(Zero<>(),Particle::d().mass());
 		if(TotalP.M()>(Particle::he3().mass()+Particle::eta().mass())){
-                    static const RandomValueTableDistr<> THETA=LinearInterpolation<>([](double t)->double{
-                        return sin(t)*(3.+cos(t));
-                    },ChainWithStep(0.0,0.001,PI()));
-                    const static RandomUniform<> PHI(-PI(),PI());
-                    const auto V0=binaryDecay(TotalP.M(),Particle::eta().mass(),Particle::he3().mass(),direction(PHI(RG),THETA(RG)));
-                    const auto eta=V0.first.Transform(-TotalP.Beta());
-                    const auto he3=V0.second.Transform(-TotalP.Beta());
+		    static auto filltable=[](){
+			static auto f=[](const double&costh,const double&a,const double&b,const double&g){
+				return 1.0 + a*costh + b*costh*costh + g*costh*costh*costh;
+			};
+			static const LinearInterpolation<>alpha=Points<>{
+                        	{-0.001,0},{0.04,0},
+                        	{0.112,0.52},{0.130,0.62},{0.145,0.74},{170,1.2}
+                    	};
+                    	static const LinearInterpolation<>beta=Points<>{
+                        	{-0.001,-0.3},{0.04,-0.3},
+	                        {0.112,-0.33},{0.130,-0.34},{0.145,-0.30},{170,-0.34}
+        		};
+			static const LinearInterpolation<>gamma=Points<>{
+				{-0.001,0},{0.04,0},
+				{0.112,-0.01},{0.130,-0.18},{0.145,-0.21},{170,-0.29}
+			};
+			vector<RandomValueTableDistr<>> res;
+			for(size_t i=0;i<170;i++){
+				const double p=0.001*i;
+				res.push_back(RandomValueTableDistr<>(
+					[&p](const double&theta){
+						const auto ct=cos(theta);
+						return f(ct,alpha(p),beta(p),gamma(p))*sin(theta);
+					},ChainWithStep(0.0,0.001,PI())
+				));
+			}
+			return res;
+		    };
+		    const static auto THETA=filltable();
+		    const static RandomUniform<> PHI(-PI(),PI());
+                    const auto V0=binaryDecay(TotalP.M(),Particle::eta().mass(),Particle::he3().mass(),direction(0.0,0.0));
+		    const double theta=THETA[size_t(V0.first.P().M()/0.001)](RG);
+		    const double phi=PHI(RG);
+                    const auto eta= V0.first.Rotate(direction(Y()),theta).Rotate(direction(Z()),phi).Transform(-TotalP.Beta());
+                    const auto he3=V0.second.Rotate(direction(Y()),theta).Rotate(direction(Z()),phi).Transform(-TotalP.Beta());
                     return {.he3=he3,.eta_=eta};
 		}
 	}
