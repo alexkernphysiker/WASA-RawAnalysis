@@ -8,14 +8,14 @@
 using namespace std;
 using namespace MathTemplates;
 using namespace GnuplotWrap;
-const LinearInterpolation<> ReadPfFromFile(const string&name){
+LinearInterpolation<> ReadPfFromFile(const string&name){
 	SortedPoints<> data;
 	ifstream file(name);
 	double x,y;
 	while(file>>x>>y)data<<make_point(x/1000.,y);
 	return data;
 }
-const etamesic Compound(
+etamesic Compound(
 	RANDOM&RG,
 	const RandomValueGenerator<>&Pb_distr,
 	const RandomValueGenerator<>&Pf_distr,
@@ -31,10 +31,29 @@ const etamesic Compound(
 		}
 	}
 }
-const double lambda(const double&x,const double&y,const double&z){
+etamesic Direct_eta_production(
+	RANDOM&RG,
+	const RandomValueGenerator<>&Pb_distr
+){
+	const auto P=Pb_distr(RG);
+	const auto TotalP=lorentz_byPM(Z<>()*P,Particle::p().mass())+lorentz_byPM(Zero<>(),Particle::d().mass());
+	while(true){
+		if(TotalP>(Particle::he3().mass()+Particle::eta().mass())){
+                    static const RandomValueTableDistr<> THETA=LinearInterpolation<>([](double t)->double{
+                        return sin(t)*(3.+cos(t));
+                    },ChainWithStep(0.0,0.001,PI()));
+                    const static RandomUniform<> PHI(-PI(),PI());
+                    const auto V0=binaryDecay(TotalP.M(),Particle::eta().mass(),Particle::he3().mass(),direction(PHI(RG),THETA(RG)));
+                    const auto eta=V0.first.Transform(-TotalP.Beta());
+                    const auto he3=V0.second.Transform(-TotalP.Beta());
+                    return {.he3=he3Pcm.Transform(-TotalP.Beta()),.eta_=etaPcm.Transform(-TotalP.Beta())};
+		}
+	}
+}
+double lambda(const double&x,const double&y,const double&z){
 	return x*x+y*y+z*z-2.*x*y-2.*y*z-2.*z*x;
 }
-const list<particle_sim> ThreePi0Decay(
+list<particle_sim> ThreePi0Decay(
 	RANDOM&RG,
 	const LorentzVector<>&eta
 ){

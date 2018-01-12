@@ -15,17 +15,10 @@ int main(){
 		return sin(t)*(3.+cos(t));
 	},ChainWithStep(0.0,0.001,PI()));
 	Simulate("He3eta-6g",[&RG,&Pb_distr,&THETA]()->list<particle_sim>{
-		const auto pb=Pb_distr(RG);
-		const auto p0=lorentz_byPM(Z()*pb,Particle::p().mass());
-    		const auto d0=lorentz_byPM(Zero(),Particle::d().mass());
-           	const auto total=p0+d0;
-	   	const static RandomUniform<> PHI(-PI(),PI());
-            	const auto V0=binaryDecay(total.M(),Particle::he3().mass(),Particle::eta().mass(),direction(PHI(RG),THETA(RG)));
-            	const auto he3=V0.first.Transform(-total.Beta());
-            	const auto eta=V0.second.Transform(-total.Beta());
-		list<particle_sim> result=ThreePi0Decay(RG,eta);
-		result.push_back({.type=Particle::he3(),.P=he3.P()});
-		return result;
+            const auto V0=Direct_eta_production(RG,Pb_distr);
+            list<particle_sim> result=ThreePi0Decay(RG,V0.eta_);
+            result.push_back({.type=Particle::he3(),.P=V0.he3.P()});
+            return result;
         },10);
 	return 0;
 }

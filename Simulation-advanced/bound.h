@@ -5,15 +5,19 @@
 #include <math_h/functions.h>
 #include <math_h/interpolate.h>
 #include "runsim.h"
-const MathTemplates::LinearInterpolation<> ReadPfFromFile(const std::string&name);
+MathTemplates::LinearInterpolation<> ReadPfFromFile(const std::string&name);
 struct etamesic{MathTemplates::LorentzVector<>he3;MathTemplates::LorentzVector<>eta_;};
-const etamesic Compound(
+etamesic Compound(
 	MathTemplates::RANDOM&RG,
 	const MathTemplates::RandomValueGenerator<>&Pb_distr,
 	const MathTemplates::RandomValueGenerator<>&Pf_distr,
 	const double&s_thr=0
 );
-const std::list<particle_sim> ThreePi0Decay(
+etamesic Direct_eta_production(
+	MathTemplates::RANDOM&RG,
+	const MathTemplates::RandomValueGenerator<>&Pb_distr
+);
+std::list<particle_sim> ThreePi0Decay(
 	MathTemplates::RANDOM&RG,
 	const MathTemplates::LorentzVector<>&eta
 );

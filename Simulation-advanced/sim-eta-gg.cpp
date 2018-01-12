@@ -3,6 +3,7 @@
 #include <gnuplot_wrap.h>
 #include <Experiment/experiment_conv.h>
 #include "runsim.h"
+#include "bound.h"
 using namespace std;
 using namespace MathTemplates;
 using namespace GnuplotWrap;
@@ -10,26 +11,13 @@ int main(){
 	RANDOM RG;
 	Plotter::Instance().SetOutput(".","sim-he3eta-gg");
 	const RandomUniform<>Pb_distr(1.573,p_beam_hi);
-	const RandomValueTableDistr<> THETA=LinearInterpolation<>([](double t)->double{
-		return sin(t)*(3.+cos(t));
-	},ChainWithStep(0.0,0.001,PI()));
 	Simulate("He3eta-gg",[&RG,&Pb_distr,&THETA]()->list<particle_sim>{
-	    const auto pb=Pb_distr(RG);
-            const auto p0=lorentz_byPM(Z()*pb,Particle::p().mass());
-            const auto d0=lorentz_byPM(Zero(),Particle::d().mass());
-            const auto total=p0+d0;
-	    const static RandomUniform<> PHI(-PI(),PI());
-            const auto V0=binaryDecay(total.M(),Particle::he3().mass(),Particle::eta().mass(),direction(PHI(RG),THETA(RG)));
-            const auto he3=V0.first.Transform(-total.Beta());
-            const auto eta=V0.second.Transform(-total.Beta());
-	    const auto V1=binaryDecay(eta.M(),0.,0.,randomIsotropic<3>(RG));
-	    const auto g1=V1.first.Transform(-eta.Beta());
-	    const auto g2=V1.second.Transform(-eta.Beta());
-	    const auto P=he3.P()+g1.P()+g2.P();
-	    static PlotDistr1D<> p_diff("2g","p diff, GeV/c",BinsByStep(-1.0,0.001,1.0));
-	    p_diff.Fill(P.M()-pb);
+            const auto V0=Direct_eta_production(RG,Pb_distr);
+	    const auto V1=binaryDecay(V0.eta_.M(),0.,0.,randomIsotropic<3>(RG));
+	    const auto g1=V1.first.Transform(-V0.eta_.Beta());
+	    const auto g2=V1.second.Transform(-V0.eta_.Beta());
             return {
-                   {.type=Particle::he3(),.P=he3.P()},
+                   {.type=Particle::he3(),.P=V0.he3.P()},
                    {.type=Particle::gamma(),.P=g1.P()},
                    {.type=Particle::gamma(),.P=g2.P()}
             };
