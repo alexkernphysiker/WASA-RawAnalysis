@@ -10,8 +10,8 @@ using namespace GnuplotWrap;
 int main(){
 	RANDOM RG;
 	Plotter::Instance().SetOutput(".","sim-he3eta-gg");
-	const RandomUniform<>Pb_distr(1.573,p_beam_hi);
-	Simulate("He3eta-gg",[&RG,&Pb_distr,&THETA]()->list<particle_sim>{
+	const RandomUniform<>Pb_distr(p_beam_low,p_beam_hi);
+	Simulate("He3eta-gg",[&RG,&Pb_distr]()->list<particle_sim>{
             const auto V0=Direct_eta_production(RG,Pb_distr);
 	    const auto V1=binaryDecay(V0.eta_.M(),0.,0.,randomIsotropic<3>(RG));
 	    const auto g1=V1.first.Transform(-V0.eta_.Beta());

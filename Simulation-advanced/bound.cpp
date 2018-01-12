@@ -35,10 +35,10 @@ etamesic Direct_eta_production(
 	RANDOM&RG,
 	const RandomValueGenerator<>&Pb_distr
 ){
-	const auto P=Pb_distr(RG);
-	const auto TotalP=lorentz_byPM(Z<>()*P,Particle::p().mass())+lorentz_byPM(Zero<>(),Particle::d().mass());
 	while(true){
-		if(TotalP>(Particle::he3().mass()+Particle::eta().mass())){
+		const auto P=Pb_distr(RG);
+		const auto TotalP=lorentz_byPM(Z<>()*P,Particle::p().mass())+lorentz_byPM(Zero<>(),Particle::d().mass());
+		if(TotalP.M()>(Particle::he3().mass()+Particle::eta().mass())){
                     static const RandomValueTableDistr<> THETA=LinearInterpolation<>([](double t)->double{
                         return sin(t)*(3.+cos(t));
                     },ChainWithStep(0.0,0.001,PI()));
@@ -46,7 +46,7 @@ etamesic Direct_eta_production(
                     const auto V0=binaryDecay(TotalP.M(),Particle::eta().mass(),Particle::he3().mass(),direction(PHI(RG),THETA(RG)));
                     const auto eta=V0.first.Transform(-TotalP.Beta());
                     const auto he3=V0.second.Transform(-TotalP.Beta());
-                    return {.he3=he3Pcm.Transform(-TotalP.Beta()),.eta_=etaPcm.Transform(-TotalP.Beta())};
+                    return {.he3=he3,.eta_=eta};
 		}
 	}
 }
