@@ -23,7 +23,7 @@ int main(){
 	            const auto beta=-total.Beta();
         	    const auto d0_cm=d0.Transform(beta);
 	            const auto final_cm=binaryDecay(total.M(),Particle::p().mass(),Particle::d().mass(),direction(theta_cm));
-	            const auto t=(final_cm.second.P()-d0_cm.P()).M();
+	            const auto t=(final_cm.first.P()-d0_cm.P()).M();
 	            out<<make_point(t,theta_cm);
 		}
 		theta_cm_table.push_back(out);
