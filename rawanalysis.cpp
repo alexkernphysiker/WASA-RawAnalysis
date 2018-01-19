@@ -44,21 +44,19 @@ int main(int argc, char** argv) {
 		(type.substr(0,5)=="MCHe3")||
 		(type.substr(0,7)=="MCbound")||
 		("DataC"==type)
-	){
-		SearchHe3nGamma(*res);
-	}
+	)
+		Search3He2Gamma(*res);
 	if(
 		(type.substr(0,5)=="MCHe3")||
 		(type.substr(0,7)=="MCbound")||
 		("DataCC"==type)
-	){
-		SearchGamma(*res);
-	}
+	)
+		Search3He6Gamma(*res);
 	if(
 		(type.substr(0,3)=="MCp")||
 		("DataE"==type)
 	)
-		p_or_d_analyse(*res);
+		ppn_central_analysis(*res);
 	return res;
     });
     for(int i=1;i<=new_c;i++)

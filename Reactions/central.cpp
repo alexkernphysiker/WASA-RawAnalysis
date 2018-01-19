@@ -65,7 +65,7 @@ struct eta_decay_ppp{
         inline const bool operator<(const eta_decay_ppp&other)const{return diff()<other.diff();}
         inline const bool operator>(const eta_decay_ppp&other)const{return diff()>other.diff();}
 };
-void SearchGamma(Analysis&res){
+void Search3He6Gamma(Analysis&res){
 	const auto&tn=trigger_he3_forward.number;
 	static auto Ptotal=LorentzVector<>::zero();
 	static vector<track_info> gammas;
@@ -222,7 +222,7 @@ void SearchGamma(Analysis&res){
 	    )
 	);
 }
-void SearchHe3nGamma(Analysis&res){
+void Search3He2Gamma(Analysis&res){
 	const auto&tn=trigger_he3_forward.number;
 	static auto Ptotal=LorentzVector<>::zero();
 	static vector<track_info> gammas;

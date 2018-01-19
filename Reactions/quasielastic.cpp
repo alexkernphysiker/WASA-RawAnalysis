@@ -22,7 +22,7 @@ Axis Q_axis(const Analysis&res){
 	return Axis([&res](){return 1000.0*He3eta.P2Q(res.PBeam());},-70.0,30.0,40);
 }
 struct track_info{LorentzVector<>L;double t;};
-void p_or_d_analyse(Analysis&res){
+void ppn_central_analysis(Analysis&res){
 	static SortedPoints<double,track_info> tracks;
 	static size_t FC,CC;
 	res.Trigger(trigger_elastic1.number).pre()
