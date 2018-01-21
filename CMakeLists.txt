@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 3.0)
-project(WASAatCOSY_etamesic_3He)
 add_definitions(-std=c++11 -pthread)
 set(CMAKE_CPP_FLAGS "-DNoMySQL -DNoXerces -Wno-deprecated-declarations -m64 -DNoQT")
 set(CMAKE_CXX_FLAGS "-g -O2 -fPIC -fno-strict-aliasing -Wall -fno-strict-aliasing")
