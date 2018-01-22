@@ -118,9 +118,9 @@ list<particle_sim> ThreePi0Decay(
 		const double p2y=sqrt(p2*p2-p2x*p2x);
 		const double p3x=-(p1+p2x);
 		const auto 
-		P1=lorentz_byPM(desCartes(p1,0.,0.),m),
-		P2=lorentz_byPM(desCartes(p2x,p2y,0.),m),
-		P3=lorentz_byPM(desCartes(p3x,-p2y,0.),m);
+		P1=lorentz_byPM(vec(p1,0.,0.),m),
+		P2=lorentz_byPM(vec(p2x,p2y,0.),m),
+		P3=lorentz_byPM(vec(p3x,-p2y,0.),m);
 		if(!isfinite(P1.M()))continue;
 		if(!isfinite(P2.M()))continue;
 		if(!isfinite(P3.M()))continue;
