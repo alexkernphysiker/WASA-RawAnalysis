@@ -7,7 +7,6 @@ using namespace std;
 using namespace MathTemplates;
 using namespace GnuplotWrap;
 int main(){
-	RANDOM RG;
 	Plotter::Instance().SetOutput(".","sim-pd");
 	const RandomUniform<>Pb_distr(p_beam_low,p_beam_hi);
 	const RandomValueTableDistr<> T=LinearInterpolation<>([](double t)->double{
@@ -36,13 +35,13 @@ int main(){
 			index=theta_cm_table.size()-1;
 		return theta_cm_table[index](t);
 	};
-	Simulate("pd_",[&RG,&Pb_distr,&T,&THETA]()->list<particle_sim>{
-	    const auto pb=Pb_distr(RG);
+	Simulate("pd_",[&Pb_distr,&T,&THETA]()->list<particle_sim>{
+	    const auto pb=Pb_distr();
             const auto p0=lorentz_byPM(Z()*pb,Particle::p().mass());
             const auto d0=lorentz_byPM(Zero(),Particle::d().mass());
             const auto total=p0+d0;
 	    const static RandomUniform<> PHI(-PI(),PI());
-            const auto final_cm=binaryDecay(total.M(),Particle::p().mass(),Particle::d().mass(),direction(PHI(RG),THETA(pb,T(RG))));
+            const auto final_cm=binaryDecay(total.M(),Particle::p().mass(),Particle::d().mass(),direction(PHI(),THETA(pb,T())));
             const auto beta=-total.Beta();
             const auto p1=final_cm.first.Transform(beta);
             const auto d1=final_cm.second.Transform(beta);

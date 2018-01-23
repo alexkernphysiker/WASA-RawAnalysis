@@ -16,15 +16,14 @@ LinearInterpolation<> ReadPfFromFile(const string&name){
 	return data;
 }
 etamesic Compound(
-	RANDOM&RG,
 	const RandomValueGenerator<>&Pb_distr,
 	const RandomValueGenerator<>&Pf_distr,
 	const double&s_thr
 ){
-	const auto P=Pb_distr(RG);
+	const auto P=Pb_distr();
 	const auto TotalP=lorentz_byPM(Z<>()*P,Particle::p().mass())+lorentz_byPM(Zero<>(),Particle::d().mass());
 	while(true){
-		const auto he3Pcm=lorentz_byPM(randomIsotropic<3>(RG)*Pf_distr(RG),Particle::he3().mass());
+		const auto he3Pcm=lorentz_byPM(randomIsotropic<3>()*Pf_distr(),Particle::he3().mass());
 		const auto etaPcm=lorentz_byPM(Zero<>(),TotalP.M())-he3Pcm;
 		if(etaPcm.M_sqr()>s_thr){
 			return {.he3=he3Pcm.Transform(-TotalP.Beta()),.eta_=etaPcm.Transform(-TotalP.Beta())};
@@ -32,11 +31,10 @@ etamesic Compound(
 	}
 }
 etamesic Direct_eta_production(
-	RANDOM&RG,
 	const RandomValueGenerator<>&Pb_distr
 ){
 	while(true){
-		const auto P=Pb_distr(RG);
+		const auto P=Pb_distr();
 		const auto TotalP=lorentz_byPM(Z<>()*P,Particle::p().mass())+lorentz_byPM(Zero<>(),Particle::d().mass());
 		if(TotalP.M()>(Particle::he3().mass()+Particle::eta().mass())){
 		    static auto filltable=[](){
@@ -70,8 +68,8 @@ etamesic Direct_eta_production(
 		    const static auto THETA=filltable();
 		    const static RandomUniform<> PHI(-PI(),PI());
                     const auto V0=binaryDecay(TotalP.M(),Particle::eta().mass(),Particle::he3().mass(),direction(0.0,0.0));
-		    const double theta=THETA[size_t(V0.first.P().M()/0.001)](RG);
-		    const double phi=PHI(RG);
+		    const double theta=THETA[size_t(V0.first.P().M()/0.001)]();
+		    const double phi=PHI();
                     const auto eta= V0.first.Rotate(direction(Y()),theta).Rotate(direction(Z()),phi).Transform(-TotalP.Beta());
                     const auto he3=V0.second.Rotate(direction(Y()),theta).Rotate(direction(Z()),phi).Transform(-TotalP.Beta());
                     return {.he3=he3,.eta_=eta};
@@ -82,7 +80,6 @@ double lambda(const double&x,const double&y,const double&z){
 	return x*x+y*y+z*z-2.*x*y-2.*y*z-2.*z*x;
 }
 list<particle_sim> ThreePi0Decay(
-	RANDOM&RG,
 	const LorentzVector<>&eta
 ){
 	while(true){
@@ -105,8 +102,8 @@ list<particle_sim> ThreePi0Decay(
 		const double M=eta.M(),s=M*M,m=Particle::pi0().mass();
 		const double smin=pow(m,2),smax=pow(M-m,2);
 		const RandomUniform<> s_distr(smin,smax);
-		const double s1=s_distr(RG);
-		const double s2=s_distr(RG);
+		const double s1=s_distr();
+		const double s2=s_distr();
 		const double s3=s+3.*m*m-s1-s2;
 		if(!isfinite(s3))continue;
 		if((s3<=smin)||(s3>=smax))continue;
@@ -129,7 +126,7 @@ list<particle_sim> ThreePi0Decay(
 		p1plot.Fill(p1);p2plot.Fill(p2);p3plot.Fill(p3);
 		const RandomUniform<> TH(-PI<>(),PI<>());
 		const auto 
-		RR=randomIsotropic<3>(RG).Rotations()*Rotation(direction(P1.P()),TH(RG));
+		RR=randomIsotropic<3>().Rotations()*Rotation(direction(P1.P()),TH());
 		plplot.Fill(((RR*P1.P())^(RR*P2.P()))*(RR*P3.P()));
 		const vector<LorentzVector<>> pizeros={
 			lorentz_byPM(RR*P1.P(),P1.M()).Transform(-eta.Beta()),
@@ -140,7 +137,7 @@ list<particle_sim> ThreePi0Decay(
 		auto G=LorentzVector<>::zero();
 		list<particle_sim> output;
 		for(const auto PiP:pizeros){
-			const auto g1Pcm=lorentz_byPM(randomIsotropic<3>(RG)*m/2.,0.);
+			const auto g1Pcm=lorentz_byPM(randomIsotropic<3>()*m/2.,0.);
 			const auto g2Pcm=lorentz_byPM(-g1Pcm.P(),0.);
 			const auto piframe=PiP.Beta();
 			if(!isfinite(piframe.M()))throw Exception<EventGenerator,106>("Invalid pi0 frame");

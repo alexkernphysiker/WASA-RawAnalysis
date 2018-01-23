@@ -28,33 +28,32 @@ const vector<RandomValueTableDistr<>> AngularDistribution(const BiLinearInterpol
 	return res;
 }
 int main(){
-	RANDOM RG;
 	Plotter::Instance().SetOutput(".","sim-ppn");
 	const RandomUniform<>Pb_distr(p_beam_low,p_beam_hi);
 	const auto Pf_dens=Plotter::Instance().GetPoints<double>("pp/pfermi");
 	Plot().Line(Pf_dens);
 	const RandomValueTableDistr<>Pf_distr=Pf_dens;
 	const auto CS=AngularDistribution(ReadCrossSection());
-	const auto THETA=[&CS](RANDOM&RG,double p)->double{
+	const auto THETA=[&CS](double p)->double{
 		int index=size_t(((p-1.)*100.)+0.5);
 		static PlotDistr1D<> p_dep("Pp(pt) index","",BinsByCount(101,-0.5,100.5));
                 p_dep.Fill(index);
 		if(index<0){
-			return CS[0](RG);
+			return CS[0]();
 		}else{
 			if(size_t(index)<CS.size())
-				return CS[index](RG);
+				return CS[index]();
 			else
-				return CS[CS.size()-1](RG);
+				return CS[CS.size()-1]();
 		}
 	};
-	Simulate("ppn_qf_",[&RG,&Pb_distr,&Pf_distr,&THETA]()->list<particle_sim>{
+	Simulate("ppn_qf_",[&Pb_distr,&Pf_distr,&THETA]()->list<particle_sim>{
                 const auto d_lab=lorentz_byPM(Zero(),Particle::d().mass());
-                const auto nt_lab=lorentz_byPM(randomIsotropic<3>(RG)*Pf_distr(RG),Particle::n().mass());
+                const auto nt_lab=lorentz_byPM(randomIsotropic<3>()*Pf_distr(),Particle::n().mass());
                 const auto pt_lab=d_lab-nt_lab;
 		static PlotDistr1D<> p_mass("p_t mass","",BinsByCount(100,0.8,1.0));
 		p_mass.Fill(pt_lab.M());
-                const auto pr_lab=lorentz_byPM(Z()*Pb_distr(RG),Particle::p().mass());
+                const auto pr_lab=lorentz_byPM(Z()*Pb_distr(),Particle::p().mass());
                 const auto PP=pr_lab+pt_lab;
 		const auto ppr_t =pr_lab.Transform(pt_lab.Beta());
 		const auto ppr_cm=pr_lab.Transform(PP.Beta());
@@ -71,8 +70,8 @@ int main(){
 		p_dep_z.Fill(ppr_t.P().z());
                 const auto final_chm=binaryDecay(PP.M(),Particle::p().mass(),Particle::p().mass(),direction(ppr_cm.P()));
                 const static RandomUniform<> PHI(-PI(),PI());
-		const auto theta_cm=THETA(RG,ppr_t.P().M());
-		const auto phi_cm=PHI(RG);
+		const auto theta_cm=THETA(ppr_t.P().M());
+		const auto phi_cm=PHI();
 		const auto transform=[&theta_cm,&phi_cm,&ppr_cm](const LorentzVector<>&P)->const LorentzVector<>{
 			return P.Rotate(direction(ppr_cm.P()^X()),theta_cm).Rotate(direction(ppr_cm.P()),phi_cm);
 		};

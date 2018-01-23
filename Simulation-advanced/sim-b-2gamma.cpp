@@ -7,15 +7,15 @@
 using namespace std;
 using namespace MathTemplates;
 using namespace GnuplotWrap;
-const EventGenerator BoundSimulation2Gamma(RANDOM&RG,const RandomValueGenerator<>&Pb_distr,const RandomValueGenerator<>&Pf_distr,vector<PlotDistr1D<>>&plots){
-	return [&RG,&Pb_distr,&Pf_distr,&plots]()->list<particle_sim>{
-		const auto C=Compound(RG,Pb_distr,Pf_distr);
+const EventGenerator BoundSimulation2Gamma(const RandomValueGenerator<>&Pb_distr,const RandomValueGenerator<>&Pf_distr,vector<PlotDistr1D<>>&plots){
+	return [&Pb_distr,&Pf_distr,&plots]()->list<particle_sim>{
+		const auto C=Compound(Pb_distr,Pf_distr);
 		const auto&etaPlab=C.eta_;
 		const auto&he3Plab=C.he3;
 		plots[0].Fill((etaPlab+he3Plab).P().M());
 		plots[1].Fill(etaPlab.P().M());
 		plots[2].Fill(etaPlab.M());
-		const auto gammas_cme=binaryDecay(etaPlab.M(),0.0,0.0,randomIsotropic<3>(RG));
+		const auto gammas_cme=binaryDecay(etaPlab.M(),0.0,0.0,randomIsotropic<3>());
 		const auto g1Plab=gammas_cme.first.Transform(-etaPlab.Beta());
 		const auto g2Plab=gammas_cme.second.Transform(-etaPlab.Beta());
 		return {
@@ -26,7 +26,6 @@ const EventGenerator BoundSimulation2Gamma(RANDOM&RG,const RandomValueGenerator<
 	};
 }
 int main(){
-	RANDOM RG;
 	Plotter::Instance().SetOutput(".","sim-2g");
 	const RandomUniform<> P(p_beam_low,p_beam_hi); 
 	const auto
@@ -50,8 +49,8 @@ int main(){
 		PlotDistr1D<>("3","P_{eta,lab},GeV/C",BinsByCount(1000,0.0,1.0)),
 		PlotDistr1D<>("3","m_{eta_b},GeV",BinsByCount(200,0.4,0.6))
 	};
-	Simulate("bound1-2g",BoundSimulation2Gamma(RG,P,RandomValueTableDistr<>(pf1),plots1),10);
-	Simulate("bound2-2g",BoundSimulation2Gamma(RG,P,RandomValueTableDistr<>(pf2),plots2),10);
-	Simulate("bound3-2g",BoundSimulation2Gamma(RG,P,RandomValueTableDistr<>(pf3),plots3),10);
+	Simulate("bound1-2g",BoundSimulation2Gamma(P,RandomValueTableDistr<>(pf1),plots1),10);
+	Simulate("bound2-2g",BoundSimulation2Gamma(P,RandomValueTableDistr<>(pf2),plots2),10);
+	Simulate("bound3-2g",BoundSimulation2Gamma(P,RandomValueTableDistr<>(pf3),plots3),10);
 	return 0;
 }
