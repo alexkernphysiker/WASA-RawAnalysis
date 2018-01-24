@@ -59,7 +59,8 @@ etamesic Direct_eta_production(
 				res.push_back(RandomValueTableDistr<>(
 					[&p](const double&theta){
 						const auto ct=cos(theta);
-						return f(ct,alpha(p),beta(p),gamma(p))*sin(theta);
+						const auto rho=f(ct,alpha(p),beta(p),gamma(p))*sin(theta);
+						return (rho>0)?rho:0.0;
 					},ChainWithStep(0.0,0.001,PI())
 				));
 			}
