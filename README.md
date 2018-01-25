@@ -132,6 +132,7 @@ List of analyses for data
 
     F - forward 3He tracks
     E - pd and ppn reactions
+    Q - ppn reaction - analysis v 2.0
     C - forward 3He + 2 central gammas
     CC - forward 3He + 6 central gammas
 

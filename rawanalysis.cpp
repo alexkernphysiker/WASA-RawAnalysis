@@ -57,6 +57,11 @@ int main(int argc, char** argv) {
 		("DataE"==type)
 	)
 		ppn_central_analysis(*res);
+	if(
+		(type.substr(0,3)=="MCp")||
+		("DataQ"==type)
+	)
+		qe_central_analysis(*res);
 	return res;
     });
     for(int i=1;i<=new_c;i++)

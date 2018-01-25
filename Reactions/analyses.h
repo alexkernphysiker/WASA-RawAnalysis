@@ -8,4 +8,5 @@
     void Search3He2Gamma(Analysis&res);
     void Search3He6Gamma(Analysis&res);
     void ppn_central_analysis(Analysis&res);
+    void qe_central_analysis(Analysis&res);
 #endif 
