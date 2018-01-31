@@ -5,6 +5,7 @@ for X in `seq 45934 1 46884`; do
 		echo "... is already done."
 	else
 		RUNCAT=""
+		#command find is in cycle because file list may change after each analysis
 		zezeze=`find ${RUNS_DATA}|grep ${X}.xz`
 		if [ "${zezeze}" != "" ]; then
 			if [ -e ${zezeze} ]; then
@@ -13,7 +14,7 @@ for X in `seq 45934 1 46884`; do
 		else
 			zezeze=`find ${RUNS_DATA}|grep ${X}.bz2`
 			if [ "${zezeze}" != "" ]; then
-				if [ -e ${RUNS_DATA}/run_${X}.bz2 ]; then
+				if [ -e ${zezeze} ]; then
 					RUNCAT="bzcat ${RUNS_DATA}/run_${X}.bz2"
 				fi
 			fi

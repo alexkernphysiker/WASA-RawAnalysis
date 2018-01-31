@@ -1,29 +1,23 @@
 rm -f runlist-*.txt
-for X in `seq 45883 1 46884`; do
+RUN_FILES=`find ${RUNS_DATA}`
+for X in `seq 45934 1 46884`; do
 	RUN="NO"
-	zezeze=`find ${RUNS_DATA}|grep ${X}.xz`
+	zezeze=`echo ${RUN_FILES}|grep ${X}.xz`
 	if [ "${zezeze}" != "" ]; then
-		if [ -e ${zezeze} ]; then
-			RUN="YES"
-			echo "${X}" >> runlist-present-xz.txt
-		fi
+		RUN="YES"
 	else
-		zezeze=`find ${RUNS_DATA}|grep run_${X}.bz2`
+		zezeze=`echo ${RUN_FILES}|grep run_${X}.bz2`
 		if [ "${zezeze}" != "" ]; then
-			if [ -e ${zezeze} ]; then
-				RUN="YES"
-				echo "${X}" >> runlist-present-bz2.txt
-			fi
+			RUN="YES"
 		fi
 	fi
-	echo "${X} - ${RUN}" >> runlist-all.txt
 	if [ "${RUN}" == "NO" ]; then
 		echo "${X}" >> runlist-absent.txt
 	else
-		echo "${X}" >> runlist-present-all.txt
+		echo "${X}" >> runlist-present.txt
 	fi
 done
 echo "Present runs"
-cat runlist-present-all.txt|wc -l
+cat runlist-present.txt|wc -l
 echo "Absent runs"
 cat runlist-absent.txt|wc -l
