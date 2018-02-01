@@ -19,10 +19,11 @@ int main(){
         	    const auto p0=lorentz_byPM(x()*pb,Particle::p().mass());
 	            const auto d0=lorentz_byPM(zero(),Particle::d().mass());
         	    const auto total=p0+d0;
-	            const auto beta=-total.Beta();
-        	    const auto d0_cm=d0.Transform(beta);
-	            const auto final_cm=binaryDecay(total.M(),Particle::p().mass(),Particle::d().mass(),direction(theta_cm));
-	            const auto t=(final_cm.first.P()-d0_cm.P()).M();
+	            const auto beta=total.Beta();
+        	    const auto p0_cm=p0.Transform(beta);
+	            const auto d0_cm=d0.Transform(beta);
+        	    const auto final_cm=binaryDecay(total.M(),Particle::p().mass(),Particle::d().mass(),direction(theta_cm));
+	            const auto t=(final_cm.first.P()-p0.P()).M();
 	            out<<make_point(t,theta_cm);
 		}
 		theta_cm_table.push_back(out);
