@@ -242,17 +242,8 @@ void Search3He2Gamma(Analysis&res){
 	he3ggimdiff([](){return (He3.L+two_gamma.L()).M()-Ptotal.M();},-0.5,0.5,500),
 	ggim([](){return two_gamma.IM();},0.0,1.0,1000),
 	ggmm([](){return (Ptotal-two_gamma.L()).M();},0.0,4.0,4000),
-	ggggggdiff([]()->double{return six_gamma.diff();},0.0,0.2,200),
-        he3ggggggimdiff([](){return (He3.L+six_gamma.L()).M()-Ptotal.M();},-0.5,0.5,500),
-	ggggggim([](){return six_gamma.IM();},0.0,1.0,1000),
-        ggggggmm([](){return (Ptotal-six_gamma.L()).M();},0.0,4.0,4000),
         ggt([](){return He3.t-two_gamma.t();},-50,50,500),
-        ggggggt([](){return He3.t-six_gamma.t();},-50,50,500),
-	ggdt([](){return two_gamma.dt();},0,50,250),
-        ggggggdt([](){return six_gamma.dt();},0,50,250),
-	ggggggdt1([](){return six_gamma.I.dt();},0,50,250),
-	ggggggdt2([](){return six_gamma.J.dt();},0,50,250),
-	ggggggdt3([](){return six_gamma.K.dt();},0,50,250);
+	ggdt([](){return two_gamma.dt();},0,50,250);
 
 	res.Trigger(tn).post()<<(make_shared<ChainCheck>()
 	    << [](){return isfinite(He3.t);}
