@@ -171,8 +171,8 @@ void qe_central_analysis(Analysis&res){
 		<<make_shared<Hist1D>("quasielastic","pair_time_diff_0",time_axis)
 
 		<<[](WTrack&T){return (time_axis(T)>-50.0)&&(time_axis(T)<50.0);}
-		<<make_shared<Hist1D>("quasielastic","pair_phi_diff_1",coplanarity)
-		<<make_shared<Hist1D>("quasielastic","pair_time_diff_1",time_axis)
+		<<make_shared<SetOfHists1D>("quasielastic","pair_phi_diff_1",Q_axis(res),coplanarity)
+		<<make_shared<SetOfHists1D>("quasielastic","pair_time_diff_1",Q_axis(res),time_axis)
 		<<make_shared<Hist2D>("quasielastic","t_vs_e_1",ct_axis.first,ed_axis.first)
 		<<make_shared<Hist2D>("quasielastic","t_vs_t_1",ct_axis.first,ct_axis.second)
 		<<make_shared<Hist2D>("quasielastic","e_vs_e_1",ed_axis.first,ed_axis.second)
