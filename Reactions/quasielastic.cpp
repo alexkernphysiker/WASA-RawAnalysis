@@ -117,9 +117,10 @@ void qe_central_analysis(Analysis&res){
 			<<[](WTrack&T){return T.Edep()>0.03;}
 			<<[](){CC++;return true;}
 			<<[](WTrack&T){
+				double phi=T.Phi();
 				tracks<<point<double,track_info>(
 					T.Time(),
-					{.L=lorentz_byEkM(double(T.Edep()),Particle::p().mass(),direction(double(T.Phi()),T.Theta())),.t=T.Time()}
+					{.L=lorentz_byEkM(double(T.Edep()),Particle::p().mass(),direction(phi,T.Theta())),.t=T.Time()}
 				);
 				return true;
 			}
