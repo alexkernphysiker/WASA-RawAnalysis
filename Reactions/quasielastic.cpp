@@ -116,7 +116,7 @@ void qe_central_analysis(Analysis&res){
 			<<[](WTrack&T){
 				double phi=T.Phi();
 				tracks<<point<double,track_info>(
-					T.Time(),
+					T.Theta(),
 					{.L=lorentz_byEkM(double(T.Edep()),Particle::p().mass(),direction(phi,T.Theta())),.t=T.Time()}
 				);
 				return true;
@@ -128,7 +128,6 @@ void qe_central_analysis(Analysis&res){
 		Axis([](){return direction(trackpairs[0].Y().first.L.P()).th()*180./PI();},0.,180.,180),
 		Axis([](){return direction(trackpairs[0].Y().second.L.P()).th()*180./PI();},0.,180.,180)
 	);
-	static auto time_axis_0=Axis([](){return trackpairs[0].X();},-50.,50.,100);
 	static auto time_axis=Axis([](){return trackpairs[0].Y().second.t-trackpairs[0].Y().first.t;},-50.,50.,100);
 	static auto coplanarity=Axis([](){
 		auto dphi=
@@ -153,28 +152,32 @@ void qe_central_analysis(Analysis&res){
                                 dphi*=180./PI();
                                 while(dphi<0.)dphi+=360;while(dphi>360.)dphi-=360;
 				if(abs(dphi-180)<90){
-					const double dt=tracks[j].Y().t-tracks[i].Y().t;
 					const bool C=(direction(tracks[i].Y().L.P()).th()<direction(tracks[j].Y().L.P()).th());
 					const auto&T1=C?tracks[i]:tracks[j];
 					const auto&T2=C?tracks[j]:tracks[i];
-					trackpairs<<make_point(dt,make_pair(T1.Y(),T2.Y()));
+					trackpairs<<make_point(abs(dphi-180),make_pair(T1.Y(),T2.Y()));
 				}
 			}
 			return trackpairs.size()>0;
 		}
 		<<make_shared<SetOfHists1D>("quasielastic","pair_phi_diff_0",Q_axis(res),coplanarity)
-		<<make_shared<Hist1D>("quasielastic","pair_dt_0",time_axis_0)
 		<<make_shared<SetOfHists1D>("quasielastic","pair_time_diff_0",Q_axis(res),time_axis)
 		<<make_shared<Hist2D>("quasielastic","t_vs_e_0",ct_axis.first,ed_axis.first)
 		<<make_shared<Hist2D>("quasielastic","t_vs_t_0",ct_axis.first,ct_axis.second)
 		<<make_shared<Hist2D>("quasielastic","e_vs_e_0",ed_axis.first,ed_axis.second)
 
-		<<[](WTrack&T){return (time_axis_0(T)<5.0);}
+		<<[](WTrack&T){return (ct_axis.first(T)<40.)&&(ct_axis.second(T)>45.);}
 		<<make_shared<SetOfHists1D>("quasielastic","pair_phi_diff_1",Q_axis(res),coplanarity)
-		<<make_shared<Hist1D>("quasielastic","pair_dt_1",time_axis_0)
 		<<make_shared<SetOfHists1D>("quasielastic","pair_time_diff_1",Q_axis(res),time_axis)
 		<<make_shared<Hist2D>("quasielastic","t_vs_e_1",ct_axis.first,ed_axis.first)
 		<<make_shared<Hist2D>("quasielastic","t_vs_t_1",ct_axis.first,ct_axis.second)
 		<<make_shared<Hist2D>("quasielastic","e_vs_e_1",ed_axis.first,ed_axis.second)
+
+		<<[](WTrack&T){return (time_axis(T)>-20.)&&(time_axis(T)<-5.);}
+		<<make_shared<SetOfHists1D>("quasielastic","pair_phi_diff_2",Q_axis(res),coplanarity)
+		<<make_shared<SetOfHists1D>("quasielastic","pair_time_diff_2",Q_axis(res),time_axis)
+		<<make_shared<Hist2D>("quasielastic","t_vs_e_2",ct_axis.first,ed_axis.first)
+		<<make_shared<Hist2D>("quasielastic","t_vs_t_2",ct_axis.first,ct_axis.second)
+		<<make_shared<Hist2D>("quasielastic","e_vs_e_2",ed_axis.first,ed_axis.second)
 	);
 }
