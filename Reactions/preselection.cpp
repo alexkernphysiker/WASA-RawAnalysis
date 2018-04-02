@@ -4,6 +4,8 @@
 #include <Wasa.hh>
 #include <Experiment/experiment_conv.h>
 #include <data.h>
+#include <trackprocessing.h>
+#include <detectors.h>
 #include "analyses.h"
 using namespace std;
 using namespace MathTemplates;
@@ -15,15 +17,17 @@ void Preselection(Analysis&res){
 	gWasa->AddOutput("run_presel",Tstream1);
 
         //Preselection for 3He X reactions
-        static long he3count;
-        res.Trigger(trigger_he3_forward.number).pre()<<[](){he3count=0;return true;};
+        static long f_tracks;
+        res.Trigger(trigger_he3_forward.number).pre()<<[](){f_tracks=0;return true;};
         static particle_kine he3;
         res.Trigger(trigger_he3_forward.number).per_track()<<(make_shared<ChainCheck>()
-	    <<ForwardHe3Reconstruction("He3Forward",res,he3)
-	    <<[](){he3count++;return true;}
+            <<[](WTrack&T){return (T.Type()==kFDC);}
+            <<[](WTrack&T){return (T.Theta()!=0.125);}
+            <<[](WTrack&T){return (Forward::Get().StoppingLayer(T)==kFRH1);}
+	    <<[](){f_tracks++;return true;}
         );
         res.Trigger(trigger_he3_forward.number).post()<<[](){
-            if(he3count>0)gWasa->SaveEvent("run_presel");
+            if(f_tracks>0)gWasa->SaveEvent("run_presel");
             return true;
         };
 
