@@ -14,6 +14,7 @@ void Preselection(Analysis&res){
 	TString Tstream1 = Form("file:/home/PRESEL/run_%i.bz2", RunNumber);
 	gWasa->AddOutput("run_presel",Tstream1);
 
-	res.Trigger(trigger_he3_forward.number).pre()<< [&res](){gWasa->SaveEvent("run_presel");return true;};
-	res.Trigger(trigger_elastic1.number).pre()<< [&res](){gWasa->SaveEvent("run_presel");return true;};
+	res.Trigger(trigger_he3_forward.number).pre()<< [](){gWasa->SaveEvent("run_presel");return true;};
+	res.Trigger(trigger_elastic1.number).pre()<< [](){gWasa->SaveEvent("run_presel");return true;};
+	res.Trigger(trigger_elastic2.number).pre()<< [](){gWasa->SaveEvent("run_presel");return true;};
 }
