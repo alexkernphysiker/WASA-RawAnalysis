@@ -4,27 +4,25 @@ for X in `seq 45934 1 46884`; do
 	if [ -e ${output}.root ]; then
 		echo "... is already done."
 	else
-		RUNCAT=""
-		#command find is in cycle because file list may change after each analysis
-		zezeze=`find ${WASA_PRESELECTION}|grep ${X}.bz2`
-		if [ "${zezeze}" != "" ]; then
-			if [ -e ${zezeze} ]; then
-				RUNCAT="bzcat ${zezeze}"
-			fi
-		fi
-		if [ "${RUNCAT}" != "" ]; then
-			echo "Analysis of run ${X}"
+		zezeze=${WASA_PRESELECTION}/run_${X}.bz2
+		echo ${zezeze}
+		if [ -e ${zezeze} ]; then
 			scriptname="dataall_${X}.sh"
-			if [ -e ${scriptname} ]; then
-				echo "...already in process"
+			lock="preselection_${X}.sh"
+			if [ -e ${lock} ]; then
+				echo "...still locked"
 			else
-				echo "...PROCESSING PRESELECTED DATA ..."
-				echo "#!/bin/bash" >> ${scriptname}
-				echo "${RUNCAT}|./rawanalysis DataAll -local -fin cluster: -r ${X} -n ${output} -abort" >> ${scriptname}
-				echo "rm -f $PWD/${scriptname}" >> ${scriptname}
-				chmod u+x ${scriptname}
-				./${scriptname} &> ${output}.log
-				echo "...done."
+				if [ -e ${scriptname} ]; then
+					echo "...already in process"
+				else
+					echo "...PROCESSING PRESELECTED DATA ..."
+					echo "#!/bin/bash" >> ${scriptname}
+					echo "bzcat ${zezeze}|./rawanalysis DataAll -local -fin cluster: -r ${X} -n ${output} -abort" >> ${scriptname}
+					echo "rm -f $PWD/${scriptname}" >> ${scriptname}
+					chmod u+x ${scriptname}
+					./${scriptname} &> ${output}.log
+					echo "...done."
+				fi
 			fi
 		fi
 	fi
