@@ -6,10 +6,10 @@ for X in `seq 45934 1 46884`; do
 	else
 		RUNCAT=""
 		#command find is in cycle because file list may change after each analysis
-		zezeze=`find ${WASA_PRESELECTION}|grep ${X}.root`
+		zezeze=`find ${WASA_PRESELECTION}|grep ${X}.bz2`
 		if [ "${zezeze}" != "" ]; then
 			if [ -e ${zezeze} ]; then
-				RUNCAT="cat ${zezeze}"
+				RUNCAT="bzcat ${zezeze}"
 			fi
 		fi
 		if [ "${RUNCAT}" != "" ]; then

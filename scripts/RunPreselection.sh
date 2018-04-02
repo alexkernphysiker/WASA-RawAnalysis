@@ -15,7 +15,7 @@ for X in `seq 45934 1 46884`; do
 			zezeze=`find ${RUNS_DATA}|grep ${X}.bz2`
 			if [ "${zezeze}" != "" ]; then
 				if [ -e ${zezeze} ]; then
-					RUNCAT="bzcat ${RUNS_DATA}/run_${X}.bz2"
+					RUNCAT="bzcat ${zezeze}"
 				fi
 			fi
 		fi

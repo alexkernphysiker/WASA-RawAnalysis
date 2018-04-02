@@ -67,6 +67,10 @@ int main(int argc, char** argv) {
 		("DataQ"==type)
 	)
 		qe_central_analysis(*res);
+	if(
+                ("PRESELECTION"==type)
+	)
+		Preselection(*res);
 	return res;
     });
     for(int i=1;i<=new_c;i++)
