@@ -28,23 +28,16 @@ void Preselection(Analysis&res){
         };
 
         //Preselection for quasielastic scattering
-        static SortedPoints<double,track_info> tracks;
-	res.Trigger(trigger_elastic1.number).pre()<<[](){tracks.clear();return true;};
+        static long c_tracks;
+	res.Trigger(trigger_elastic1.number).pre()<<[](){c_tracks=0;return true;};
 	res.Trigger(trigger_elastic1.number).per_track()<<(make_shared<ChainCheck>()
                 <<[](WTrack&T){return T.Type()==kCDC;}
                 <<[](WTrack&T){return T.Theta()*180./PI()>23.;}
                 <<[](WTrack&T){return T.Edep()>0.03;}
-                <<[](WTrack&T){
-                        double phi=T.Phi();
-                        tracks<<point<double,track_info>(
-                                T.Theta(),
-                                {.L=lorentz_byEkM(double(T.Edep()),Particle::p().mass(),direction(phi,T.Theta())),.t=T.Time()}
-                        );
-                        return true;
-                }
+                <<[](WTrack&T){c_tracks++;return true;}
 	);
         res.Trigger(trigger_elastic1.number).post()<<[](){
-                if(tracks.size()>=2)gWasa->SaveEvent("run_presel");
+                if(c_tracks>=2)gWasa->SaveEvent("run_presel");
                 return true;
         };
 }
