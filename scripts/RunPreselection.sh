@@ -1,6 +1,6 @@
 for X in `seq 45934 1 46884`; do
 	echo "run #${X}..."
-	output="${WASA_PRESELECTION}/run${X}"
+	output="${WASA_PRESELECTION}/preselection_${X}"
 	if [ -e ${output}.root ]; then
 		echo "... is already done."
 	else

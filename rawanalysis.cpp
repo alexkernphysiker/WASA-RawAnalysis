@@ -19,7 +19,10 @@ int main(int argc, char** argv) {
     const string type(argv[1]);
     SetAnalysisType([type](){
 	Analysis* res=nullptr;
-	if(type.substr(0,4)=="Data")
+	if(
+		(type.substr(0,4)=="Data")||
+		(type.substr(0,4)=="PRES")
+	)
 		res=new RealData();
 	else{
 		if(
