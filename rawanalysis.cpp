@@ -37,28 +37,33 @@ int main(int argc, char** argv) {
 	if(
 		(type.substr(0,5)=="MCHe3")||
 		(type.substr(0,7)=="MCbound")||
+                ("DataAll"==type)||
 		("DataF"==type)
 	)
 		He3_X_analyse(*res);
 	if(
 		(type.substr(0,5)=="MCHe3")||
 		(type.substr(0,7)=="MCbound")||
+                ("DataAll"==type)||
 		("DataC"==type)
 	)
 		Search3He2Gamma(*res);
 	if(
 		(type.substr(0,5)=="MCHe3")||
 		(type.substr(0,7)=="MCbound")||
+                ("DataAll"==type)||
 		("DataCC"==type)
 	)
 		Search3He6Gamma(*res);
 	if(
 		(type.substr(0,3)=="MCp")||
+                ("DataAll"==type)||
 		("DataE"==type)
 	)
 		ppn_central_analysis(*res);
 	if(
 		(type.substr(0,3)=="MCp")||
+                ("DataAll"==type)||
 		("DataQ"==type)
 	)
 		qe_central_analysis(*res);
