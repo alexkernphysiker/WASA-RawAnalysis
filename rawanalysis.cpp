@@ -61,12 +61,6 @@ int main(int argc, char** argv) {
 	if(
 		(type.substr(0,3)=="MCp")||
                 ("DataAll"==type)||
-		("DataE"==type)
-	)
-		ppn_central_analysis(*res);
-	if(
-		(type.substr(0,3)=="MCp")||
-                ("DataAll"==type)||
 		("DataQ"==type)
 	)
 		qe_central_analysis(*res);
