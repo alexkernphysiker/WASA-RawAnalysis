@@ -23,7 +23,6 @@ int main(int argc, char** argv) {
 		(type.substr(0,4)=="Data")||
 		(type.substr(0,4)=="PRES")
 	){
-		//if(type!="DataAll")res=new RealData(true);
 		 res=new RealData();
 	}else{
 		if(
