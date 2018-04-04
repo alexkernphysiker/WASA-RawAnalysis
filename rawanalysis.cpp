@@ -20,12 +20,12 @@ int main(int argc, char** argv) {
     SetAnalysisType([type](){
 	Analysis* res=nullptr;
 	if(
-		((type.substr(0,4)=="Data")&&(type!="DataAll"))||
+		(type.substr(0,4)=="Data")||
 		(type.substr(0,4)=="PRES")
-	)
-		res=new RealData();
-	if(type!="DataAll")res=new RealData(true);
-	else{
+	){
+		//if(type!="DataAll")res=new RealData(true);
+		 res=new RealData();
+	}else{
 		if(
 			(type.substr(2,3)=="ppn")||
 			(type.substr(2,3)=="pd_")||

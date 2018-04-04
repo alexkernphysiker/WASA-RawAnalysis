@@ -13,7 +13,7 @@ using namespace TrackAnalyse;
 void Preselection(Analysis&res){
 	Int_t RunNumber = SorterOption::GetIntValue("RunNumber");
 	//ACHTUNG: HARDCODE!!!!!
-	TString Tstream1 = Form("file:/home/PRESEL/run_%i.bz2", RunNumber);
+	TString Tstream1 = Form("file:/home/PRESEL/run_%i.presel", RunNumber);
 	gWasa->AddOutput("run_presel",Tstream1);
 
         //Preselection for 3He X reactions

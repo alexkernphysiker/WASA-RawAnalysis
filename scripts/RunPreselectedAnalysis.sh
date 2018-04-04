@@ -4,7 +4,7 @@ for X in `seq 45934 1 46884`; do
 	if [ -e ${output}.root ]; then
 		echo "... is already done."
 	else
-		zezeze=${WASA_PRESELECTION}/run_${X}.bz2
+		zezeze=${WASA_PRESELECTION}/run_${X}.presel
 		echo ${zezeze}
 		if [ -e ${zezeze} ]; then
 			scriptname="dataall_${X}.sh"
@@ -17,7 +17,7 @@ for X in `seq 45934 1 46884`; do
 				else
 					echo "...PROCESSING PRESELECTED DATA ..."
 					echo "#!/bin/bash" >> ${scriptname}
-					echo "bzcat ${zezeze}|./rawanalysis DataAll -local -fin cluster: -r ${X} -n ${output} -abort" >> ${scriptname}
+	echo "./rawanalysis DataAll -local -mode raw -fin file:${zezeze} -n ${output} -abort" >> ${scriptname}
 					echo "rm -f $PWD/${scriptname}" >> ${scriptname}
 					chmod u+x ${scriptname}
 					./${scriptname} &> ${output}.log
