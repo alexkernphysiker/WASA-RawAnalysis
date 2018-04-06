@@ -68,13 +68,17 @@ struct eta_decay_ppp{
 void Search3He6Gamma(Analysis&res){
 	const auto&tn=trigger_he3_forward.number;
 	static auto Ptotal=LorentzVector<>::zero();
+	static double Etotal=0;
 	static vector<track_info> gammas;
 	static particle_kine he3;
 	static track_info He3{.L=LorentzVector<>::zero(),.t=INFINITY};
 	res.Trigger(tn).pre()<<(make_shared<ChainOr>()
 	    <<make_shared<Hist1D>("He3nCentralGammas6","0-Reference",Q_axis_full(res))
 	    << [&res](){
-		Ptotal=lorentz_byPM(Z()*res.PBeam(),Particle::p().mass())+lorentz_byPM(Zero(),Particle::d().mass());
+		const auto p=lorentz_byPM(Z()*res.PBeam(),Particle::p().mass());
+		const auto d=lorentz_byPM(Zero(),Particle::d().mass());
+		Ptotal=p+d;
+		Etotal=p.E()+d.E();
 		gammas.clear();
 		He3.t=INFINITY;
 		return true;
@@ -104,6 +108,7 @@ void Search3He6Gamma(Analysis&res){
 	static eta_decay_ppp six_gamma{.I={.A=He3,.B=He3},.J={.A=He3,.B=He3},.K={.A=He3,.B=He3}};
 	Axis 
 	he3mm([](){return (Ptotal-He3.L).M();},0.4,0.6,200),
+	he3me([](){return (Etotal-He3.L.E());},0.0,0.8,800),
 	ggggggdiff([]()->double{return six_gamma.diff();},0.0,0.2,200),
         he3ggggggimdiff([](){return (He3.L+six_gamma.L()).M()-Ptotal.M();},-0.5,0.5,500),
 	ggggggim([](){return six_gamma.IM();},0.0,1.0,1000),
@@ -203,6 +208,7 @@ void Search3He6Gamma(Analysis&res){
                         << make_shared<SetOfHists1D>("He3nCentralGammas6","t7",Q_axis_full(res),ggggggt)
                         << make_shared<SetOfHists1D>("He3nCentralGammas6","dt7",Q_axis_full(res),ggggggdt)
 			<< make_shared<SetOfHists1D>("He3nCentralGammas6","He3MM7",Q_axis_full(res),he3mm)
+			<< make_shared<Hist2D>("He3nCentralGammas6","He3MME7",he3mm,he3me)
 			<< make_shared<SetOfHists1D>("He3nCentralGammas6","GMM7",Q_axis_full(res),ggggggmm)
 			<< make_shared<Hist1D>("He3nCentralGammas6","GMMPDiff7",ggggggdiff)
 			<< make_shared<SetOfHists1D>("He3nCentralGammas6","GIM7",Q_axis_full(res),ggggggim)
@@ -214,13 +220,17 @@ void Search3He6Gamma(Analysis&res){
 void Search3He2Gamma(Analysis&res){
 	const auto&tn=trigger_he3_forward.number;
 	static auto Ptotal=LorentzVector<>::zero();
+	static double Etotal=0;
 	static vector<track_info> gammas;
 	static particle_kine he3;
 	static track_info He3{.L=LorentzVector<>::zero(),.t=INFINITY};
 	res.Trigger(tn).pre()<<(make_shared<ChainOr>()
 	    <<make_shared<Hist1D>("He3nCentralGammas2","0-Reference",Q_axis_full(res))
 	    << [&res](){
-		Ptotal=lorentz_byPM(Z()*res.PBeam(),Particle::p().mass())+lorentz_byPM(Zero(),Particle::d().mass());
+		const auto p=lorentz_byPM(Z()*res.PBeam(),Particle::p().mass());
+		const auto d=lorentz_byPM(Zero(),Particle::d().mass());
+		Ptotal=p+d;
+		Etotal=p.E()+d.E();
 		gammas.clear();
 		He3.t=INFINITY;
 		return true;
@@ -251,6 +261,7 @@ void Search3He2Gamma(Analysis&res){
 	static eta_decay_ppp six_gamma{.I={.A=He3,.B=He3},.J={.A=He3,.B=He3},.K={.A=He3,.B=He3}};
 	Axis 
 	he3mm([](){return (Ptotal-He3.L).M();},0.4,0.6,200),
+	he3me([](){return (Etotal-He3.L.E());},0.0,0.8,800),
 	he3ggimdiff([](){return (He3.L+two_gamma.L()).M()-Ptotal.M();},-0.5,0.5,500),
 	ggim([](){return two_gamma.IM();},0.0,1.0,1000),
 	ggmm([](){return (Ptotal-two_gamma.L()).M();},0.0,4.0,4000),
@@ -317,6 +328,7 @@ void Search3He2Gamma(Analysis&res){
                         << make_shared<SetOfHists1D>("He3nCentralGammas2","t6",Q_axis_full(res),ggt)
                         << make_shared<SetOfHists1D>("He3nCentralGammas2","dt6",Q_axis_full(res),ggdt)
                         << make_shared<SetOfHists1D>("He3nCentralGammas2","He3MM6",Q_axis_full(res),he3mm)
+                        << make_shared<Hist2D>("He3nCentralGammas2","He3MME6",he3mm,he3me)
                         << make_shared<SetOfHists1D>("He3nCentralGammas2","GIM6",Q_axis_full(res),ggim)
                         << make_shared<SetOfHists1D>("He3nCentralGammas2","GMM6",Q_axis_full(res),ggmm)
                         << make_shared<SetOfHists1D>("He3nCentralGammas2","TIM6",Q_axis_full(res),he3ggimdiff)
