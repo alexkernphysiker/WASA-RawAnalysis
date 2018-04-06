@@ -107,7 +107,7 @@ void Search3He6Gamma(Analysis&res){
 	);
 	static eta_decay_ppp six_gamma{.I={.A=He3,.B=He3},.J={.A=He3,.B=He3},.K={.A=He3,.B=He3}};
 	Axis 
-	he3mm([](){return (Ptotal-He3.L).M();},0.4,0.6,200),
+	he3mm([](){return (Ptotal-He3.L).M()-Ptotal.M()+He3.L.M()+Particle::eta().mass();},0.4,0.6,200),
 	he3me([](){return (Etotal-He3.L.E());},0.0,0.8,800),
 	ggggggdiff([]()->double{return six_gamma.diff();},0.0,0.2,200),
         he3ggggggimdiff([](){return (He3.L+six_gamma.L()).M()-Ptotal.M();},-0.5,0.5,500),
@@ -119,12 +119,12 @@ void Search3He6Gamma(Analysis&res){
 	res.Trigger(tn).post()<<(make_shared<ChainCheck>()
 	    << [](){return isfinite(He3.t);}
 	    << make_shared<Hist1D>("He3nCentralGammas6","Events0",Q_axis_full(res))
-	    << make_shared<SetOfHists1D>("He3nCentralGammas6","He3MM0",Q_axis_full(res),he3mm)
+	    << make_shared<Hist1D>("He3nCentralGammas6","He3MM0",he3mm)
 	    <<[he3mm](WTrack&T){
-		return (he3mm(T)>0.49)&&(he3mm(T)<0.56);
+		return (he3mm(T)>0.52)&&(he3mm(T)<0.56);
 	    }
 	    << make_shared<Hist1D>("He3nCentralGammas6","Events1",Q_axis_full(res))
-	    << make_shared<SetOfHists1D>("He3nCentralGammas6","He3MM1",Q_axis_full(res),he3mm)
+	    << make_shared<Hist1D>("He3nCentralGammas6","He3MM1",he3mm)
 	    << make_shared<Hist1D>("He3nCentralGammas6","GammaCount",Axis([]()->double{return gammas.size();},-0.5,9.5,10))
 
 	    <<(make_shared<ChainOr>()
@@ -149,70 +149,59 @@ void Search3He6Gamma(Analysis&res){
 	                        return true;
 	                }
 			<< make_shared<Hist1D>("He3nCentralGammas6","Events2",Q_axis_full(res))
-			<< make_shared<SetOfHists1D>("He3nCentralGammas6","t2",Q_axis_full(res),ggggggt)
-			<< make_shared<SetOfHists1D>("He3nCentralGammas6","dt2",Q_axis_full(res),ggggggdt)
-                        << make_shared<SetOfHists1D>("He3nCentralGammas6","He3MM2",Q_axis_full(res),he3mm)                                        
-                        << make_shared<SetOfHists1D>("He3nCentralGammas6","GMM2",Q_axis_full(res),ggggggmm)
+			<< make_shared<Hist1D>("He3nCentralGammas6","t2",ggggggt)
+			<< make_shared<Hist1D>("He3nCentralGammas6","dt2",ggggggdt)
+                        << make_shared<Hist1D>("He3nCentralGammas6","He3MM2",he3mm)                                        
+                        << make_shared<Hist1D>("He3nCentralGammas6","GMM2",ggggggmm)
                         << make_shared<Hist1D>("He3nCentralGammas6","GMMPDiff2",ggggggdiff)
                         << make_shared<SetOfHists1D>("He3nCentralGammas6","GIM2",Q_axis_full(res),ggggggim)
 			<< make_shared<SetOfHists1D>("He3nCentralGammas6","TIM2",Q_axis_full(res),he3ggggggimdiff)
-			<< [ggggggt,ggggggdt](WTrack&T){
-				return (ggggggt(T)>-50.)&&(ggggggt(T)<50.)&&(ggggggdt(T)<50.);
-			}
-			<< make_shared<Hist1D>("He3nCentralGammas6","Events3",Q_axis_full(res))
-                        << make_shared<SetOfHists1D>("He3nCentralGammas6","t3",Q_axis_full(res),ggggggt)
-                        << make_shared<SetOfHists1D>("He3nCentralGammas6","dt3",Q_axis_full(res),ggggggdt)
-			<< make_shared<SetOfHists1D>("He3nCentralGammas6","He3MM3",Q_axis_full(res),he3mm)
-			<< make_shared<SetOfHists1D>("He3nCentralGammas6","GMM3",Q_axis_full(res),ggggggmm)
-			<< make_shared<Hist1D>("He3nCentralGammas6","GMMPDiff3",ggggggdiff)
-			<< make_shared<SetOfHists1D>("He3nCentralGammas6","GIM3",Q_axis_full(res),ggggggim)
-			<< make_shared<SetOfHists1D>("He3nCentralGammas6","TIM3",Q_axis_full(res),he3ggggggimdiff)
                         <<[ggggggdiff](WTrack&T)->bool{
                                 return ggggggdiff(T)<0.080;
                         }
-			<< make_shared<Hist1D>("He3nCentralGammas6","Events4",Q_axis_full(res))
-                        << make_shared<SetOfHists1D>("He3nCentralGammas6","t4",Q_axis_full(res),ggggggt)
-                        << make_shared<SetOfHists1D>("He3nCentralGammas6","dt4",Q_axis_full(res),ggggggdt)
-			<< make_shared<SetOfHists1D>("He3nCentralGammas6","He3MM4",Q_axis_full(res),he3mm)
-			<< make_shared<SetOfHists1D>("He3nCentralGammas6","GMM4",Q_axis_full(res),ggggggmm)
-			<< make_shared<Hist1D>("He3nCentralGammas6","GMMPDiff4",ggggggdiff)
-			<< make_shared<SetOfHists1D>("He3nCentralGammas6","GIM4",Q_axis_full(res),ggggggim)
-			<< make_shared<SetOfHists1D>("He3nCentralGammas6","TIM4",Q_axis_full(res),he3ggggggimdiff)
+			<< make_shared<Hist1D>("He3nCentralGammas6","Events3",Q_axis_full(res))
+                        << make_shared<Hist1D>("He3nCentralGammas6","t3",ggggggt)
+                        << make_shared<Hist1D>("He3nCentralGammas6","dt3",ggggggdt)
+			<< make_shared<Hist1D>("He3nCentralGammas6","He3MM3",he3mm)
+			<< make_shared<Hist1D>("He3nCentralGammas6","GMM3",ggggggmm)
+			<< make_shared<Hist1D>("He3nCentralGammas6","GMMPDiff3",ggggggdiff)
+			<< make_shared<SetOfHists1D>("He3nCentralGammas6","GIM3",Q_axis_full(res),ggggggim)
+			<< make_shared<SetOfHists1D>("He3nCentralGammas6","TIM3",Q_axis_full(res),he3ggggggimdiff)
                         <<[ggggggmm](WTrack&T)->bool{                                                                 
                                 return (ggggggmm(T)>2.6)&&(ggggggmm(T)<3.0);                                          
                         }                                                                                             
-			<< make_shared<Hist1D>("He3nCentralGammas6","Events5",Q_axis_full(res))
-                        << make_shared<SetOfHists1D>("He3nCentralGammas6","t5",Q_axis_full(res),ggggggt)
-                        << make_shared<SetOfHists1D>("He3nCentralGammas6","dt5",Q_axis_full(res),ggggggdt)
-			<< make_shared<SetOfHists1D>("He3nCentralGammas6","He3MM5",Q_axis_full(res),he3mm)
-			<< make_shared<SetOfHists1D>("He3nCentralGammas6","GMM5",Q_axis_full(res),ggggggmm)
-			<< make_shared<Hist1D>("He3nCentralGammas6","GMMPDiff5",ggggggdiff)
-			<< make_shared<SetOfHists1D>("He3nCentralGammas6","GIM5",Q_axis_full(res),ggggggim)
-			<< make_shared<SetOfHists1D>("He3nCentralGammas6","TIM5",Q_axis_full(res),he3ggggggimdiff)
+			<< make_shared<Hist1D>("He3nCentralGammas6","Events4",Q_axis_full(res))
+                        << make_shared<Hist1D>("He3nCentralGammas6","t4",ggggggt)
+                        << make_shared<Hist1D>("He3nCentralGammas6","dt4",ggggggdt)
+			<< make_shared<Hist1D>("He3nCentralGammas6","He3MM4",he3mm)
+			<< make_shared<Hist1D>("He3nCentralGammas6","GMM4",ggggggmm)
+			<< make_shared<Hist1D>("He3nCentralGammas6","GMMPDiff4",ggggggdiff)
+			<< make_shared<SetOfHists1D>("He3nCentralGammas6","GIM4",Q_axis_full(res),ggggggim)
+			<< make_shared<SetOfHists1D>("He3nCentralGammas6","TIM4",Q_axis_full(res),he3ggggggimdiff)
                         <<[ggggggdt](WTrack&T)->bool{                                                          
                                 return (ggggggdt(T)<20);                           
                         }
-                        << make_shared<Hist1D>("He3nCentralGammas6","Events6",Q_axis_full(res))
-                        << make_shared<SetOfHists1D>("He3nCentralGammas6","t6",Q_axis_full(res),ggggggt)
-                        << make_shared<SetOfHists1D>("He3nCentralGammas6","dt6",Q_axis_full(res),ggggggdt)
-			<< make_shared<SetOfHists1D>("He3nCentralGammas6","He3MM6",Q_axis_full(res),he3mm)
-			<< make_shared<SetOfHists1D>("He3nCentralGammas6","GMM6",Q_axis_full(res),ggggggmm)
-			<< make_shared<Hist1D>("He3nCentralGammas6","GMMPDiff6",ggggggdiff)
-			<< make_shared<SetOfHists1D>("He3nCentralGammas6","GIM6",Q_axis_full(res),ggggggim)
-			<< make_shared<SetOfHists1D>("He3nCentralGammas6","TIM6",Q_axis_full(res),he3ggggggimdiff)
+                        << make_shared<Hist1D>("He3nCentralGammas6","Events5",Q_axis_full(res))
+                        << make_shared<Hist1D>("He3nCentralGammas6","t5",ggggggt)
+                        << make_shared<Hist1D>("He3nCentralGammas6","dt5",ggggggdt)
+			<< make_shared<Hist1D>("He3nCentralGammas6","He3MM5",he3mm)
+			<< make_shared<Hist1D>("He3nCentralGammas6","GMM5",ggggggmm)
+			<< make_shared<Hist1D>("He3nCentralGammas6","GMMPDiff5",ggggggdiff)
+			<< make_shared<SetOfHists1D>("He3nCentralGammas6","GIM5",Q_axis_full(res),ggggggim)
+			<< make_shared<SetOfHists1D>("He3nCentralGammas6","TIM5",Q_axis_full(res),he3ggggggimdiff)
 
                         <<[ggggggt](WTrack&T)->bool{                                                          
                                 return (ggggggt(T)>-10)&&(ggggggt(T)<20);         
                         }
-                        << make_shared<Hist1D>("He3nCentralGammas6","Events7",Q_axis_full(res))
-                        << make_shared<SetOfHists1D>("He3nCentralGammas6","t7",Q_axis_full(res),ggggggt)
-                        << make_shared<SetOfHists1D>("He3nCentralGammas6","dt7",Q_axis_full(res),ggggggdt)
-			<< make_shared<SetOfHists1D>("He3nCentralGammas6","He3MM7",Q_axis_full(res),he3mm)
-			<< make_shared<Hist2D>("He3nCentralGammas6","He3MME7",he3mm,he3me)
-			<< make_shared<SetOfHists1D>("He3nCentralGammas6","GMM7",Q_axis_full(res),ggggggmm)
-			<< make_shared<Hist1D>("He3nCentralGammas6","GMMPDiff7",ggggggdiff)
-			<< make_shared<SetOfHists1D>("He3nCentralGammas6","GIM7",Q_axis_full(res),ggggggim)
-			<< make_shared<SetOfHists1D>("He3nCentralGammas6","TIM7",Q_axis_full(res),he3ggggggimdiff)
+                        << make_shared<Hist1D>("He3nCentralGammas6","Events6",Q_axis_full(res))
+                        << make_shared<Hist1D>("He3nCentralGammas6","t6",ggggggt)
+                        << make_shared<Hist1D>("He3nCentralGammas6","dt6",ggggggdt)
+			<< make_shared<Hist1D>("He3nCentralGammas6","He3MM6",he3mm)
+			<< make_shared<Hist2D>("He3nCentralGammas6","He3MME6",he3mm,he3me)
+			<< make_shared<Hist1D>("He3nCentralGammas6","GMM6",ggggggmm)
+			<< make_shared<Hist1D>("He3nCentralGammas6","GMMPDiff6",ggggggdiff)
+			<< make_shared<SetOfHists1D>("He3nCentralGammas6","GIM6",Q_axis_full(res),ggggggim)
+			<< make_shared<SetOfHists1D>("He3nCentralGammas6","TIM6",Q_axis_full(res),he3ggggggimdiff)
 	        )
 	    )
 	);
@@ -260,7 +249,7 @@ void Search3He2Gamma(Analysis&res){
 	static eta_decay_gg two_gamma{.A=He3,.B=He3};
 	static eta_decay_ppp six_gamma{.I={.A=He3,.B=He3},.J={.A=He3,.B=He3},.K={.A=He3,.B=He3}};
 	Axis 
-	he3mm([](){return (Ptotal-He3.L).M();},0.4,0.6,200),
+	he3mm([](){return (Ptotal-He3.L).M()-Ptotal.M()+He3.L.M()+Particle::eta().mass();},0.4,0.6,200),
 	he3me([](){return (Etotal-He3.L.E());},0.0,0.8,800),
 	he3ggimdiff([](){return (He3.L+two_gamma.L()).M()-Ptotal.M();},-0.5,0.5,500),
 	ggim([](){return two_gamma.IM();},0.0,1.0,1000),
@@ -271,12 +260,12 @@ void Search3He2Gamma(Analysis&res){
 	res.Trigger(tn).post()<<(make_shared<ChainCheck>()
 	    << [](){return isfinite(He3.t);}
 	    << make_shared<Hist1D>("He3nCentralGammas2","Events0",Q_axis_full(res))
-	    << make_shared<SetOfHists1D>("He3nCentralGammas2","He3MM0",Q_axis_full(res),he3mm)
+	    << make_shared<Hist1D>("He3nCentralGammas2","He3MM0",he3mm)
 	    <<[he3mm](WTrack&T){
-		return (he3mm(T)>0.49)&&(he3mm(T)<0.56);
+		return (he3mm(T)>0.52)&&(he3mm(T)<0.56);
 	    }
 	    << make_shared<Hist1D>("He3nCentralGammas2","Events1",Q_axis_full(res))
-	    << make_shared<SetOfHists1D>("He3nCentralGammas2","He3MM1",Q_axis_full(res),he3mm)
+	    << make_shared<Hist1D>("He3nCentralGammas2","He3MM1",he3mm)
 	    << make_shared<Hist1D>("He3nCentralGammas2","GammaCount",Axis([]()->double{return gammas.size();},-0.5,9.5,10))
 
 	    <<(make_shared<ChainOr>()
@@ -290,47 +279,48 @@ void Search3He2Gamma(Analysis&res){
 				return true;
 			}
                         << make_shared<Hist1D>("He3nCentralGammas2","Events2",Q_axis_full(res))
-			<< make_shared<SetOfHists1D>("He3nCentralGammas2","t2",Q_axis_full(res),ggt)
-			<< make_shared<SetOfHists1D>("He3nCentralGammas2","dt2",Q_axis_full(res),ggdt)
-                        << make_shared<SetOfHists1D>("He3nCentralGammas2","He3MM2",Q_axis_full(res),he3mm)
+			<< make_shared<Hist1D>("He3nCentralGammas2","t2",ggt)
+			<< make_shared<Hist1D>("He3nCentralGammas2","dt2",ggdt)
+                        << make_shared<Hist1D>("He3nCentralGammas2","He3MM2",he3mm)
+                        << make_shared<Hist1D>("He3nCentralGammas2","GMM2",ggmm)
                         << make_shared<SetOfHists1D>("He3nCentralGammas2","GIM2",Q_axis_full(res),ggim)
-                        << make_shared<SetOfHists1D>("He3nCentralGammas2","GMM2",Q_axis_full(res),ggmm)
 			<< make_shared<SetOfHists1D>("He3nCentralGammas2","TIM2",Q_axis_full(res),he3ggimdiff)
 			
 		    	<<[ggt,ggdt](WTrack&T){return (ggt(T)>-50.)&&(ggt(T)<50.)&&(ggdt(T)<50.);}
 			<< make_shared<Hist1D>("He3nCentralGammas2","Events3",Q_axis_full(res))
-			<< make_shared<SetOfHists1D>("He3nCentralGammas2","t3",Q_axis_full(res),ggt)
-			<< make_shared<SetOfHists1D>("He3nCentralGammas2","dt3",Q_axis_full(res),ggdt)
-			<< make_shared<SetOfHists1D>("He3nCentralGammas2","He3MM3",Q_axis_full(res),he3mm)
+			<< make_shared<Hist1D>("He3nCentralGammas2","t3",ggt)
+			<< make_shared<Hist1D>("He3nCentralGammas2","dt3",ggdt)
+			<< make_shared<Hist1D>("He3nCentralGammas2","He3MM3",he3mm)
+			<< make_shared<Hist1D>("He3nCentralGammas2","GMM3",ggmm)
 			<< make_shared<SetOfHists1D>("He3nCentralGammas2","GIM3",Q_axis_full(res),ggim)
-			<< make_shared<SetOfHists1D>("He3nCentralGammas2","GMM3",Q_axis_full(res),ggmm)
 			<< make_shared<SetOfHists1D>("He3nCentralGammas2","TIM3",Q_axis_full(res),he3ggimdiff)
 		    
                         <<[ggmm](WTrack&T)->bool{return (ggmm(T)>2.6)&&(ggmm(T)<3.0);}
 			<< make_shared<Hist1D>("He3nCentralGammas2","Events4",Q_axis_full(res))
-			<< make_shared<SetOfHists1D>("He3nCentralGammas2","t4",Q_axis_full(res),ggt)
-			<< make_shared<SetOfHists1D>("He3nCentralGammas2","dt4",Q_axis_full(res),ggdt)
-			<< make_shared<SetOfHists1D>("He3nCentralGammas2","He3MM4",Q_axis_full(res),he3mm)
+			<< make_shared<Hist1D>("He3nCentralGammas2","t4",ggt)
+			<< make_shared<Hist1D>("He3nCentralGammas2","dt4",ggdt)
+			<< make_shared<Hist1D>("He3nCentralGammas2","He3MM4",he3mm)
+			<< make_shared<Hist1D>("He3nCentralGammas2","GMM4",ggmm)
 			<< make_shared<SetOfHists1D>("He3nCentralGammas2","GIM4",Q_axis_full(res),ggim)
-			<< make_shared<SetOfHists1D>("He3nCentralGammas2","GMM4",Q_axis_full(res),ggmm)
 			<< make_shared<SetOfHists1D>("He3nCentralGammas2","TIM4",Q_axis_full(res),he3ggimdiff)
 
                         <<[ggdt](WTrack&T)->bool{return (ggdt(T)<20);}
                         << make_shared<Hist1D>("He3nCentralGammas2","Events5",Q_axis_full(res))                                 
-                        << make_shared<SetOfHists1D>("He3nCentralGammas2","t5",Q_axis_full(res),ggt)
-                        << make_shared<SetOfHists1D>("He3nCentralGammas2","dt5",Q_axis_full(res),ggdt)
-                        << make_shared<SetOfHists1D>("He3nCentralGammas2","He3MM5",Q_axis_full(res),he3mm)
+                        << make_shared<Hist1D>("He3nCentralGammas2","t5",ggt)
+                        << make_shared<Hist1D>("He3nCentralGammas2","dt5",ggdt)
+                        << make_shared<Hist1D>("He3nCentralGammas2","He3MM5",he3mm)
+                        << make_shared<Hist1D>("He3nCentralGammas2","GMM5",ggmm)
                         << make_shared<SetOfHists1D>("He3nCentralGammas2","GIM5",Q_axis_full(res),ggim)
-                        << make_shared<SetOfHists1D>("He3nCentralGammas2","GMM5",Q_axis_full(res),ggmm)
                         << make_shared<SetOfHists1D>("He3nCentralGammas2","TIM5",Q_axis_full(res),he3ggimdiff)
+
                         <<[ggt](WTrack&T)->bool{return (ggt(T)>-10)&&(ggt(T)<20);}
                         << make_shared<Hist1D>("He3nCentralGammas2","Events6",Q_axis_full(res))                                                                                                    
-                        << make_shared<SetOfHists1D>("He3nCentralGammas2","t6",Q_axis_full(res),ggt)
-                        << make_shared<SetOfHists1D>("He3nCentralGammas2","dt6",Q_axis_full(res),ggdt)
-                        << make_shared<SetOfHists1D>("He3nCentralGammas2","He3MM6",Q_axis_full(res),he3mm)
+                        << make_shared<Hist1D>("He3nCentralGammas2","t6",ggt)
+                        << make_shared<Hist1D>("He3nCentralGammas2","dt6",ggdt)
+                        << make_shared<Hist1D>("He3nCentralGammas2","He3MM6",he3mm)
                         << make_shared<Hist2D>("He3nCentralGammas2","He3MME6",he3mm,he3me)
+                        << make_shared<Hist1D>("He3nCentralGammas2","GMM6",ggmm)
                         << make_shared<SetOfHists1D>("He3nCentralGammas2","GIM6",Q_axis_full(res),ggim)
-                        << make_shared<SetOfHists1D>("He3nCentralGammas2","GMM6",Q_axis_full(res),ggmm)
                         << make_shared<SetOfHists1D>("He3nCentralGammas2","TIM6",Q_axis_full(res),he3ggimdiff)
 		)
 	    )
