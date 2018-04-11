@@ -23,7 +23,6 @@ void Preselection(Analysis&res){
         res.Trigger(trigger_he3_forward.number).per_track()<<(make_shared<ChainCheck>()
             <<[](WTrack&T){return (T.Type()==kFDC);}
             <<[](WTrack&T){return (T.Theta()!=0.125);}
-            <<[](WTrack&T){return (Forward::Get().StoppingLayer(T)==kFRH1);}
 	    <<[](){f_tracks++;return true;}
         );
         res.Trigger(trigger_he3_forward.number).post()<<[](){
@@ -36,8 +35,7 @@ void Preselection(Analysis&res){
 	res.Trigger(trigger_elastic1.number).pre()<<[](){c_tracks=0;return true;};
 	res.Trigger(trigger_elastic1.number).per_track()<<(make_shared<ChainCheck>()
                 <<[](WTrack&T){return T.Type()==kCDC;}
-                <<[](WTrack&T){return T.Theta()*180./PI()>23.;}
-                <<[](WTrack&T){return T.Edep()>0.03;}
+                <<[](WTrack&T){return T.Edep()>0.02;}
                 <<[](WTrack&T){c_tracks++;return true;}
 	);
         res.Trigger(trigger_elastic1.number).post()<<[](){
