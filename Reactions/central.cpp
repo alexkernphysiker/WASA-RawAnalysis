@@ -250,7 +250,7 @@ void Search3He2Gamma(Analysis&res){
 	static eta_decay_ppp six_gamma{.I={.A=He3,.B=He3},.J={.A=He3,.B=He3},.K={.A=He3,.B=He3}};
 	Axis 
 	he3mm([](){return (Ptotal-He3.L).M()-Ptotal.M()+He3.L.M()+Particle::eta().mass();},0.4,0.6,200),
-	he3me([](){return (Etotal-He3.L.E());},0.0,0.8,800),
+	he3me([](){return (Etotal-He3.L.E());},0.0,4.0,4000),
 	he3ggimdiff([](){return (He3.L+two_gamma.L()).M()-Ptotal.M();},-0.5,0.5,500),
 	ggim([](){return two_gamma.IM();},0.0,1.0,1000),
 	ggmm([](){return (Ptotal-two_gamma.L()).M();},0.0,4.0,4000),
