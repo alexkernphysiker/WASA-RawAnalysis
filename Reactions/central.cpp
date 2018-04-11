@@ -300,6 +300,7 @@ void Search3He2Gamma(Analysis&res){
 			<< make_shared<Hist1D>("He3nCentralGammas2","t4",ggt)
 			<< make_shared<Hist1D>("He3nCentralGammas2","dt4",ggdt)
 			<< make_shared<Hist1D>("He3nCentralGammas2","He3MM4",he3mm)
+			<< make_shared<Hist2D>("He3nCentralGammas2","He3MME4",he3mm,he3me)
 			<< make_shared<Hist1D>("He3nCentralGammas2","GMM4",ggmm)
 			<< make_shared<SetOfHists1D>("He3nCentralGammas2","GIM4",Q_axis_full(res),ggim)
 			<< make_shared<SetOfHists1D>("He3nCentralGammas2","TIM4",Q_axis_full(res),he3ggimdiff)
