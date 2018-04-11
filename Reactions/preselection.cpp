@@ -6,6 +6,7 @@
 #include <data.h>
 #include <trackprocessing.h>
 #include <detectors.h>
+#include <Reconstruction/forward.h>
 #include "analyses.h"
 using namespace std;
 using namespace MathTemplates;
@@ -21,8 +22,7 @@ void Preselection(Analysis&res){
         res.Trigger(trigger_he3_forward.number).pre()<<[](){f_tracks=0;return true;};
         static particle_kine he3;
         res.Trigger(trigger_he3_forward.number).per_track()<<(make_shared<ChainCheck>()
-            <<[](WTrack&T){return (T.Type()==kFDC);}
-            <<[](WTrack&T){return (T.Theta()!=0.125);}
+	    <<ForwardHe3Reconstruction("He3",res,he3)
 	    <<[](){f_tracks++;return true;}
         );
         res.Trigger(trigger_he3_forward.number).post()<<[](){
@@ -35,7 +35,7 @@ void Preselection(Analysis&res){
 	res.Trigger(trigger_elastic1.number).pre()<<[](){c_tracks=0;return true;};
 	res.Trigger(trigger_elastic1.number).per_track()<<(make_shared<ChainCheck>()
                 <<[](WTrack&T){return T.Type()==kCDC;}
-                <<[](WTrack&T){return T.Edep()>0.02;}
+                <<[](WTrack&T){return T.Edep()>0.03;}
                 <<[](WTrack&T){c_tracks++;return true;}
 	);
         res.Trigger(trigger_elastic1.number).post()<<[](){
