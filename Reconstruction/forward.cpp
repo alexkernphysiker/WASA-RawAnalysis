@@ -104,7 +104,7 @@ shared_ptr<AbstractChain> ForwardHe3Reconstruction(const string&prefix,const Ana
 		},
 		vertex_energy
             );
-            kin_rec.E=energy(track)+(dynamic_cast<const RealData*>(&data)?0.002:0.0);
+            kin_rec.E=energy(track);
 		double e=kin_rec.E,m=Particle::he3().mass();
 		double p=sqrt(pow(m+e,2)-pow(m,2));
             double phi=track.Phi();                                                                                    
