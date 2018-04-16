@@ -6,11 +6,12 @@
 using namespace std;
 using namespace MathTemplates;
 using namespace GnuplotWrap;
-const BiSortedPoints<> ReadCrossSection(){
-    BiSortedPoints<> result(ChainWithCount(91, 0., PI<>()/2.0), ChainWithCount(13, 1.000, 2.200));
+const BiSortedPoints<> ReadCrossSection()
+{
+    BiSortedPoints<> result(ChainWithCount(91, 0., PI<>() / 2.0), ChainWithStep(0.700,0.050,3.000));
     for (size_t degree = 0; degree <= 90; degree++) {
         ifstream file("pp/Theta_" + to_string(degree) + ".txt");
-        for (double E = 0, C = 0; (file >> E >> C); result.Bin(degree, (size_t(E) - 1000) / 100) = C);
+        for (double E = 0, C = 0; (file >> E >> C); result.Bin(degree, (size_t(E) - 700) / 50) = C);
         file.close();
     }
     return result;
