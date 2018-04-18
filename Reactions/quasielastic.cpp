@@ -122,5 +122,21 @@ void qe_central_analysis(Analysis&res){
 		<<make_shared<Hist2D>("quasielastic","t_vs_t_3",ct_axis.first,ct_axis.second)
 		<<make_shared<Hist2D>("quasielastic","e_vs_e_3",ed_axis.first,ed_axis.second)
 		<<make_shared<Hist1D>("quasielastic","pp_mm_3",mm_axis)
+
+                <<[](WTrack&T){return (ct_axis.first(T)<35);}
+                <<make_shared<SetOfHists1D>("quasielastic","pair_phi_diff_4",Q_axis(res),coplanarity)
+                <<make_shared<SetOfHists1D>("quasielastic","pair_time_diff_4",Q_axis(res),time_axis)
+                <<make_shared<Hist2D>("quasielastic","t_vs_e_4",ct_axis.first,ed_axis.first)
+                <<make_shared<Hist2D>("quasielastic","t_vs_t_4",ct_axis.first,ct_axis.second)
+                <<make_shared<Hist2D>("quasielastic","e_vs_e_4",ed_axis.first,ed_axis.second)
+                <<make_shared<Hist1D>("quasielastic","pp_mm_4",mm_axis)
+                <<[](WTrack&T){return (ct_axis.first(T)<30);}
+                <<make_shared<SetOfHists1D>("quasielastic","pair_phi_diff_5",Q_axis(res),coplanarity)
+                <<make_shared<SetOfHists1D>("quasielastic","pair_time_diff_5",Q_axis(res),time_axis)
+                <<make_shared<Hist2D>("quasielastic","t_vs_e_5",ct_axis.first,ed_axis.first)
+                <<make_shared<Hist2D>("quasielastic","t_vs_t_5",ct_axis.first,ct_axis.second)
+                <<make_shared<Hist2D>("quasielastic","e_vs_e_5",ed_axis.first,ed_axis.second)
+                <<make_shared<Hist1D>("quasielastic","pp_mm_5",mm_axis)
+ 
 	);
 }
