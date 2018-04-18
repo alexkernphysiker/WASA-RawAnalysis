@@ -260,7 +260,7 @@ void Search3He2Gamma(Analysis&res){
 	    << make_shared<Hist1D>("He3nCentralGammas2","Events0",Q_axis_full(res))
 	    << make_shared<Hist1D>("He3nCentralGammas2","He3MM0",he3mm)
 	    <<[he3mm](WTrack&T){
-		return (he3mm(T)>0.52)&&(he3mm(T)<0.52);
+		return (he3mm(T)>0.52)&&(he3mm(T)<0.55);
 	    }
 	    << make_shared<Hist1D>("He3nCentralGammas2","Events1",Q_axis_full(res))
 	    << make_shared<Hist1D>("He3nCentralGammas2","He3MM1",he3mm)
