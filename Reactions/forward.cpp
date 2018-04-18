@@ -45,18 +45,13 @@ void He3_X_analyse(Analysis&res){
     res.Trigger(0).pre()<<make_shared<SetOfHists1D>(dir_v_name,"MissingMass-vertex",Q_axis_over(res),MM_vertex);
     res.Trigger(0).pre()<<make_shared<SetOfHists2D>(dir_v_name,"Kinematic-vertex",Q_axis_over(res),Ev,Tv);
 		
-    static long trackcount,he3count;
+    static long he3count;
     res.Trigger(trigger_he3_forward.number).pre()<<(make_shared<ChainCheck>()
 	<<make_shared<Hist1D>(dir_r_name,"0-Reference",Q_axis_over(res))
-	<<[](){trackcount=0;he3count=0;return true;}
+	<<[](){he3count=0;return true;}
     );
     static particle_kine he3;
-    res.Trigger(trigger_he3_forward.number).per_track()<<(make_shared<ChainOr>()
-	<<(make_shared<ChainCheck>()
-	    <<[](WTrack&T){return T.Type()==kFDC;}
-	    <<[](){trackcount++;return true;}
-	)
-	<<(make_shared<ChainCheck>()
+    res.Trigger(trigger_he3_forward.number).per_track()<<(make_shared<ChainCheck>()
 	    <<ForwardHe3Reconstruction("He3Forward",res,he3)
 	    <<[](){he3count++;return true;}
 	    <<make_shared<SetOfHists1D>(dir_r_name,"MissingMass",
@@ -72,10 +67,8 @@ void He3_X_analyse(Analysis&res){
 		Axis([](){return he3.E;},0.1,0.6,500),
 		Axis([](){return (he3.theta*180.0)/PI();},3.5,9.0,550)
 	    )
-	)
     );
     res.Trigger(trigger_he3_forward.number).post()<<(make_shared<ChainCheck>()
-	<<make_shared<Hist1D>(dir_r_name,"Forward_charged_tracks",Axis([]()->double{return trackcount;},-0.5,9.5,10))
 	<<make_shared<Hist1D>(dir_r_name,"Forward_he3_tracks",Axis([]()->double{return he3count;},-0.5,9.5,10))
     );
 }
