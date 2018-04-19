@@ -13,6 +13,7 @@
 #include <data.h>
 #include <Reconstruction/forward.h>
 #include "analyses.h"
+#include "montecarlo.h"
 using namespace std;
 using namespace MathTemplates;
 using namespace TrackAnalyse;
@@ -115,7 +116,10 @@ void qe_central_analysis(Analysis&res){
                 <<make_shared<Hist2D>("quasielastic","e_vs_e_2",ed_axis.first,ed_axis.second)
                 <<make_shared<Hist1D>("quasielastic","pp_mm_2",mm_axis)
  
-		<<[](WTrack&T){return (time_axis(T)>-20.)&&(time_axis(T)<-5.);}
+		<<[&res](WTrack&T){
+			if(dynamic_cast<const MonteCarlo*>(&res))return true;
+			return (time_axis(T)>-20.)&&(time_axis(T)<-5.);
+		}
 		<<make_shared<SetOfHists1D>("quasielastic","pair_phi_diff_3",Q_axis(res),coplanarity)
 		<<make_shared<SetOfHists1D>("quasielastic","pair_time_diff_3",Q_axis(res),time_axis)
 		<<make_shared<Hist2D>("quasielastic","t_vs_e_3",ct_axis.first,ed_axis.first)
