@@ -122,7 +122,7 @@ void Search3He6Gamma(Analysis&res){
 	    << make_shared<Hist1D>("He3nCentralGammas6","Events0",Q_axis_full(res))
 	    << make_shared<Hist1D>("He3nCentralGammas6","He3MM0",he3mm)
 	    <<[he3mm](WTrack&T){
-		return (he3mm(T)>0.52)&&(he3mm(T)<0.55);
+		return (he3mm(T)>0.49)&&(he3mm(T)<0.545);
 	    }
 	    << make_shared<Hist1D>("He3nCentralGammas6","Events1",Q_axis_full(res))
 	    << make_shared<Hist1D>("He3nCentralGammas6","He3MM1",he3mm)
@@ -134,7 +134,7 @@ void Search3He6Gamma(Analysis&res){
                                 if(dynamic_cast<const MonteCarlo*>(&res))return true;
                                 for(size_t i=0;i<gammas.size();i++){
                                         const auto dt=He3.t-gammas[i].t;
-                                        if((dt<0)||(dt>40)){
+                                        if((dt<0)||(dt>30)){
                                                 gammas.erase(gammas.begin()+i);
                                                 i--;
                                         }
@@ -189,7 +189,7 @@ void Search3He6Gamma(Analysis&res){
 			<< make_shared<Hist1D>("He3nCentralGammas6","GIM4",ggggggim)
 			<< make_shared<SetOfHists1D>("He3nCentralGammas6","TIM4",Q_axis_full(res),he3ggggggimdiff)
                         <<[ggggggim](WTrack&T)->bool{                                                          
-                                return (ggggggim(T)>0.3)&&(ggggggim(T)<0.6);                           
+                                return (ggggggim(T)>0.3)&&(ggggggim(T)<0.7);
                         }
                         << make_shared<Hist1D>("He3nCentralGammas6","Events5",Q_axis_full(res))
                         << make_shared<Hist1D>("He3nCentralGammas6","t5",ggggggt)
@@ -260,7 +260,7 @@ void Search3He2Gamma(Analysis&res){
 	    << make_shared<Hist1D>("He3nCentralGammas2","Events0",Q_axis_full(res))
 	    << make_shared<Hist1D>("He3nCentralGammas2","He3MM0",he3mm)
 	    <<[he3mm](WTrack&T){
-		return (he3mm(T)>0.52)&&(he3mm(T)<0.55);
+		return (he3mm(T)>0.49)&&(he3mm(T)<0.545);
 	    }
 	    << make_shared<Hist1D>("He3nCentralGammas2","Events1",Q_axis_full(res))
 	    << make_shared<Hist1D>("He3nCentralGammas2","He3MM1",he3mm)
@@ -272,7 +272,7 @@ void Search3He2Gamma(Analysis&res){
 				if(dynamic_cast<const MonteCarlo*>(&res))return true;
 				for(size_t i=0;i<gammas.size();i++){
 					const auto dt=He3.t-gammas[i].t;
-					if((dt<0)||(dt>40)){
+					if((dt<0)||(dt>30)){
 						gammas.erase(gammas.begin()+i);
 						i--;
 					}
@@ -314,7 +314,7 @@ void Search3He2Gamma(Analysis&res){
 			<< make_shared<Hist1D>("He3nCentralGammas2","GIM4",ggim)
 			<< make_shared<Hist1D>("He3nCentralGammas2","TIM4",he3ggimdiff)
 
-                        <<[ggim](WTrack&T)->bool{return (ggim(T)>0.3)&&(ggim(T)<0.6);}
+                        <<[ggim](WTrack&T)->bool{return (ggim(T)>0.3)&&(ggim(T)<0.7);}
                         << make_shared<Hist1D>("He3nCentralGammas2","Events5",Q_axis_full(res))                                 
                         << make_shared<Hist1D>("He3nCentralGammas2","t5",ggt)
                         << make_shared<Hist1D>("He3nCentralGammas2","dt5",ggdt)
