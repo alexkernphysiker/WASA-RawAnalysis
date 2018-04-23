@@ -189,7 +189,7 @@ void Search3He6Gamma(Analysis&res){
 			<< make_shared<Hist1D>("He3nCentralGammas6","GIM4",ggggggim)
 			<< make_shared<SetOfHists1D>("He3nCentralGammas6","TIM4",Q_axis_full(res),he3ggggggimdiff)
                         <<[ggggggim](WTrack&T)->bool{                                                          
-                                return (ggggggim(T)>0.3)&&(ggggggim(T)<0.7);
+                                return (ggggggim(T)>0.4)&&(ggggggim(T)<0.6);
                         }
                         << make_shared<Hist1D>("He3nCentralGammas6","Events5",Q_axis_full(res))
                         << make_shared<Hist1D>("He3nCentralGammas6","t5",ggggggt)
