@@ -83,9 +83,9 @@ shared_ptr<AbstractChain> ForwardHe3Reconstruction(const string&prefix,const Ana
                 cut->SetPoint(7,0.298,0.006);
                 cut->SetPoint(6,0.201,0.007);
                 cut->SetPoint(5,0.141,0.009);
-                cut->SetPoint(4,0.105,0.011);
-                cut->SetPoint(3,0.061,0.014);
-                cut->SetPoint(2,0.027,0.019);
+                cut->SetPoint(4,0.105,0.010);
+                cut->SetPoint(3,0.061,0.012);
+                cut->SetPoint(2,0.019,0.014);
                 cut->SetPoint(1,0.018,0.025);
             }
             double x=Forward::Get()[kFRH1].Edep(T);
