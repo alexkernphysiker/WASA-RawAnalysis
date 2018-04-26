@@ -20,10 +20,11 @@ void Preselection(Analysis&res){
         //Preselection for 3He X reactions
         static long f_tracks;
         res.Trigger(trigger_he3_forward.number).pre()<<[](){f_tracks=0;return true;};
-        static particle_kine he3;
         res.Trigger(trigger_he3_forward.number).per_track()<<(make_shared<ChainCheck>()
-	    <<ForwardHe3Reconstruction("He3",res,he3)
-	    <<[](){f_tracks++;return true;}
+	        <<[](WTrack&T){return T.Type()==kFDC;}
+	        <<[](WTrack&T){return (T.Theta()!=0.125);}
+	        <<[](WTrack&T){return Forward::Get().StoppingLayer(T)==kFRH1;}
+		<<[](){f_tracks++;return true;}
         );
         res.Trigger(trigger_he3_forward.number).post()<<[](){
             if(f_tracks>0)gWasa->SaveEvent("run_presel");
