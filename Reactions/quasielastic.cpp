@@ -36,11 +36,17 @@ void qe_central_analysis(Analysis&res){
 		}
 		<<make_shared<Hist1D>("quasielastic","0-Reference",Q_axis(res))
 	;
+        static auto track_id=make_pair(
+                Axis([](WTrack&T){return T.GetSpecELossPS();},0.,0.03,300),//PSB
+                Axis([](WTrack&T){return T.Edep(151,174);},0.,1.,500)//Calorimeter
+        );
 	res.Trigger(trigger_elastic1.number).per_track()<<(make_shared<ChainOr>()
 		<<(make_shared<ChainCheck>()
 			<<[](WTrack&T){return T.Type()==kCDC;}
 			<<[](WTrack&T){return T.Theta()*180./PI()>23.;}
 			<<[](WTrack&T){return T.Edep()>0.03;}
+			<<make_shared<Hist2D>("quasielastic","track_id",track_id.first,track_id.second)
+			//ToDo: provide proton identification
 			<<[](WTrack&T){
 				double phi=T.Phi();
 				tracks<<point<double,track_info>(
