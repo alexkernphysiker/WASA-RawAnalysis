@@ -43,11 +43,11 @@ void qe_central_analysis(Analysis&res){
 	res.Trigger(trigger_elastic1.number).per_track()<<(make_shared<ChainOr>()
 		<<(make_shared<ChainCheck>()
 			<<[](WTrack&T){return T.Type()==kCDC;}
+			<<[](WTrack&T){return T.Edep()>0.03;}//Like in preselection
 			<<[](WTrack&T){return T.Theta()*180./PI()>23.;}
 			<<make_shared<Hist2D>("quasielastic","track_id-1",track_id.second,track_id.first)
-			<<[](WTrack&T){return track_id.first(T)>0.001;}
-			<<[](WTrack&T){return track_id.second(T)>0.01;}
-			//ToDo: provide proton identification
+			<<[](WTrack&T){return track_id.first(T)>0.0007;}
+			<<[](WTrack&T){return track_id.second(T)>0.02;}
 			<<make_shared<Hist2D>("quasielastic","track_id-2",track_id.second,track_id.first)
 			<<[](WTrack&T){
 				double phi=T.Phi();
