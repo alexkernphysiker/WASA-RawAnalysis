@@ -108,7 +108,7 @@ void qe_central_analysis(Analysis&res){
 		<<make_shared<Hist2D>("quasielastic","e_vs_e_0",ed_axis.first,ed_axis.second)
 		<<make_shared<Hist1D>("quasielastic","pp_mm_0",mm_axis)
 
-		<<[](WTrack&T){return (ct_axis.first(T)<40.)&&(ct_axis.second(T)>45.);}
+		<<[](WTrack&T){return (ct_axis.first(T)<40.)&&(ct_axis.second(T)>43.);}
 		<<make_shared<SetOfHists1D>("quasielastic","pair_phi_diff_1",Q_axis(res),coplanarity)
 		<<make_shared<SetOfHists1D>("quasielastic","pair_time_diff_1",Q_axis(res),time_axis)
 		<<make_shared<Hist2D>("quasielastic","t_vs_e_1",ct_axis.first,ed_axis.first)
@@ -116,7 +116,7 @@ void qe_central_analysis(Analysis&res){
 		<<make_shared<Hist2D>("quasielastic","e_vs_e_1",ed_axis.first,ed_axis.second)
 		<<make_shared<Hist1D>("quasielastic","pp_mm_1",mm_axis)
 
-		<<[](WTrack&T){return mm_axis(T)>1.1;}
+		<<[](WTrack&T){return mm_axis(T)>1.0;}
                 <<make_shared<SetOfHists1D>("quasielastic","pair_phi_diff_2",Q_axis(res),coplanarity)
                 <<make_shared<SetOfHists1D>("quasielastic","pair_time_diff_2",Q_axis(res),time_axis)
                 <<make_shared<Hist2D>("quasielastic","t_vs_e_2",ct_axis.first,ed_axis.first)
@@ -126,7 +126,7 @@ void qe_central_analysis(Analysis&res){
  
 		<<[&res](WTrack&T){
 			if(dynamic_cast<const MonteCarlo*>(&res))return true;
-			return (time_axis(T)>-20.)&&(time_axis(T)<-5.);
+			return (time_axis(T)>-18.)&&(time_axis(T)<-9.);
 		}
 		<<make_shared<SetOfHists1D>("quasielastic","pair_phi_diff_3",Q_axis(res),coplanarity)
 		<<make_shared<SetOfHists1D>("quasielastic","pair_time_diff_3",Q_axis(res),time_axis)
