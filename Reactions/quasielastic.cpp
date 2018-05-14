@@ -50,7 +50,7 @@ void qe_central_analysis(Analysis&res){
 			<<[](WTrack&T){return track_id.second(T)>0.02;}
 			<<make_shared<Hist2D>("quasielastic","track_id-2",track_id.second,track_id.first)
 			<<[](WTrack&T){//cut pions
-				return track_id.first(T)>0.001+(0.2-track_id.second(T))*0.001;
+				return track_id.first(T)>(0.0013+(0.2-track_id.second(T))*0.001);
 			}
 			<<make_shared<Hist2D>("quasielastic","track_id-3",track_id.second,track_id.first)
 			<<[](WTrack&T){
