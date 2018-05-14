@@ -114,7 +114,7 @@ void qe_central_analysis(Analysis&res){
 		<<make_shared<Hist2D>("quasielastic","e_vs_e_0",ed_axis.first,ed_axis.second)
 		<<make_shared<Hist1D>("quasielastic","pp_mm_0",mm_axis)
 
-		<<[](WTrack&T){return (ct_axis.first(T)<40.)&&(ct_axis.second(T)>43.);}
+		<<[](WTrack&T){return (ct_axis.first(T)<35.)&&(ct_axis.second(T)>42.);}
 		<<make_shared<SetOfHists1D>("quasielastic","pair_phi_diff_1",Q_axis(res),coplanarity)
 		<<make_shared<SetOfHists1D>("quasielastic","pair_time_diff_1",Q_axis(res),time_axis)
 		<<make_shared<Hist2D>("quasielastic","t_vs_e_1",ct_axis.first,ed_axis.first)
@@ -143,29 +143,22 @@ void qe_central_analysis(Analysis&res){
 		
 		<<(make_shared<ChainOr>()
 			<<(make_shared<ChainCheck>()
-		                <<[](WTrack&T){return (ct_axis.first(T)<35);}
+		                <<[](WTrack&T){return (ct_axis.first(T)<30);}
 		                <<make_shared<SetOfHists1D>("quasielastic","pair_phi_diff_4",Q_axis(res),coplanarity)
         		        <<make_shared<SetOfHists1D>("quasielastic","pair_time_diff_4",Q_axis(res),time_axis)
 	                	<<make_shared<Hist2D>("quasielastic","t_vs_e_4",ct_axis.first,ed_axis.first)
 	        	        <<make_shared<Hist2D>("quasielastic","t_vs_t_4",ct_axis.first,ct_axis.second)
 		                <<make_shared<Hist2D>("quasielastic","e_vs_e_4",ed_axis.first,ed_axis.second)
         		        <<make_shared<Hist1D>("quasielastic","pp_mm_4",mm_axis)
-		                <<[](WTrack&T){return (ct_axis.first(T)<30);}
-        	        	<<make_shared<SetOfHists1D>("quasielastic","pair_phi_diff_5",Q_axis(res),coplanarity)
-        		        <<make_shared<SetOfHists1D>("quasielastic","pair_time_diff_5",Q_axis(res),time_axis)
-	                	<<make_shared<Hist2D>("quasielastic","t_vs_e_5",ct_axis.first,ed_axis.first)
-	        	        <<make_shared<Hist2D>("quasielastic","t_vs_t_5",ct_axis.first,ct_axis.second)
-		                <<make_shared<Hist2D>("quasielastic","e_vs_e_5",ed_axis.first,ed_axis.second)
-                		<<make_shared<Hist1D>("quasielastic","pp_mm_5",mm_axis)
 			)
 			<<(make_shared<ChainCheck>()
                                 <<[](WTrack&T){return (ct_axis.first(T)>30);}                                                                                                                
-                                <<make_shared<SetOfHists1D>("quasielastic","pair_phi_diff_6",Q_axis(res),coplanarity)                                                                        
-                                <<make_shared<SetOfHists1D>("quasielastic","pair_time_diff_6",Q_axis(res),time_axis)                                                                         
-                                <<make_shared<Hist2D>("quasielastic","t_vs_e_6",ct_axis.first,ed_axis.first)                                                                                 
-                                <<make_shared<Hist2D>("quasielastic","t_vs_t_6",ct_axis.first,ct_axis.second)                                                                                
-                                <<make_shared<Hist2D>("quasielastic","e_vs_e_6",ed_axis.first,ed_axis.second)                                                                                
-                                <<make_shared<Hist1D>("quasielastic","pp_mm_6",mm_axis)
+                                <<make_shared<SetOfHists1D>("quasielastic","pair_phi_diff_5",Q_axis(res),coplanarity)                                                                        
+                                <<make_shared<SetOfHists1D>("quasielastic","pair_time_diff_5",Q_axis(res),time_axis)                                                                         
+                                <<make_shared<Hist2D>("quasielastic","t_vs_e_5",ct_axis.first,ed_axis.first)                                                                                 
+                                <<make_shared<Hist2D>("quasielastic","t_vs_t_5",ct_axis.first,ct_axis.second)                                                                                
+                                <<make_shared<Hist2D>("quasielastic","e_vs_e_5",ed_axis.first,ed_axis.second)                                                                                
+                                <<make_shared<Hist1D>("quasielastic","pp_mm_5",mm_axis)
 			)
 		)
  
