@@ -122,9 +122,7 @@ void Search3He6Gamma(Analysis&res){
 	    << [](){return isfinite(He3.t);}
 	    << make_shared<Hist1D>("He3nCentralGammas6","Events0",Q_axis_full(res))
 	    << make_shared<Hist1D>("He3nCentralGammas6","He3MM0",he3mm)
-	    <<[he3mm](WTrack&T){
-		return (he3mm(T)>0.49)&&(he3mm(T)<0.55);
-	    }
+	    <<[he3mm](WTrack&T){return (he3mm(T)>0.49);}
 	    << make_shared<Hist1D>("He3nCentralGammas6","Events1",Q_axis_full(res))
 	    << make_shared<Hist1D>("He3nCentralGammas6","He3MM1",he3mm)
 	    << make_shared<Hist1D>("He3nCentralGammas6","GammaCount",Axis([]()->double{return gammas.size();},-0.5,9.5,10))
@@ -274,9 +272,7 @@ void Search3He2Gamma(Analysis&res){
 	    << [](){return isfinite(He3.t);}
 	    << make_shared<Hist1D>("He3nCentralGammas2","Events0",Q_axis_full(res))
 	    << make_shared<Hist1D>("He3nCentralGammas2","He3MM0",he3mm)
-	    <<[he3mm](WTrack&T){
-		return (he3mm(T)>0.49)&&(he3mm(T)<0.55);
-	    }
+	    <<[he3mm](WTrack&T){return (he3mm(T)>0.49);}
 	    << make_shared<Hist1D>("He3nCentralGammas2","Events1",Q_axis_full(res))
 	    << make_shared<Hist1D>("He3nCentralGammas2","He3MM1",he3mm)
 	    << make_shared<Hist1D>("He3nCentralGammas2","GammaCount",Axis([]()->double{return gammas.size();},-0.5,9.5,10))
