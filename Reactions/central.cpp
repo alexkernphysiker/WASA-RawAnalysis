@@ -167,7 +167,7 @@ void Search3He6Gamma(Analysis&res){
 			<< make_shared<SetOfHists1D>("He3nCentralGammas6","TIM2",Q_axis_full(res),he3ggggggimdiff)
 			<<[&res,ggggggt,ggggggdt](WTrack&T)->bool{
 				if(dynamic_cast<const MonteCarlo*>(&res))return true;
-				return (ggggggt(T)>10)&&(ggggggt(T)<30)&&(ggggggdt(T)<20);
+				return (ggggggt(T)>0)&&(ggggggt(T)<30)&&(ggggggdt(T)<20);
 			}
                         << make_shared<Hist1D>("He3nCentralGammas6","Events2_",Q_axis_full(res))                                                                             
                         << make_shared<Hist1D>("He3nCentralGammas6","t2_",ggggggt)                                                                                           
@@ -309,7 +309,7 @@ void Search3He2Gamma(Analysis&res){
 
 			<<[&res,ggt,ggdt](WTrack&T)->bool{
 				if(dynamic_cast<const MonteCarlo*>(&res))return true;
-				return (ggt(T)>10)&&(ggt(T)<30)&&(ggdt(T)<20);
+				return (ggt(T)>0)&&(ggt(T)<30)&&(ggdt(T)<20);
 			}
                         << make_shared<Hist1D>("He3nCentralGammas2","Events2_",Q_axis_full(res))
                         << make_shared<Hist1D>("He3nCentralGammas2","t2_",ggt)
