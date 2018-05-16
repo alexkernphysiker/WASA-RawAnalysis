@@ -112,7 +112,7 @@ void Search3He6Gamma(Analysis&res){
         he3ggggggimdiff([](){return (He3.L+six_gamma.L()).M()-Ptotal.M();},-0.5,0.5,500),
 	ggggggim([](){return six_gamma.IM();},0.0,1.0,1000),
         ggggggmm([](){return (Ptotal-six_gamma.L()).M();},0.0,4.0,4000),
-        ggggggt([](){return He3.t-six_gamma.t();},0,100,100),
+        ggggggt([](){return He3.t-six_gamma.t();},-50,100,150),
         ggggggdt([](){return six_gamma.dt();},0,50,50);
 
 	res.Trigger(tn).post()<<(make_shared<ChainCheck>()
@@ -126,17 +126,6 @@ void Search3He6Gamma(Analysis&res){
 
 	    <<(make_shared<ChainOr>()
 	        << ( make_shared<ChainCheck>()
-                        //<< [&res]()->bool{
-                        //        if(dynamic_cast<const MonteCarlo*>(&res))return true;
-                        //        for(size_t i=0;i<gammas.size();i++){
-                        //                const auto dt=He3.t-gammas[i].t;
-                        //                if(dt<0){
-                        //                        gammas.erase(gammas.begin()+i);
-                        //                        i--;
-                        //                }
-                        //        }
-                        //        return true;
-                        //}
 			<<[]()->bool{return gammas.size()>=6;}
 	                <<[&res]()->bool{
 	                        SortedChain<eta_decay_ppp> combinations;
@@ -259,7 +248,7 @@ void Search3He2Gamma(Analysis&res){
 	he3ggimdiff([](){return (He3.L+two_gamma.L()).M()-Ptotal.M();},-0.5,0.5,500),
 	ggim([](){return two_gamma.IM();},0.0,1.0,1000),
 	ggmm([](){return (Ptotal-two_gamma.L()).M();},0.0,4.0,4000),
-        ggt([](){return He3.t-two_gamma.t();},0,100,100),
+        ggt([](){return He3.t-two_gamma.t();},-50,100,150),
 	ggdt([](){return two_gamma.dt();},0,50,50);
 
 	res.Trigger(tn).post()<<(make_shared<ChainCheck>()
@@ -273,17 +262,6 @@ void Search3He2Gamma(Analysis&res){
 
 	    <<(make_shared<ChainOr>()
 		<< ( make_shared<ChainCheck>()
-			//<< [&res]()->bool{
-			//	if(dynamic_cast<const MonteCarlo*>(&res))return true;
-			//	for(size_t i=0;i<gammas.size();i++){
-			//		const auto dt=He3.t-gammas[i].t;
-			//		if(dt<0){
-			//			gammas.erase(gammas.begin()+i);
-			//			i--;
-			//		}
-			//	}
-			//	return true;
-			//}
 			<< []()->bool{return gammas.size()>=2;}
 			<< [&res]()->bool{
 				SortedChain<eta_decay_gg> pairs;
