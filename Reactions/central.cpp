@@ -69,7 +69,6 @@ struct eta_decay_ppp{
 void Search3He6Gamma(Analysis&res){
 	const auto&tn=trigger_he3_forward.number;
 	static auto Ptotal=LorentzVector<>::zero();
-	static double Etotal=0;
 	static vector<track_info> gammas;
 	static particle_kine he3;
 	static track_info He3{.L=LorentzVector<>::zero(),.t=INFINITY};
@@ -79,7 +78,6 @@ void Search3He6Gamma(Analysis&res){
 		const auto p=lorentz_byPM(Z()*res.PBeam(),Particle::p().mass());
 		const auto d=lorentz_byPM(Zero(),Particle::d().mass());
 		Ptotal=p+d;
-		Etotal=p.E()+d.E();
 		gammas.clear();
 		He3.t=INFINITY;
 		return true;
@@ -108,9 +106,8 @@ void Search3He6Gamma(Analysis&res){
 	);
 	static eta_decay_ppp six_gamma{.I={.A=He3,.B=He3},.J={.A=He3,.B=He3},.K={.A=He3,.B=He3}};
 	Axis 
-	//he3mm([](){return (Ptotal-He3.L).M()-Ptotal.M()+He3.L.M()+Particle::eta().mass();},0.4,0.6,200),
-	he3mm([](){return (Ptotal-He3.L).M();},0.4,0.6,200),
-	he3me([](){return (Etotal-He3.L.E());},0.0,4.0,4000),
+	he3mm([](){return (Ptotal-He3.L).M()-Ptotal.M()+He3.L.M()+Particle::eta().mass();},0.4,0.6,200),
+	he3me([](){return (Ptotal.E()-He3.L.E());},0.0,4.0,4000),
 	ggggggdiff([]()->double{return six_gamma.diff();},0.0,0.2,200),
         he3ggggggimdiff([](){return (He3.L+six_gamma.L()).M()-Ptotal.M();},-0.5,0.5,500),
 	ggggggim([](){return six_gamma.IM();},0.0,1.0,1000),
@@ -122,7 +119,7 @@ void Search3He6Gamma(Analysis&res){
 	    << [](){return isfinite(He3.t);}
 	    << make_shared<Hist1D>("He3nCentralGammas6","Events0",Q_axis_full(res))
 	    << make_shared<Hist1D>("He3nCentralGammas6","He3MM0",he3mm)
-	    <<[he3mm](WTrack&T){return (he3mm(T)>0.49);}
+	    <<[he3mm](WTrack&T){return (he3mm(T)>0.50);}
 	    << make_shared<Hist1D>("He3nCentralGammas6","Events1",Q_axis_full(res))
 	    << make_shared<Hist1D>("He3nCentralGammas6","He3MM1",he3mm)
 	    << make_shared<Hist1D>("He3nCentralGammas6","GammaCount",Axis([]()->double{return gammas.size();},-0.5,9.5,10))
@@ -219,7 +216,6 @@ void Search3He6Gamma(Analysis&res){
 void Search3He2Gamma(Analysis&res){
 	const auto&tn=trigger_he3_forward.number;
 	static auto Ptotal=LorentzVector<>::zero();
-	static double Etotal=0;
 	static vector<track_info> gammas;
 	static particle_kine he3;
 	static track_info He3{.L=LorentzVector<>::zero(),.t=INFINITY};
@@ -229,7 +225,6 @@ void Search3He2Gamma(Analysis&res){
 		const auto p=lorentz_byPM(Z()*res.PBeam(),Particle::p().mass());
 		const auto d=lorentz_byPM(Zero(),Particle::d().mass());
 		Ptotal=p+d;
-		Etotal=p.E()+d.E();
 		gammas.clear();
 		He3.t=INFINITY;
 		return true;
@@ -259,9 +254,8 @@ void Search3He2Gamma(Analysis&res){
 	static eta_decay_gg two_gamma{.A=He3,.B=He3};
 	static eta_decay_ppp six_gamma{.I={.A=He3,.B=He3},.J={.A=He3,.B=He3},.K={.A=He3,.B=He3}};
 	Axis 
-	//he3mm([](){return (Ptotal-He3.L).M()-Ptotal.M()+He3.L.M()+Particle::eta().mass();},0.4,0.6,200),
-	he3mm([](){return (Ptotal-He3.L).M();},0.4,0.6,200),
-	he3me([](){return (Etotal-He3.L.E());},0.0,8.0,8000),
+	he3mm([](){return (Ptotal-He3.L).M()-Ptotal.M()+He3.L.M()+Particle::eta().mass();},0.4,0.6,200),
+	he3me([](){return (Ptotal.E()-He3.L.E());},0.0,8.0,8000),
 	he3ggimdiff([](){return (He3.L+two_gamma.L()).M()-Ptotal.M();},-0.5,0.5,500),
 	ggim([](){return two_gamma.IM();},0.0,1.0,1000),
 	ggmm([](){return (Ptotal-two_gamma.L()).M();},0.0,4.0,4000),
@@ -272,7 +266,7 @@ void Search3He2Gamma(Analysis&res){
 	    << [](){return isfinite(He3.t);}
 	    << make_shared<Hist1D>("He3nCentralGammas2","Events0",Q_axis_full(res))
 	    << make_shared<Hist1D>("He3nCentralGammas2","He3MM0",he3mm)
-	    <<[he3mm](WTrack&T){return (he3mm(T)>0.49);}
+	    <<[he3mm](WTrack&T){return (he3mm(T)>0.50);}
 	    << make_shared<Hist1D>("He3nCentralGammas2","Events1",Q_axis_full(res))
 	    << make_shared<Hist1D>("He3nCentralGammas2","He3MM1",he3mm)
 	    << make_shared<Hist1D>("He3nCentralGammas2","GammaCount",Axis([]()->double{return gammas.size();},-0.5,9.5,10))
