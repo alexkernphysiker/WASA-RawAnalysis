@@ -230,7 +230,7 @@ void Search3He2Gamma(Analysis&res){
 		    << [](WTrack&T)->bool{return T.Type()==kCDN;}
 		    << make_shared<Hist1D>("He3nCentralGammas2","GammaEnergy",Axis([](WTrack&T)->double{return T.Edep();},0.0,1.6,800))
 
-		    << [](WTrack&T)->bool{return T.Edep()>=0.01;}
+		    << [](WTrack&T)->bool{return T.Edep()>=0.05;}
 		    << [](WTrack&T)->bool{
 			gammas.push_back({.L=lorentz_byPM(direction(T.Phi(),T.Theta())*T.Edep(),0.),.t=T.Time()});
 			return true;
@@ -313,7 +313,7 @@ void Search3He2Gamma(Analysis&res){
 		)
 
 		<< ( make_shared<ChainCheck>()
-		    <<[he3mm](WTrack&T){return (he3mm(T)>0.49);}
+		    <<[he3mm](WTrack&T){return (he3mm(T)>0.49)&&(he3mm(T)<0.56);}
 		    << make_shared<Hist1D>("He3nCentralGammas2","old_Events1",Q_axis_full(res))
 		    << make_shared<Hist1D>("He3nCentralGammas2","old_He3MM1",he3mm)
 		    << make_shared<Hist1D>("He3nCentralGammas2","old_GammaCount",Axis([]()->double{return gammas.size();},-0.5,9.5,10))
