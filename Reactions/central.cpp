@@ -21,6 +21,7 @@ using namespace MathTemplates;
 using namespace TrackAnalyse;
 const Reaction He3eta(Particle::p(),Particle::d(),{Particle::he3(),Particle::eta()});
 Axis Q_axis_full(const Analysis&res){return Axis([&res]()->double{return 1000.0*He3eta.P2Q(res.PBeam());},-70.0,30.0,40);}
+const double sinus_of_minimal_angle=0.2;//corresponds to 10 degrees that is doubled calorimeter angular resolution
 struct track_info{LorentzVector<>L;double t;};
 struct eta_decay_gg{
 	track_info A;
@@ -96,7 +97,7 @@ void Search3He6Gamma(Analysis&res){
 		    << [](WTrack&T)->bool{return T.Type()==kCDN;}
 		    << make_shared<Hist1D>("He3nCentralGammas6","GammaEnergy",Axis([](WTrack&T)->double{return T.Edep();},0.0,1.6,800))
 
-		    << [](WTrack&T)->bool{return T.Edep()>=0.04;}
+		    << [](WTrack&T)->bool{return T.Edep()>=0.01;}
 		    << [](WTrack&T)->bool{
 			gammas.push_back({.L=lorentz_byPM(direction(T.Phi(),T.Theta())*T.Edep(),0.),.t=T.Time()});
 			return true;
@@ -132,14 +133,27 @@ void Search3He6Gamma(Analysis&res){
         	                for(size_t i=0;i<(gammas.size()-5);++i)for(size_t j=i+1;j<gammas.size();++j){
 	                            for(size_t k=i+1;k<(gammas.size()-3);(++k)+=((k==j)?1:0))for(size_t l=k+1;l<gammas.size();(++l)+=((l==j)?1:0)){
                                         for(size_t o=k+1;o<(gammas.size()-1);(++o)+=(((o==j)||(o==l))?1:0))for(size_t p=o+1;p<gammas.size();(++p)+=(((p==j)||(p==l))?1:0)){
-	 				        combinations<<eta_decay_ppp{
+	 				        const auto candidate=eta_decay_ppp{
 							.I={.A=gammas[i],.B=gammas[j]},
 							.J={.A=gammas[k],.B=gammas[l]},
 							.K={.A=gammas[o],.B=gammas[p]}
 						};
+						vector<track_info> check{
+							gammas[i],gammas[j],gammas[k],
+							gammas[l],gammas[o],gammas[p]
+						};
+						bool passed=true;
+						for(size_t r=0;(r<check.size())&&passed;r++)for(size_t q=r+1;(q<check.size())&&passed;q++){
+							const auto d1=direction(check[r].L.P());
+							const auto d2=direction(check[q].L.P());
+							if(((d1*1.0)^(d2*1.0)).M()<sinus_of_minimal_angle)
+								passed=false;
+						}
+						if(passed)combinations<<candidate;
                 	        	}
 				    }	
 	                        }
+				if(combinations.size()==0)return false;
 	                        six_gamma=combinations[0];
 	                        return true;
 	                }
@@ -230,7 +244,7 @@ void Search3He2Gamma(Analysis&res){
 		    << [](WTrack&T)->bool{return T.Type()==kCDN;}
 		    << make_shared<Hist1D>("He3nCentralGammas2","GammaEnergy",Axis([](WTrack&T)->double{return T.Edep();},0.0,1.6,800))
 
-		    << [](WTrack&T)->bool{return T.Edep()>=0.05;}
+		    << [](WTrack&T)->bool{return T.Edep()>=0.01;}
 		    << [](WTrack&T)->bool{
 			gammas.push_back({.L=lorentz_byPM(direction(T.Phi(),T.Theta())*T.Edep(),0.),.t=T.Time()});
 			return true;
@@ -268,11 +282,22 @@ void Search3He2Gamma(Analysis&res){
 				<< [&res]()->bool{
 					SortedChain<eta_decay_gg> pairs;
 					for(size_t i=0;i<gammas.size();i++)for(size_t j=i+1;j<gammas.size();j++){
-						pairs<<eta_decay_gg{.A=gammas[i],.B=gammas[j]};
+						const auto candidate=eta_decay_gg{.A=gammas[i],.B=gammas[j]};
+						const auto d1=direction(candidate.A.L.P());
+						const auto d2=direction(candidate.B.L.P());
+						if(((d1*1.0)^(d2*1.0)).M()>sinus_of_minimal_angle)
+							pairs<<candidate;
 					}
+					if(pairs.size()==0)return false;
 					two_gamma=pairs[0];
 					return true;
 				}
+				<< make_shared<Hist1D>("He3nCentralGammas2","vec_mul",Axis([]()->double{
+					const auto d1=direction(two_gamma.A.L.P());
+					const auto d2=direction(two_gamma.B.L.P());
+					return ((d1*1.0)^(d2*1.0)).M();
+				},0.0,1.0,100))
+
 				<< make_shared<Hist1D>("He3nCentralGammas2","Events2",Q_axis_full(res))
 				<< make_shared<Hist1D>("He3nCentralGammas2","t2",ggt)
 				<< make_shared<Hist1D>("He3nCentralGammas2","dt2",ggdt)
