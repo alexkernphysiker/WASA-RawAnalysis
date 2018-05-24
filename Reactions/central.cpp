@@ -21,7 +21,6 @@ using namespace MathTemplates;
 using namespace TrackAnalyse;
 const Reaction He3eta(Particle::p(),Particle::d(),{Particle::he3(),Particle::eta()});
 Axis Q_axis_full(const Analysis&res){return Axis([&res]()->double{return 1000.0*He3eta.P2Q(res.PBeam());},-70.0,30.0,40);}
-const double sinus_of_minimal_angle=0.2;//corresponds to 10 degrees that is doubled calorimeter angular resolution
 struct track_info{LorentzVector<>L;double t;};
 struct eta_decay_gg{
 	track_info A;
@@ -146,7 +145,8 @@ void Search3He6Gamma(Analysis&res){
 						for(size_t r=0;(r<check.size())&&passed;r++)for(size_t q=r+1;(q<check.size())&&passed;q++){
 							const auto d1=direction(check[r].L.P());
 							const auto d2=direction(check[q].L.P());
-							if(((d1*1.0)^(d2*1.0)).M()<sinus_of_minimal_angle)
+							const auto sina=((d1*1.0)^(d2*1.0)).M();
+							if(sina>0.2)
 								passed=false;
 						}
 						if(passed)combinations<<candidate;
@@ -167,7 +167,7 @@ void Search3He6Gamma(Analysis&res){
 			<< make_shared<SetOfHists1D>("He3nCentralGammas6","TIM2",Q_axis_full(res),he3ggggggimdiff)
 			<<[&res,ggggggt,ggggggdt](WTrack&T)->bool{
 				if(dynamic_cast<const MonteCarlo*>(&res))return true;
-				return (ggggggt(T)>8)&&(ggggggt(T)<25)&&(ggggggdt(T)<20);
+				return (ggggggt(T)>0)&&(ggggggt(T)<35)&&(ggggggdt(T)<20);
 			}
                         << make_shared<Hist1D>("He3nCentralGammas6","Events2_",Q_axis_full(res))
                         << make_shared<Hist1D>("He3nCentralGammas6","t2_",ggggggt)
@@ -178,7 +178,7 @@ void Search3He6Gamma(Analysis&res){
                         << make_shared<Hist1D>("He3nCentralGammas6","GIM2_",ggggggim)
                         << make_shared<SetOfHists1D>("He3nCentralGammas6","TIM2_",Q_axis_full(res),he3ggggggimdiff)
 
-                        <<[ggggggdiff](WTrack&T)->bool{return ggggggdiff(T)<0.06;}
+                        <<[ggggggdiff](WTrack&T)->bool{return ggggggdiff(T)<0.15;}
 			<< make_shared<Hist1D>("He3nCentralGammas6","Events3",Q_axis_full(res))
                         << make_shared<Hist1D>("He3nCentralGammas6","t3",ggggggt)
                         << make_shared<Hist1D>("He3nCentralGammas6","dt3",ggggggdt)
@@ -285,7 +285,8 @@ void Search3He2Gamma(Analysis&res){
 						const auto candidate=eta_decay_gg{.A=gammas[i],.B=gammas[j]};
 						const auto d1=direction(candidate.A.L.P());
 						const auto d2=direction(candidate.B.L.P());
-						if(((d1*1.0)^(d2*1.0)).M()>sinus_of_minimal_angle)
+						const auto sina=((d1*1.0)^(d2*1.0)).M();
+						if((sina>0.40)&&(sina<0.95))
 							pairs<<candidate;
 					}
 					if(pairs.size()==0)return false;
