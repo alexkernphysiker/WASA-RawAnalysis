@@ -146,7 +146,7 @@ void Search3He6Gamma(Analysis&res){
 							const auto d1=direction(check[r].L.P());
 							const auto d2=direction(check[q].L.P());
 							const auto sina=((d1*1.0)^(d2*1.0)).M();
-							if(sina>0.2)
+							if((sina>0.2)&&(sina<0.95))
 								passed=false;
 						}
 						if(passed)combinations<<candidate;
