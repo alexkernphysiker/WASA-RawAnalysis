@@ -146,7 +146,8 @@ void Search3He6Gamma(Analysis&res){
 							const auto d1=direction(check[r].L.P());
 							const auto d2=direction(check[q].L.P());
 							const auto sina=((d1*1.0)^(d2*1.0)).M();
-							if(sina>0.2)
+							const auto cosa=(d1*1.0)*(d2*1.0);
+							if((sina<0.2)&&(cosa>0.0))
 								passed=false;
 						}
 						if(passed)combinations<<candidate;
@@ -286,6 +287,7 @@ void Search3He2Gamma(Analysis&res){
 						const auto d1=direction(candidate.A.L.P());
 						const auto d2=direction(candidate.B.L.P());
 						const auto sina=((d1*1.0)^(d2*1.0)).M();
+						//const auto cosa=(d1*1.0)*(d2*1.0);
 						if((sina>0.40)&&(sina<0.95))
 							pairs<<candidate;
 					}
