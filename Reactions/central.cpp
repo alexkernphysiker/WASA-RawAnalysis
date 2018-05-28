@@ -192,7 +192,7 @@ void Search3He6Gamma(Analysis&res){
 			<< make_shared<Hist1D>("He3nCentralGammas6","ET22",measured_eta_angle)
                         << make_shared<SetOfHists1D>("He3nCentralGammas6","TIM22",Q_axis_full(res),he3ggggggimdiff)
 
-                        <<[ggggggdiff](WTrack&T)->bool{return ggggggdiff(T)<0.05;}
+                        <<[ggggggdiff](WTrack&T)->bool{return ggggggdiff(T)<0.12;}
 			<< make_shared<Hist1D>("He3nCentralGammas6","Events3",Q_axis_full(res))
                         << make_shared<Hist1D>("He3nCentralGammas6","t3",ggggggt)
                         << make_shared<Hist1D>("He3nCentralGammas6","dt3",ggggggdt)
