@@ -148,14 +148,13 @@ void Search3He6Gamma(Analysis&res){
 							const auto d2=direction(check[q].L.P());
 							const auto sina=((d1*1.0)^(d2*1.0)).M();
 							const auto cosa=(d1*1.0)*(d2*1.0);
-							if((sina<0.15)&&(cosa>0.0))
-								passed=false;
+							if((sina<0.15)&&(cosa>0.0))passed=false;
 						}
 						if(
 							passed &&
 							(dynamic_cast<const MonteCarlo*>(&res)||(
                                                                 (candidate.dt()<20)&&
-                                                                (He3.t-candidate.t()>-5)&&(He3.t-candidate.t()<35)
+                                                                ((He3.t-candidate.t())>-5)&&((He3.t-candidate.t())<35)
                                                         ))
 						)
 							combinations<<candidate;
@@ -166,7 +165,6 @@ void Search3He6Gamma(Analysis&res){
 	                        six_gamma=combinations[0];
 	                        return true;
 	                }
-			<< make_shared<Hist1D>("He3nCentralGammas6","Events2",Q_axis_full(res))
 			<< make_shared<Hist1D>("He3nCentralGammas6","t2",ggggggt)
 			<< make_shared<Hist1D>("He3nCentralGammas6","dt2",ggggggdt)
                         << make_shared<Hist1D>("He3nCentralGammas6","He3MM2",he3mmc)
@@ -174,10 +172,9 @@ void Search3He6Gamma(Analysis&res){
                         << make_shared<Hist1D>("He3nCentralGammas6","GMMPDiff2",ggggggdiff)
                         << make_shared<Hist1D>("He3nCentralGammas6","GIM2",ggggggimc)
 			<< make_shared<Hist1D>("He3nCentralGammas6","ET2",measured_eta_angle)
-			<< make_shared<SetOfHists1D>("He3nCentralGammas6","TIM2",Q_axis_full(res),he3ggggggimdiff)
+			<< make_shared<Hist1D>("He3nCentralGammas6","TIM2",he3ggggggimdiff)
 
 			<<[measured_eta_angle](WTrack&T)->bool{return measured_eta_angle(T)<40;}
-			<< make_shared<Hist1D>("He3nCentralGammas6","Events3",Q_axis_full(res))                                                            
                         << make_shared<Hist1D>("He3nCentralGammas6","t3",ggggggt)                                                                          
                         << make_shared<Hist1D>("He3nCentralGammas6","dt3",ggggggdt)                                                                        
                         << make_shared<Hist1D>("He3nCentralGammas6","He3MM3",he3mmc)                                                                       
@@ -185,10 +182,9 @@ void Search3He6Gamma(Analysis&res){
                         << make_shared<Hist1D>("He3nCentralGammas6","GMMPDiff3",ggggggdiff)                                                                
                         << make_shared<Hist1D>("He3nCentralGammas6","GIM3",ggggggimc)                                                                       
                         << make_shared<Hist1D>("He3nCentralGammas6","ET3",measured_eta_angle)                                                              
-                        << make_shared<SetOfHists1D>("He3nCentralGammas6","TIM3",Q_axis_full(res),he3ggggggimdiff)
+                        << make_shared<Hist1D>("He3nCentralGammas6","TIM3",he3ggggggimdiff)
 
                         <<[ggggggdiff](WTrack&T)->bool{return ggggggdiff(T)<0.12;}
-			<< make_shared<Hist1D>("He3nCentralGammas6","Events4",Q_axis_full(res))
                         << make_shared<Hist1D>("He3nCentralGammas6","t4",ggggggt)
                         << make_shared<Hist1D>("He3nCentralGammas6","dt4",ggggggdt)
 			<< make_shared<Hist1D>("He3nCentralGammas6","He3MM4",he3mmc)
@@ -196,18 +192,17 @@ void Search3He6Gamma(Analysis&res){
 			<< make_shared<Hist1D>("He3nCentralGammas6","GMMPDiff4",ggggggdiff)
 			<< make_shared<Hist1D>("He3nCentralGammas6","GIM4",ggggggimc)
 			<< make_shared<Hist1D>("He3nCentralGammas6","ET4",measured_eta_angle)
-			<< make_shared<SetOfHists1D>("He3nCentralGammas6","TIM4",Q_axis_full(res),he3ggggggimdiff)
+			<< make_shared<Hist1D>("He3nCentralGammas6","TIM4",he3ggggggimdiff)
 
                         <<[ggggggmm](WTrack&T)->bool{return (ggggggmm(T)>2.65)&&(ggggggmm(T)<3.00);}
-			<< make_shared<Hist1D>("He3nCentralGammas6","Events5",Q_axis_full(res))
                         << make_shared<Hist1D>("He3nCentralGammas6","t5",ggggggt)
                         << make_shared<Hist1D>("He3nCentralGammas6","dt5",ggggggdt)
 			<< make_shared<Hist1D>("He3nCentralGammas6","He3MM5",he3mmc)
-			<< make_shared<Hist1D>("He3nCentralGammas6","GMM4",ggggggmm)
+			<< make_shared<Hist1D>("He3nCentralGammas6","GMM5",ggggggmm)
 			<< make_shared<Hist1D>("He3nCentralGammas6","GMMPDiff5",ggggggdiff)
 			<< make_shared<Hist1D>("He3nCentralGammas6","GIM5",ggggggimc)
 			<< make_shared<Hist1D>("He3nCentralGammas6","ET5",measured_eta_angle)
-			<< make_shared<SetOfHists1D>("He3nCentralGammas6","TIM5",Q_axis_full(res),he3ggggggimdiff)
+			<< make_shared<Hist1D>("He3nCentralGammas6","TIM5",he3ggggggimdiff)
 
                         <<[ggggggimc](WTrack&T)->bool{return (ggggggimc(T)>0.45)&&(ggggggimc(T)<0.60);}
                         << make_shared<Hist1D>("He3nCentralGammas6","Events6",Q_axis_full(res))
@@ -219,6 +214,7 @@ void Search3He6Gamma(Analysis&res){
 			<< make_shared<Hist1D>("He3nCentralGammas6","GIM6",ggggggimc)
 			<< make_shared<Hist1D>("He3nCentralGammas6","ET6",measured_eta_angle)
 			<< make_shared<SetOfHists1D>("He3nCentralGammas6","TIM6",Q_axis_full(res),he3ggggggimdiff)
+
 			<< make_shared<Hist2D>("He3nCentralGammas6","He3MME6",he3mmc,he3me)
 	        )
 	    )
@@ -314,7 +310,7 @@ void Search3He2Gamma(Analysis&res){
 							(sina<0.90)&&
 							(dynamic_cast<const MonteCarlo*>(&res)||(
 								(candidate.dt()<20)&&
-								(He3.t-candidate.t()>-5)&&(He3.t-candidate.t()<35)
+								((He3.t-candidate.t())>-5)&&((He3.t-candidate.t())<35)
 							))
 						)
 							pairs<<candidate;
