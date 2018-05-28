@@ -361,7 +361,7 @@ void Search3He2Gamma(Analysis&res){
 				<< make_shared<Hist1D>("He3nCentralGammas2","GIM3",ggimc)
 				<< make_shared<Hist1D>("He3nCentralGammas2","TIM3",he3ggimdiff)
 				<< make_shared<Hist1D>("He3nCentralGammas2","ET3",measured_eta_angle)
-				<<[ggimc](WTrack&T)->bool{return (ggimc(T)>0.40)&&(ggimc(T)<0.70);}
+				<<[ggimc](WTrack&T)->bool{return (ggimc(T)>0.35)&&(ggimc(T)<0.65);}
 				<< make_shared<Hist1D>("He3nCentralGammas2","sina4",gamma_gamma_sina)
 				<< make_shared<Hist1D>("He3nCentralGammas2","Events4",Q_axis_full(res))                                 
 				<< make_shared<Hist1D>("He3nCentralGammas2","t4",ggt)
