@@ -191,7 +191,8 @@ void Search3He6Gamma(Analysis&res){
 			<< make_shared<Hist1D>("He3nCentralGammas6","TIM2",he3ggggggimdiff)
 
 			<<[gamma_gamma_cosi,gamma_gamma_cosj,gamma_gamma_cosk](WTrack&T)->bool{
-				return (gamma_gamma_cosi(T)<0.6)&&(gamma_gamma_cosj(T)<0.6)&&(gamma_gamma_cosi(T)<0.6);
+				const double cut=0.6;
+				return (gamma_gamma_cosi(T)<cut)&&(gamma_gamma_cosj(T)<cut)&&(gamma_gamma_cosk(T)<cut);
 			}
                         << make_shared<Hist1D>("He3nCentralGammas6","cosi3",gamma_gamma_cosi)
                         << make_shared<Hist1D>("He3nCentralGammas6","cosj3",gamma_gamma_cosj)
