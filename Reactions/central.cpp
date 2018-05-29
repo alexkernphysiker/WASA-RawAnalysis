@@ -114,8 +114,22 @@ void Search3He6Gamma(Analysis&res){
         ggggggmm([](){return (Ptotal-six_gamma.L()).M();},0.0,4.0,4000),
         ggggggt([](){return He3.t-six_gamma.t();},-50,100,150),
         ggggggdt([](){return six_gamma.dt();},0,50,50),
-	measured_eta_angle([](){return direction(six_gamma.L().P()).th()*180/PI();},0,180,180);
-
+	measured_eta_angle([](){return direction(six_gamma.L().P()).th()*180/PI();},0,180,180),
+        gamma_gamma_cosi([]()->double{
+              const auto d1=direction(six_gamma.I.A.L.P());
+              const auto d2=direction(six_gamma.I.B.L.P());
+              return ((d1*1.0)*(d2*1.0));
+        },-1.0,1.0,100),
+        gamma_gamma_cosj([]()->double{
+              const auto d1=direction(six_gamma.J.A.L.P());
+              const auto d2=direction(six_gamma.J.B.L.P());
+              return ((d1*1.0)*(d2*1.0));
+        },-1.0,1.0,100),
+        gamma_gamma_cosk([]()->double{
+              const auto d1=direction(six_gamma.K.A.L.P());
+              const auto d2=direction(six_gamma.K.B.L.P());
+              return ((d1*1.0)*(d2*1.0));
+        },-1.0,1.0,100);
 	res.Trigger(tn).post()<<(make_shared<ChainCheck>()
 	    << [](){return isfinite(He3.t);}
 	    << make_shared<Hist1D>("He3nCentralGammas6","Events0",Q_axis_full(res))
@@ -147,13 +161,13 @@ void Search3He6Gamma(Analysis&res){
 							const auto d1=direction(check[r].L.P());
 							const auto d2=direction(check[q].L.P());
 							const auto cosa=(d1*1.0)*(d2*1.0);
-							if(cosa<0.98)passed=false;
+							if(cosa>0.97)passed=false;
 						}
 						if(
 							passed &&
 							(dynamic_cast<const MonteCarlo*>(&res)||(
-                                                                (candidate.dt()<20.)&&
-                                                                ((He3.t-candidate.t())>-5.)&&((He3.t-candidate.t())<35.)
+                                                                (candidate.dt()<30.)&&
+                                                                ((He3.t-candidate.t())>-5.)&&((He3.t-candidate.t())<40.)
                                                         ))
 						)
 							combinations<<candidate;
@@ -164,6 +178,9 @@ void Search3He6Gamma(Analysis&res){
 	                        six_gamma=combinations[0];
 	                        return true;
 	                }
+			<< make_shared<Hist1D>("He3nCentralGammas6","cosi2",gamma_gamma_cosi)
+			<< make_shared<Hist1D>("He3nCentralGammas6","cosj2",gamma_gamma_cosj)
+			<< make_shared<Hist1D>("He3nCentralGammas6","cosk2",gamma_gamma_cosk)
 			<< make_shared<Hist1D>("He3nCentralGammas6","t2",ggggggt)
 			<< make_shared<Hist1D>("He3nCentralGammas6","dt2",ggggggdt)
                         << make_shared<Hist1D>("He3nCentralGammas6","He3MM2",he3mmc)
@@ -173,27 +190,38 @@ void Search3He6Gamma(Analysis&res){
 			<< make_shared<Hist1D>("He3nCentralGammas6","ET2",measured_eta_angle)
 			<< make_shared<Hist1D>("He3nCentralGammas6","TIM2",he3ggggggimdiff)
 
-			<<[measured_eta_angle](WTrack&T)->bool{return measured_eta_angle(T)<40;}
-                        << make_shared<Hist1D>("He3nCentralGammas6","t3",ggggggt)                                                                          
-                        << make_shared<Hist1D>("He3nCentralGammas6","dt3",ggggggdt)                                                                        
-                        << make_shared<Hist1D>("He3nCentralGammas6","He3MM3",he3mmc)                                                                       
-                        << make_shared<Hist1D>("He3nCentralGammas6","GMM3",ggggggmm)                                                                       
-                        << make_shared<Hist1D>("He3nCentralGammas6","GMMPDiff3",ggggggdiff)                                                                
-                        << make_shared<Hist1D>("He3nCentralGammas6","GIM3",ggggggimc)                                                                       
-                        << make_shared<Hist1D>("He3nCentralGammas6","ET3",measured_eta_angle)                                                              
+			<<[gamma_gamma_cosi,gamma_gamma_cosj,gamma_gamma_cosk](WTrack&T)->bool{
+				return (gamma_gamma_cosi(T)<0.6)&&(gamma_gamma_cosj(T)<0.6)&&(gamma_gamma_cosi(T)<0.6);
+			}
+                        << make_shared<Hist1D>("He3nCentralGammas6","cosi3",gamma_gamma_cosi)
+                        << make_shared<Hist1D>("He3nCentralGammas6","cosj3",gamma_gamma_cosj)
+                        << make_shared<Hist1D>("He3nCentralGammas6","cosk3",gamma_gamma_cosk)
+                        << make_shared<Hist1D>("He3nCentralGammas6","t3",ggggggt)
+                        << make_shared<Hist1D>("He3nCentralGammas6","dt3",ggggggdt)
+                        << make_shared<Hist1D>("He3nCentralGammas6","He3MM3",he3mmc)
+                        << make_shared<Hist1D>("He3nCentralGammas6","GMM3",ggggggmm)
+                        << make_shared<Hist1D>("He3nCentralGammas6","GMMPDiff3",ggggggdiff)
+                        << make_shared<Hist1D>("He3nCentralGammas6","GIM3",ggggggimc)
+                        << make_shared<Hist1D>("He3nCentralGammas6","ET3",measured_eta_angle)
                         << make_shared<Hist1D>("He3nCentralGammas6","TIM3",he3ggggggimdiff)
 
-                        <<[ggggggdiff](WTrack&T)->bool{return ggggggdiff(T)<0.12;}
-                        << make_shared<Hist1D>("He3nCentralGammas6","t4",ggggggt)
-                        << make_shared<Hist1D>("He3nCentralGammas6","dt4",ggggggdt)
-			<< make_shared<Hist1D>("He3nCentralGammas6","He3MM4",he3mmc)
-			<< make_shared<Hist1D>("He3nCentralGammas6","GMM4",ggggggmm)
-			<< make_shared<Hist1D>("He3nCentralGammas6","GMMPDiff4",ggggggdiff)
-			<< make_shared<Hist1D>("He3nCentralGammas6","GIM4",ggggggimc)
-			<< make_shared<Hist1D>("He3nCentralGammas6","ET4",measured_eta_angle)
-			<< make_shared<Hist1D>("He3nCentralGammas6","TIM4",he3ggggggimdiff)
+			<<[measured_eta_angle](WTrack&T)->bool{return measured_eta_angle(T)<40;}
+                        << make_shared<Hist1D>("He3nCentralGammas6","cosi4",gamma_gamma_cosi)                                                              
+                        << make_shared<Hist1D>("He3nCentralGammas6","cosj4",gamma_gamma_cosj)                                                              
+                        << make_shared<Hist1D>("He3nCentralGammas6","cosk4",gamma_gamma_cosk)
+                        << make_shared<Hist1D>("He3nCentralGammas6","t4",ggggggt)                                                                          
+                        << make_shared<Hist1D>("He3nCentralGammas6","dt4",ggggggdt)                                                                        
+                        << make_shared<Hist1D>("He3nCentralGammas6","He3MM4",he3mmc)                                                                       
+                        << make_shared<Hist1D>("He3nCentralGammas6","GMM4",ggggggmm)                                                                       
+                        << make_shared<Hist1D>("He3nCentralGammas6","GMMPDiff4",ggggggdiff)                                                                
+                        << make_shared<Hist1D>("He3nCentralGammas6","GIM4",ggggggimc)                                                                       
+                        << make_shared<Hist1D>("He3nCentralGammas6","ET4",measured_eta_angle)                                                              
+                        << make_shared<Hist1D>("He3nCentralGammas6","TIM4",he3ggggggimdiff)
 
-                        <<[ggggggmm](WTrack&T)->bool{return (ggggggmm(T)>2.65)&&(ggggggmm(T)<3.00);}
+                        <<[ggggggdiff](WTrack&T)->bool{return ggggggdiff(T)<0.12;}
+                        << make_shared<Hist1D>("He3nCentralGammas6","cosi5",gamma_gamma_cosi)                                                              
+                        << make_shared<Hist1D>("He3nCentralGammas6","cosj5",gamma_gamma_cosj)                                                              
+                        << make_shared<Hist1D>("He3nCentralGammas6","cosk5",gamma_gamma_cosk)
                         << make_shared<Hist1D>("He3nCentralGammas6","t5",ggggggt)
                         << make_shared<Hist1D>("He3nCentralGammas6","dt5",ggggggdt)
 			<< make_shared<Hist1D>("He3nCentralGammas6","He3MM5",he3mmc)
@@ -203,8 +231,10 @@ void Search3He6Gamma(Analysis&res){
 			<< make_shared<Hist1D>("He3nCentralGammas6","ET5",measured_eta_angle)
 			<< make_shared<Hist1D>("He3nCentralGammas6","TIM5",he3ggggggimdiff)
 
-                        <<[ggggggimc](WTrack&T)->bool{return (ggggggimc(T)>0.35)&&(ggggggimc(T)<0.65);}
-                        << make_shared<Hist1D>("He3nCentralGammas6","Events6",Q_axis_full(res))
+                        <<[ggggggmm](WTrack&T)->bool{return (ggggggmm(T)>2.65)&&(ggggggmm(T)<3.00);}
+                        << make_shared<Hist1D>("He3nCentralGammas6","cosi6",gamma_gamma_cosi)                                                              
+                        << make_shared<Hist1D>("He3nCentralGammas6","cosj6",gamma_gamma_cosj)                                                              
+                        << make_shared<Hist1D>("He3nCentralGammas6","cosk6",gamma_gamma_cosk)
                         << make_shared<Hist1D>("He3nCentralGammas6","t6",ggggggt)
                         << make_shared<Hist1D>("He3nCentralGammas6","dt6",ggggggdt)
 			<< make_shared<Hist1D>("He3nCentralGammas6","He3MM6",he3mmc)
@@ -212,9 +242,23 @@ void Search3He6Gamma(Analysis&res){
 			<< make_shared<Hist1D>("He3nCentralGammas6","GMMPDiff6",ggggggdiff)
 			<< make_shared<Hist1D>("He3nCentralGammas6","GIM6",ggggggimc)
 			<< make_shared<Hist1D>("He3nCentralGammas6","ET6",measured_eta_angle)
-			<< make_shared<SetOfHists1D>("He3nCentralGammas6","TIM6",Q_axis_full(res),he3ggggggimdiff)
+			<< make_shared<Hist1D>("He3nCentralGammas6","TIM6",he3ggggggimdiff)
 
-			<< make_shared<Hist2D>("He3nCentralGammas6","He3MME6",he3mmc,he3me)
+                        <<[ggggggimc](WTrack&T)->bool{return (ggggggimc(T)>0.35)&&(ggggggimc(T)<0.65);}
+                        << make_shared<Hist1D>("He3nCentralGammas6","cosi7",gamma_gamma_cosi)                                                              
+                        << make_shared<Hist1D>("He3nCentralGammas6","cosj7",gamma_gamma_cosj)                                                              
+                        << make_shared<Hist1D>("He3nCentralGammas6","cosk7",gamma_gamma_cosk)
+                        << make_shared<Hist1D>("He3nCentralGammas6","Events7",Q_axis_full(res))
+                        << make_shared<Hist1D>("He3nCentralGammas6","t7",ggggggt)
+                        << make_shared<Hist1D>("He3nCentralGammas6","dt7",ggggggdt)
+			<< make_shared<Hist1D>("He3nCentralGammas6","He3MM7",he3mmc)
+			<< make_shared<Hist1D>("He3nCentralGammas6","GMM7",ggggggmm)
+			<< make_shared<Hist1D>("He3nCentralGammas6","GMMPDiff7",ggggggdiff)
+			<< make_shared<Hist1D>("He3nCentralGammas6","GIM7",ggggggimc)
+			<< make_shared<Hist1D>("He3nCentralGammas6","ET7",measured_eta_angle)
+			<< make_shared<SetOfHists1D>("He3nCentralGammas6","TIM7",Q_axis_full(res),he3ggggggimdiff)
+
+			<< make_shared<Hist2D>("He3nCentralGammas6","He3MME7",he3mmc,he3me)
 	        )
 	    )
 	);
@@ -274,7 +318,7 @@ void Search3He2Gamma(Analysis&res){
               const auto d1=direction(two_gamma.A.L.P());
               const auto d2=direction(two_gamma.B.L.P());
               return ((d1*1.0)*(d2*1.0));
-        },-1.0,1.0,200);
+        },-1.0,1.0,100);
 
 	res.Trigger(tn).post()<<(make_shared<ChainCheck>()
 	    << [](){return isfinite(He3.t);}
@@ -299,10 +343,10 @@ void Search3He2Gamma(Analysis&res){
 						const auto d2=direction(candidate.B.L.P());
 						const auto cosa=((d1*1.0)*(d2*1.0));
 						if(
-							(cosa>0.98)&&
+							(cosa<-0.4)&&
 							(dynamic_cast<const MonteCarlo*>(&res)||(
 								(candidate.dt()<20.)&&
-								((He3.t-candidate.t())>-5.)&&((He3.t-candidate.t())<35.)
+								((He3.t-candidate.t())>-5.)&&((He3.t-candidate.t())<40.)
 							))
 						)
 							pairs<<candidate;
