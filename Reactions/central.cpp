@@ -25,12 +25,13 @@ struct track_info{LorentzVector<>L;double t;};
 struct eta_decay_gg{
 	track_info A;
 	track_info B;
+	double expected;
 	inline eta_decay_gg&operator=(const eta_decay_gg&src){A=src.A;B=src.B;return *this;}
 	inline const double dt()const{return abs(A.t-B.t);}
 	inline const double t()const{return (A.t<B.t)?A.t:B.t;}
 	inline const LorentzVector<> L()const{return A.L+B.L;}
 	inline const double IM()const{return L().M();}
-	inline const double diff()const{return abs(IM()-Particle::eta().mass());}
+	inline const double diff()const{return abs(IM()-expected);}
 	inline const bool operator<(const eta_decay_gg&other)const{return diff()<other.diff();}
 	inline const bool operator>(const eta_decay_gg&other)const{return diff()>other.diff();}
 };
@@ -106,11 +107,11 @@ void Search3He6Gamma(Analysis&res){
 	);
 	static eta_decay_ppp six_gamma{.I={.A=He3,.B=He3},.J={.A=He3,.B=He3},.K={.A=He3,.B=He3}};
 	Axis 
-	he3mmc([](){return (Ptotal-He3.L).M()-Ptotal.M()+He3.L.M()+Particle::eta().mass();},0.4,0.6,200),
+	he3mmc([](){return (Ptotal-He3.L).M()-Ptotal.M()+Particle::he3().mass()+Particle::eta().mass();},0.4,0.6,200),
 	he3me([](){return (Ptotal.E()-He3.L.E());},0.0,4.0,4000),
 	ggggggdiff([]()->double{return six_gamma.diff();},0.0,0.2,200),
         he3ggggggimdiff([](){return (He3.L+six_gamma.L()).M()-Ptotal.M();},-0.5,0.5,500),
-	ggggggimc([](){return six_gamma.IM()-Ptotal.M()+He3.L.M()+Particle::eta().mass();},0.0,1.0,1000),
+	ggggggimc([](){return six_gamma.IM()-Ptotal.M()+Particle::he3().mass()+Particle::eta().mass();},0.0,1.0,1000),
         ggggggmm([](){return (Ptotal-six_gamma.L()).M();},0.0,4.0,4000),
         ggggggt([](){return He3.t-six_gamma.t();},-50,100,150),
         ggggggdt([](){return six_gamma.dt();},0,50,50),
@@ -139,7 +140,7 @@ void Search3He6Gamma(Analysis&res){
 	    << make_shared<Hist1D>("He3nCentralGammas6","He3MM1",he3mmc)
 	    << make_shared<Hist1D>("He3nCentralGammas6","GammaCount",Axis([]()->double{return gammas.size();},-0.5,9.5,10))
 
-	    <<(make_shared<ChainOr>()
+	    <<(make_shared<ChainOr>()		
 	        << ( make_shared<ChainCheck>()
 			<<[]()->bool{return gammas.size()>=6;}
 	                <<[&res]()->bool{
@@ -219,7 +220,7 @@ void Search3He6Gamma(Analysis&res){
                         << make_shared<Hist1D>("He3nCentralGammas6","ET4",measured_eta_angle)                                                              
                         << make_shared<Hist1D>("He3nCentralGammas6","TIM4",he3ggggggimdiff)
 
-                        <<[ggggggdiff](WTrack&T)->bool{return ggggggdiff(T)<0.12;}
+                        <<[ggggggdiff](WTrack&T)->bool{return ggggggdiff(T)<0.06;}
                         << make_shared<Hist1D>("He3nCentralGammas6","cosi5",gamma_gamma_cosi)                                                              
                         << make_shared<Hist1D>("He3nCentralGammas6","cosj5",gamma_gamma_cosj)                                                              
                         << make_shared<Hist1D>("He3nCentralGammas6","cosk5",gamma_gamma_cosk)
@@ -305,12 +306,12 @@ void Search3He2Gamma(Analysis&res){
 	static eta_decay_gg two_gamma{.A=He3,.B=He3};
 	static eta_decay_ppp six_gamma{.I={.A=He3,.B=He3},.J={.A=He3,.B=He3},.K={.A=He3,.B=He3}};
 	Axis 
-	he3mmc([](){return (Ptotal-He3.L).M()-Ptotal.M()+He3.L.M()+Particle::eta().mass();},0.4,0.6,200),
+	he3mmc([](){return (Ptotal-He3.L).M()-Ptotal.M()+Particle::he3().mass()+Particle::eta().mass();},0.4,0.6,200),
 	he3mm([](){return (Ptotal-He3.L).M();},0.4,0.6,200),
 	he3me([](){return (Ptotal.E()-He3.L.E());},0.0,8.0,8000),
 	he3ggimdiff([](){return (He3.L+two_gamma.L()).M()-Ptotal.M();},-0.5,0.5,500),
 	ggim([](){return two_gamma.IM();},0.0,1.0,1000),
-	ggimc([](){return two_gamma.IM()-Ptotal.M()+He3.L.M()+Particle::eta().mass();},0.0,1.0,1000),
+	ggimc([](){return two_gamma.IM()-Ptotal.M()+Particle::he3().mass()+Particle::eta().mass();},0.0,1.0,1000),
 	ggmm([](){return (Ptotal-two_gamma.L()).M();},0.0,4.0,4000),
         ggt([](){return He3.t-two_gamma.t();},-50,100,150),
 	ggdt([](){return two_gamma.dt();},0,50,50),
@@ -327,7 +328,56 @@ void Search3He2Gamma(Analysis&res){
 	    << make_shared<Hist1D>("He3nCentralGammas2","He3MM0",he3mmc)
 	    << make_shared<Hist1D>("He3nCentralGammas2","old_He3MM0",he3mm)
 	    <<(make_shared<ChainOr>()
-
+                << ( make_shared<ChainCheck>()                                                                                                             
+                    <<[he3mmc](WTrack&T){return (he3mmc(T)>0.51);}
+                    <<(make_shared<ChainOr>()
+                        << ( make_shared<ChainCheck>()
+                                << []()->bool{return gammas.size()>=2;}
+				<< (make_shared<ChainOr>()
+				    <<(make_shared<ChainCheck>()
+	                                << [&res]()->bool{
+                                               SortedChain<eta_decay_gg> pairs;
+                                 	       for(size_t i=0;i<gammas.size();i++)for(size_t j=i+1;j<gammas.size();j++){
+	                                                const auto candidate=eta_decay_gg{
+								.A=gammas[i],.B=gammas[j],
+								.expected=Ptotal.M()-Particle::he3().mass()
+							};
+                                                	if((dynamic_cast<const MonteCarlo*>(&res)||(
+                                        	           (candidate.dt()<30.)&&
+                                	                   ((He3.t-candidate.t())>-5.)&&((He3.t-candidate.t())<40.)
+                        	                        )))
+                	                                        pairs<<candidate;
+        	                                }
+	                                        if(pairs.size()==0)return false;
+                                        	two_gamma=pairs[0];
+                                	        return true;
+                        	        }
+                	                << make_shared<Hist1D>("He3nCentralGammas2","GGcos0",gamma_gamma_cosa)
+        	                        << make_shared<Hist1D>("He3nCentralGammas2","t0",ggt)
+	                                << make_shared<Hist1D>("He3nCentralGammas2","dt0",ggdt)
+				    )
+                                    <<(make_shared<ChainCheck>()
+                                        << [&res]()->bool{
+                                               SortedChain<eta_decay_gg> pairs;
+                                               for(size_t i=0;i<gammas.size();i++)for(size_t j=i+1;j<gammas.size();j++){
+                                                    const auto candidate=eta_decay_gg{
+							.A=gammas[i],.B=gammas[j],
+							.expected=Ptotal.M()-Particle::he3().mass()
+						    };
+                                                    pairs<<candidate;
+                                               }
+                                               if(pairs.size()==0)return false;
+                                               two_gamma=pairs[0];
+                                               return true;
+                                        }                                                                                                                  
+                                        << make_shared<Hist1D>("He3nCentralGammas2","GGcos00",gamma_gamma_cosa)
+                                        << make_shared<Hist1D>("He3nCentralGammas2","t00",ggt)
+                                        << make_shared<Hist1D>("He3nCentralGammas2","dt00",ggdt)
+                                    )                                                                                                                 
+			      )
+			)
+		    )
+		)
 		<< ( make_shared<ChainCheck>()
 		    <<[he3mmc](WTrack&T){return (he3mmc(T)>0.51);}
 		    << make_shared<Hist1D>("He3nCentralGammas2","Events1",Q_axis_full(res))
@@ -339,12 +389,15 @@ void Search3He2Gamma(Analysis&res){
 				<< [&res]()->bool{
 					SortedChain<eta_decay_gg> pairs;
 					for(size_t i=0;i<gammas.size();i++)for(size_t j=i+1;j<gammas.size();j++){
-						const auto candidate=eta_decay_gg{.A=gammas[i],.B=gammas[j]};
+						const auto candidate=eta_decay_gg{
+							.A=gammas[i],.B=gammas[j],
+							.expected=Ptotal.M()-Particle::he3().mass()
+						};
 						const auto d1=direction(candidate.A.L.P());
 						const auto d2=direction(candidate.B.L.P());
 						const auto cosa=((d1*1.0)*(d2*1.0));
 						if(
-							(cosa<-0.4)&&
+							(cosa<-0.35)&&
 							(dynamic_cast<const MonteCarlo*>(&res)||(
 								(candidate.dt()<20.)&&
 								((He3.t-candidate.t())>-5.)&&((He3.t-candidate.t())<40.)
@@ -366,7 +419,7 @@ void Search3He2Gamma(Analysis&res){
 				<< make_shared<Hist1D>("He3nCentralGammas2","TIM2",he3ggimdiff)
 				<< make_shared<Hist1D>("He3nCentralGammas2","ET2",measured_eta_angle)
 
-				<<[gamma_gamma_cosa](WTrack&T)->bool{return gamma_gamma_cosa(T)<-0.4;}
+				<<[gamma_gamma_cosa](WTrack&T)->bool{return gamma_gamma_cosa(T)<0;}//moved to pair selection
 				<< make_shared<Hist1D>("He3nCentralGammas2","GGcos3",gamma_gamma_cosa)
                                 << make_shared<Hist1D>("He3nCentralGammas2","t3",ggt)                                                                      
                                 << make_shared<Hist1D>("He3nCentralGammas2","dt3",ggdt)                                                                    
