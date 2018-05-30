@@ -108,7 +108,7 @@ void Search3He6Gamma(Analysis&res){
 	static eta_decay_ppp six_gamma{.I={.A=He3,.B=He3},.J={.A=He3,.B=He3},.K={.A=He3,.B=He3}};
 	Axis 
 	he3mmc([](){return (Ptotal-He3.L).M()-Ptotal.M()+Particle::he3().mass()+Particle::eta().mass();},0.4,0.6,200),
-	he3me([](){return (Ptotal.E()-He3.L.E());},0.0,4.0,4000),
+	he3me([](){return (Ptotal.E()-He3.L.E());},0.0,1.0,1000),
 	ggggggdiff([]()->double{return six_gamma.diff();},0.0,0.2,200),
         he3ggggggimdiff([](){return (He3.L+six_gamma.L()).M()-Ptotal.M();},-0.5,0.5,500),
 	ggggggimc([](){return six_gamma.IM()-Ptotal.M()+Particle::he3().mass()+Particle::eta().mass();},0.0,1.0,1000),
@@ -259,8 +259,7 @@ void Search3He6Gamma(Analysis&res){
 			<< make_shared<Hist1D>("He3nCentralGammas6","GIM7",ggggggimc)
 			<< make_shared<Hist1D>("He3nCentralGammas6","ET7",measured_eta_angle)
 			<< make_shared<SetOfHists1D>("He3nCentralGammas6","TIM7",Q_axis_full(res),he3ggggggimdiff)
-
-			<< make_shared<Hist2D>("He3nCentralGammas6","He3MME7",he3mmc,he3me)
+			<< make_shared<SetOfHists1D>("He3nCentralGammas6","He3ME7",Q_axis_full(res),he3me)
 	        )
 	    )
 	);
@@ -308,7 +307,7 @@ void Search3He2Gamma(Analysis&res){
 	Axis 
 	he3mmc([](){return (Ptotal-He3.L).M()-Ptotal.M()+Particle::he3().mass()+Particle::eta().mass();},0.4,0.6,200),
 	he3mm([](){return (Ptotal-He3.L).M();},0.4,0.6,200),
-	he3me([](){return (Ptotal.E()-He3.L.E());},0.0,8.0,8000),
+	he3me([](){return (Ptotal.E()-He3.L.E());},0.0,1.0,1000),
 	he3ggimdiff([](){return (He3.L+two_gamma.L()).M()-Ptotal.M();},-0.5,0.5,500),
 	ggim([](){return two_gamma.IM();},0.0,1.0,1000),
 	ggimc([](){return two_gamma.IM()-Ptotal.M()+Particle::he3().mass()+Particle::eta().mass();},0.0,1.0,1000),
@@ -459,7 +458,7 @@ void Search3He2Gamma(Analysis&res){
 				<< make_shared<Hist1D>("He3nCentralGammas2","GIM6",ggimc)
 				<< make_shared<SetOfHists1D>("He3nCentralGammas2","TIM6",Q_axis_full(res),he3ggimdiff)
 				<< make_shared<Hist1D>("He3nCentralGammas2","ET6",measured_eta_angle)
-				<< make_shared<Hist2D>("He3nCentralGammas2","He3MME6",he3mmc,he3me)
+				<< make_shared<SetOfHists1D>("He3nCentralGammas2","He3ME6",Q_axis_full(res),he3me)
 			)
 		    )
 		)
