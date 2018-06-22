@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.3)
+
 add_definitions(-std=c++11 -pthread)
 set(CMAKE_CPP_FLAGS "-DNoMySQL -DNoXerces -Wno-deprecated-declarations -m64 -DNoQT")
 set(CMAKE_CXX_FLAGS "-g -O2 -fPIC -fno-strict-aliasing -Wall -fno-strict-aliasing")
@@ -73,29 +75,15 @@ if(NOT $ENV{ROOTSORTERSYS} STREQUAL "")
     )
 
 
-    file(GLOB PRESELECTION_LIB WASA-RootSorterWrap/*.cpp)
+    file(GLOB SORTERWRAP WASA-RootSorterWrap/*.cpp)
     root_generate_dictionary(mainDict
 	WASA-RootSorterWrap/analysismodule.hh
 	LINKDEF WASA-RootSorterWrap/LinkDef.hh 
     )
-    add_library(sorterwrap SHARED ${PRESELECTION_LIB} mainDict)
-    target_link_libraries(sorterwrap
-	${WASA_LIBRARIES} ${ROOT_LIBRARIES}
-	FitGen experiment kinematics reconstructionfit
-    )
     file(GLOB RECONSTRUCTION Reconstruction/*.cpp)
-    add_library(reconstruction SHARED ${RECONSTRUCTION})
-    target_link_libraries(reconstruction 
-	sorterwrap ${WASA_LIBRARIES} ${ROOT_LIBRARIES}
-    )
     file(GLOB REACTIONS Reactions/*.cpp)
-    add_library(reactions SHARED ${REACTIONS})
-    target_link_libraries(reactions reconstruction
-	sorterwrap ${WASA_LIBRARIES} ${ROOT_LIBRARIES}
-    )
-    add_executable(rawanalysis rawanalysis.cpp)
+    add_executable(rawanalysis rawanalysis.cpp ${RECONSTRUCTION} ${REACTIONS} ${SORTERWRAP} mainDict)
     target_link_libraries(rawanalysis 
-	sorterwrap reactions reconstruction
 	${WASA_LIBRARIES} ${ROOT_LIBRARIES}
 	FitGen experiment kinematics reconstructionfit
     )
