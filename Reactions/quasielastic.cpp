@@ -6,6 +6,7 @@
 #include <math_h/tabledata.h>
 #include <ReconstructionFit/reconstruction_types.h>
 #include <Experiment/experiment_conv.h>
+#include <Parameters/parameters.h>
 #include <Kinematics/reactions.h>
 #include <trackprocessing.h>
 #include <detectors.h>
@@ -108,7 +109,7 @@ void qe_central_analysis(Analysis&res){
 		<<make_shared<Hist2D>("quasielastic","e_vs_e_0",ed_axis.first,ed_axis.second)
 		<<make_shared<Hist1D>("quasielastic","pp_mm_0",mm_axis)
 
-		<<[](WTrack&T){return (ct_axis.first(T)<35.)&&(ct_axis.second(T)>42.);}
+		<<[](WTrack&T){return (ct_axis.first(T)<getParameter(ppn_th1))&&(ct_axis.second(T)>getParameter(ppn_th2));}
 		<<make_shared<SetOfHists1D>("quasielastic","pair_phi_diff_1",Q_axis(res),coplanarity)
 		<<make_shared<SetOfHists1D>("quasielastic","pair_time_diff_1",Q_axis(res),time_axis)
 		<<make_shared<Hist2D>("quasielastic","t_vs_e_1",ct_axis.first,ed_axis.first)
@@ -126,7 +127,7 @@ void qe_central_analysis(Analysis&res){
  
 		<<[&res](WTrack&T){
 			if(dynamic_cast<const MonteCarlo*>(&res))return true;
-			return (time_axis(T)>-18.)&&(time_axis(T)<-9.);
+			return (time_axis(T)>getParameter(ppn_t1))&&(time_axis(T)<getParameter(ppn_t2));
 		}
 		<<make_shared<SetOfHists1D>("quasielastic","pair_phi_diff_3",Q_axis(res),coplanarity)
 		<<make_shared<SetOfHists1D>("quasielastic","pair_time_diff_3",Q_axis(res),time_axis)

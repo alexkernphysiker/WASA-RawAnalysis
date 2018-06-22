@@ -8,6 +8,7 @@
 #include <ReconstructionFit/reconstruction_types.h>
 #include <Experiment/experiment_conv.h>
 #include <Kinematics/reactions.h>
+#include <Parameters/parameters.h>
 #include <trackprocessing.h>
 #include <detectors.h>
 #include <reconstruction.h>
@@ -66,31 +67,10 @@ shared_ptr<AbstractChain> ForwardHe3Reconstruction(const string&prefix,const Ana
         <<Forward::Get().CreateMarker(dir_r_name,"3-StopInFRH1")
 	<<make_shared<Hist1D>(dir_r_name,"3-StopInFRH1",Q_axis_over)
         <<[](WTrack&T){
-            static TCutG *cut=nullptr;
-            if(cut==nullptr){
-                cut=new TCutG("He3_cut",16);
-                cut->SetVarX("FRH1");
-                cut->SetVarY("FTH1");
-                cut->SetPoint(16,0.018,0.025);
-    	        cut->SetPoint(15,0.019,0.030);
-                cut->SetPoint(14,0.069,0.021);
-                cut->SetPoint(13,0.121,0.018);
-                cut->SetPoint(12,0.162,0.016);
-                cut->SetPoint(11,0.206,0.015);
-                cut->SetPoint(10,0.304,0.014);
-                cut->SetPoint(9,0.35,0.014);
-                cut->SetPoint(8,0.35,0.006);
-                cut->SetPoint(7,0.298,0.006);
-                cut->SetPoint(6,0.201,0.007);
-                cut->SetPoint(5,0.141,0.009);
-                cut->SetPoint(4,0.105,0.010);
-                cut->SetPoint(3,0.061,0.012);
-                cut->SetPoint(2,0.019,0.014);
-                cut->SetPoint(1,0.018,0.025);
-            }
-            double x=Forward::Get()[kFRH1].Edep(T);
-            double y=Forward::Get()[kFTH1].Edep(T);
-            return cut->IsInside(x,y);
+            const double x=Forward::Get()[kFRH1].Edep(T);
+            const double y=Forward::Get()[kFTH1].Edep(T);
+	    const double h=getParameter(he3_cut_h);
+	    return (y>(h+((0.1-x)*0.05)))&&(y>(h-((x-0.1)*0.02)));
         }
         <<make_shared<SetOfHists1D>(dir_dbg_name,"4-PhiDistribution",Q_axis_over,Phi_deg)
         <<Forward::Get().CreateMarker(dir_r_name,"4-GeomCut")

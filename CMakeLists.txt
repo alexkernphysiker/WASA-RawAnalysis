@@ -85,6 +85,6 @@ if(NOT $ENV{ROOTSORTERSYS} STREQUAL "")
     add_executable(rawanalysis rawanalysis.cpp ${RECONSTRUCTION} ${REACTIONS} ${SORTERWRAP} mainDict)
     target_link_libraries(rawanalysis 
 	${WASA_LIBRARIES} ${ROOT_LIBRARIES}
-	FitGen experiment kinematics reconstructionfit
+	FitGen experiment kinematics reconstructionfit parameters
     )
 endif()
