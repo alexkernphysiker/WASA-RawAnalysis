@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 3.3)
-
 add_definitions(-std=c++11 -pthread)
 set(CMAKE_CPP_FLAGS "-DNoMySQL -DNoXerces -Wno-deprecated-declarations -m64 -DNoQT")
 set(CMAKE_CXX_FLAGS "-g -O2 -fPIC -fno-strict-aliasing -Wall -fno-strict-aliasing")
@@ -26,9 +24,7 @@ file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/.sorterrc DESTINATION ${CMAKE_CURRENT_BINA
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/distributions DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/WASA-RootSorterWrap)
-if(COMMAND cmake_policy)
-    cmake_policy(SET CMP0003 NEW)
-endif(COMMAND cmake_policy)
+
 if(NOT $ENV{PLUTOSYS} STREQUAL "")
     link_directories($ENV{PLUTOSYS})
     include_directories(
@@ -60,6 +56,7 @@ if(NOT $ENV{PLUTOSYS} STREQUAL "")
     endforeach()
     file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/Simulation-advanced/pp DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 endif()
+
 if(NOT $ENV{ROOTSORTERSYS} STREQUAL "")
     include_directories($ENV{ROOTSORTERSYS}/core/include)
     link_directories($ENV{ROOTSORTERSYS}/core/lib)
@@ -75,15 +72,29 @@ if(NOT $ENV{ROOTSORTERSYS} STREQUAL "")
     )
 
 
-    file(GLOB SORTERWRAP WASA-RootSorterWrap/*.cpp)
+    file(GLOB PRESELECTION_LIB WASA-RootSorterWrap/*.cpp)
     root_generate_dictionary(mainDict
 	WASA-RootSorterWrap/analysismodule.hh
 	LINKDEF WASA-RootSorterWrap/LinkDef.hh 
     )
+    add_library(sorterwrap SHARED ${PRESELECTION_LIB} mainDict)
+    target_link_libraries(sorterwrap
+	${WASA_LIBRARIES} ${ROOT_LIBRARIES}
+	FitGen experiment kinematics reconstructionfit parameters
+    )
     file(GLOB RECONSTRUCTION Reconstruction/*.cpp)
+    add_library(reconstruction SHARED ${RECONSTRUCTION})
+    target_link_libraries(reconstruction 
+	sorterwrap ${WASA_LIBRARIES} ${ROOT_LIBRARIES}
+    )
     file(GLOB REACTIONS Reactions/*.cpp)
-    add_executable(rawanalysis rawanalysis.cpp ${RECONSTRUCTION} ${REACTIONS} ${SORTERWRAP} mainDict)
+    add_library(reactions SHARED ${REACTIONS})
+    target_link_libraries(reactions reconstruction
+	sorterwrap ${WASA_LIBRARIES} ${ROOT_LIBRARIES}
+    )
+    add_executable(rawanalysis rawanalysis.cpp)
     target_link_libraries(rawanalysis 
+	sorterwrap reactions reconstruction
 	${WASA_LIBRARIES} ${ROOT_LIBRARIES}
 	FitGen experiment kinematics reconstructionfit parameters
     )

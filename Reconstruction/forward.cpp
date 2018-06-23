@@ -86,7 +86,7 @@ shared_ptr<AbstractChain> ForwardHe3Reconstruction(const string&prefix,const Ana
             );
             kin_rec.E=energy(track);
             double phi=track.Phi();
-	    if(false){//dynamic_cast<const RealData*>(&res)){
+	    if(dynamic_cast<const RealData*>(&data)){
 		const double e=kin_rec.E,m=Particle::he3().mass(),p=sqrt(pow(m+e,2)-pow(m,2));
                 phi+=data.FinderFD().GetPhiCorrection(p,phi,2,10.); //MF (kG),                                                      
 	    }
