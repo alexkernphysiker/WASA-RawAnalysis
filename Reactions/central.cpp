@@ -158,15 +158,15 @@ void Search3He6Gamma(Analysis&res){
 							gammas[i],gammas[j],gammas[k],
 							gammas[l],gammas[o],gammas[p]
 						};
-						bool passed=true;
-						for(size_t r=0;(r<check.size())&&passed;r++)for(size_t q=r+1;(q<check.size())&&passed;q++){
-							const auto d1=direction(check[r].L.P());
-							const auto d2=direction(check[q].L.P());
-							const auto cosa=(d1*1.0)*(d2*1.0);
-							if(cosa>0.98)passed=false;
-						}
+						//bool passed=true;
+						//for(size_t r=0;(r<check.size())&&passed;r++)for(size_t q=r+1;(q<check.size())&&passed;q++){
+						//	const auto d1=direction(check[r].L.P());
+						//	const auto d2=direction(check[q].L.P());
+						//	const auto cosa=(d1*1.0)*(d2*1.0);
+						//	if(cosa>0.99)passed=false;
+						//}
 						if(
-							passed &&
+						//	passed &&
 							(dynamic_cast<const MonteCarlo*>(&res)||(
                                                                 (candidate.dt()<getParameter(time_dt))&&
                                                                 ((He3.t-candidate.t())>getParameter(time_t1))&&((He3.t-candidate.t())<getParameter(time_t2))
