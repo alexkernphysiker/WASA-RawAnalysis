@@ -247,7 +247,7 @@ void Search3He6Gamma(Analysis&res){
 			<< make_shared<Hist1D>("He3nCentralGammas6","ET6",measured_eta_angle)
 			<< make_shared<Hist1D>("He3nCentralGammas6","TIM6",he3ggggggimdiff)
 
-                        <<[ggggggimc](WTrack&T)->bool{return (ggggggimc(T)>getParameter(gamma_im_lo))&&(ggggggimc(T)<getParameter(gamma_im_hi));}
+                        <<[ggggggimc](WTrack&T)->bool{return (ggggggimc(T)>getParameter(gamma_im_lo6))&&(ggggggimc(T)<getParameter(gamma_im_hi));}
                         << make_shared<Hist1D>("He3nCentralGammas6","cosi7",gamma_gamma_cosi)                                                              
                         << make_shared<Hist1D>("He3nCentralGammas6","cosj7",gamma_gamma_cosj)                                                              
                         << make_shared<Hist1D>("He3nCentralGammas6","cosk7",gamma_gamma_cosk)
