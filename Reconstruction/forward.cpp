@@ -55,6 +55,7 @@ shared_ptr<AbstractChain> ForwardHe3Reconstruction(const string&prefix,const Ana
         <<make_shared<SetOfHists1D>(dir_dbg_name,"1-PhiDistribution",Q_axis_over,Phi_deg)
         <<make_shared<Hist1D>(dir_r_name,"1-PhiIsFinite",Q_axis_over)
 	<<[](WTrack&T){return (T.Theta()!=0.125);}
+	<<[](WTrack&T){return (T.Theta()>(PI()*(4.5/180.0)));}//because events amount with theta<4 deg is not in agreement with MC
         <<[&kin_rec](WTrack&T){
 	    kin_rec.theta=T.Theta();
 	    return true;
@@ -90,7 +91,7 @@ shared_ptr<AbstractChain> ForwardHe3Reconstruction(const string&prefix,const Ana
 		const double e=kin_rec.E,m=Particle::he3().mass(),p=sqrt(pow(m+e,2)-pow(m,2));
                 phi+=data.FinderFD().GetPhiCorrection(p,phi,2,10.); //MF (kG),                                                      
 	    }
-            kin_rec.phi=phi;                                                                                       
+            kin_rec.phi=phi;
 	    return true;
         }
         <<make_shared<SetOfHists1D>(dir_dbg_name,"5-PhiDistribution",Q_axis_over,Phi_deg)
