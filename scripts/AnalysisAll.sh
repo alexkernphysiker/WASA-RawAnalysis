@@ -28,7 +28,7 @@ for X in `seq 1 1 10`; do
         fi
     fi
 done
-
+done
 for X in `seq 45934 1 46884`; do
 	echo "run #${X}..."
 	output="${WASA_OUTPUT_DATA}/DataAll${X}$1"
