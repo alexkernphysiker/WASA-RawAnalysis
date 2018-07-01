@@ -10,7 +10,7 @@ for X in `seq 1 1 1`; do
 	    scriptname="re$1$X.sh"
 	    rm -f ${scriptname}
 	    echo "#!/bin/bash" >> ${scriptname}
-	    echo "./rawanalysis RE$1 -local -mode mc -fin file:${input} -n ${output} -abort" >> ${scriptname}
+	    echo "./rawanalysis RE$1 _ -local -mode mc -fin file:${input} -n ${output} -abort" >> ${scriptname}
 	    echo >> ${scriptname}
 	    echo "rm -f $PWD/${scriptname}" >> ${scriptname}
 	    chmod u+x ${scriptname}

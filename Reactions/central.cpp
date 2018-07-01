@@ -154,10 +154,6 @@ void Search3He6Gamma(Analysis&res){
 							.J={.A=gammas[k],.B=gammas[l]},
 							.K={.A=gammas[o],.B=gammas[p]}
 						};
-						vector<track_info> check{
-							gammas[i],gammas[j],gammas[k],
-							gammas[l],gammas[o],gammas[p]
-						};
 						if(
 							(dynamic_cast<const MonteCarlo*>(&res)||(
                                                                 (candidate.dt()<getParameter(time_dt))&&
@@ -389,7 +385,7 @@ void Search3He2Gamma(Analysis&res){
 						const auto d2=direction(candidate.B.L.P());
 						const auto cosa=((d1*1.0)*(d2*1.0));
 						if(
-							(cosa<getParameter(gg_theta_cut))&&
+							(cosa<0.0)&&
 							(dynamic_cast<const MonteCarlo*>(&res)||(
 								(candidate.dt()<getParameter(time_dt))&&
 								((He3.t-candidate.t())>getParameter(time_t1))&&((He3.t-candidate.t())<getParameter(time_t2))

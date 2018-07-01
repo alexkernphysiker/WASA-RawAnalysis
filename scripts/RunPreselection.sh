@@ -27,7 +27,7 @@ for X in `seq 45934 1 46884`; do
 			else
 				echo "... DATA PRESELECTION ..."
 				echo "#!/bin/bash" >> ${scriptname}
-				echo "${RUNCAT}|./rawanalysis PRESELECTION -local -fin cluster: -r ${X} -n ${output} -abort" >> ${scriptname}
+				echo "${RUNCAT}|./rawanalysis PRESELECTION _ -local -fin cluster: -r ${X} -n ${output} -abort" >> ${scriptname}
 				echo "rm -f $PWD/${scriptname}" >> ${scriptname}
 				chmod u+x ${scriptname}
 				./${scriptname} &> ${output}.log

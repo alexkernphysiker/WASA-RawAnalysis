@@ -17,7 +17,7 @@ for X in `seq 45934 1 46884`; do
 				else
 					echo "...PROCESSING PRESELECTED DATA ..."
 					echo "#!/bin/bash" >> ${scriptname}
-	echo "./rawanalysis DataAll -local -mode raw -fin file:${zezeze} -n ${output} -abort" >> ${scriptname}
+	echo "./rawanalysis DataAll _ -local -mode raw -fin file:${zezeze} -n ${output} -abort" >> ${scriptname}
 					echo "rm -f $PWD/${scriptname}" >> ${scriptname}
 					chmod u+x ${scriptname}
 					./${scriptname} &> ${output}.log
