@@ -55,7 +55,7 @@ shared_ptr<AbstractChain> ForwardHe3Reconstruction(const string&prefix,const Ana
         <<make_shared<SetOfHists1D>(dir_dbg_name,"1-PhiDistribution",Q_axis_over,Phi_deg)
         <<make_shared<Hist1D>(dir_r_name,"1-PhiIsFinite",Q_axis_over)
 	<<[](WTrack&T){return (T.Theta()!=0.125);}
-	<<[](WTrack&T){return (T.Theta()>(PI()*(4.5/180.0)));}//because events amount with theta<4 deg is not in agreement with MC
+	<<[](WTrack&T){return (T.Theta()>(PI()*(getParameter(he3_theta_cut)/180.0)));}//because events amount with theta<4 deg is not in agreement with MC
         <<[&kin_rec](WTrack&T){
 	    kin_rec.theta=T.Theta();
 	    return true;
