@@ -1,4 +1,4 @@
-for X in `seq 1 1 100`; do
+for X in `seq 1 1 10`; do
     if [ -e $PLUTO_OUTPUT/$1-$X.root ]; then
 	echo "WMC number $X..."
 	if [ -e $WMC_DATA/$1-$X.wmc.data ]; then

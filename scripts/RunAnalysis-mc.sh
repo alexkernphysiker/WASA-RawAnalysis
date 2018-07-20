@@ -1,4 +1,4 @@
-for X in `seq 1 1 100`; do
+for X in `seq 1 1 10`; do
     input="${WMC_DATA}/$1-$X.wmc.data"
     output="${WASA_OUTPUT_DATA}/MC$1$X"
     if [ -e ${input} ]; then
