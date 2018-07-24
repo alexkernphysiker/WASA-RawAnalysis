@@ -32,7 +32,10 @@ int main(){
 	Plotter::Instance().SetOutput(".","sim-ppn");
 	const RandomUniform<>Pb_distr(p_beam_low,p_beam_hi);
 	const auto Pf_dens=Plotter::Instance().GetPoints<double>("pp/pfermi");
-	Plot().Line(Pf_dens);
+	Plot("",5).Line(Pf_dens)
+		<<"set title 'Fermi momentum distribution'"
+		<<"set xlabel 'Momentum, GeV/c'"
+		<<"set ylabel 'Density, n.d.'";
 	const RandomValueTableDistr<>Pf_distr=Pf_dens;
 	const auto CS=AngularDistribution(ReadCrossSection());
 	const auto THETA=[&CS](double p)->double{
