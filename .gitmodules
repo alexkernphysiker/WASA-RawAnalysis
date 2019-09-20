@@ -1,12 +1,12 @@
 [submodule "WASA-libs"]
 	path = WASA-libs
-	url = ../WASA-libs.git
+	url = ../../alexkernphysiker/WASA-libs.git
 [submodule "WASA-RootSorterWrap"]
 	path = WASA-RootSorterWrap
-	url = ../WASA-RootSorterWrap.git
+	url = ../../alexkernphysiker/WASA-RootSorterWrap.git
 [submodule "math_h"]
 	path = math_h
-	url = ../math_h.git
+	url = ../../alexkernphysiker/math_h.git
 [submodule "FitGen"]
 	path = FitGen
-	url = ../FitGen.git
+	url = ../../alexkernphysiker/FitGen.git
