@@ -13,7 +13,7 @@ run_*.log
 *.sh.*
 run*
 postanal*
-
+*.json
 #WMC
 etap.*
 epio*
